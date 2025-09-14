@@ -1,42 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Oreece Design System - Premium Brand Colors & Tokens */
 
 @layer base {
   :root {
+    /* Brand Colors */
+    --brand-red: 0 85% 60%;
+    --brand-red-dark: 0 85% 50%;
+    --brand-red-light: 0 85% 70%;
+    
+    /* Neutrals */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 220 15% 8%;
+    --surface: 220 15% 98%;
+    --surface-secondary: 220 15% 96%;
+    
+    /* Semantic Colors */
+    --primary: var(--brand-red);
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 15% 96%;
+    --secondary-foreground: 220 15% 12%;
+    
+    --muted: 220 15% 95%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 220 15% 95%;
+    --accent-foreground: 220 15% 12%;
+    
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --card-foreground: 220 15% 8%;
+    --border: 220 15% 92%;
+    --input: 220 15% 96%;
+    --ring: var(--brand-red);
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--brand-red)), hsl(var(--brand-red-dark)));
+    --gradient-surface: linear-gradient(135deg, hsl(var(--surface)), hsl(var(--surface-secondary)));
+    --gradient-glass: linear-gradient(135deg, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.05));
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsla(220, 15%, 8%, 0.05);
+    --shadow-md: 0 4px 6px -1px hsla(220, 15%, 8%, 0.1), 0 2px 4px -1px hsla(220, 15%, 8%, 0.06);
+    --shadow-lg: 0 10px 15px -3px hsla(220, 15%, 8%, 0.1), 0 4px 6px -2px hsla(220, 15%, 8%, 0.05);
+    --shadow-xl: 0 20px 25px -5px hsla(220, 15%, 8%, 0.1), 0 10px 10px -5px hsla(220, 15%, 8%, 0.04);
+    --shadow-brand: 0 10px 30px -10px hsla(var(--brand-red), 0.3);
+    
+    /* Animations */
+    --ease-primary: cubic-bezier(0.22, 0.9, 0.35, 1);
+    --ease-micro: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.3s var(--ease-primary);
+    --transition-micro: all 0.2s var(--ease-micro);
+    
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +118,111 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Hero Animations */
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Glass morphism effects */
+  .glass {
+    background: var(--gradient-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
+  }
+  
+  /* Premium button styles */
+  .btn-hero {
+    @apply bg-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold;
+    @apply shadow-lg hover:shadow-brand transition-all duration-300;
+    @apply hover:scale-[1.02] active:scale-[0.98];
+    background: var(--gradient-primary);
+  }
+  
+  .btn-ghost {
+    @apply border-2 border-foreground/20 text-foreground px-8 py-4 rounded-xl font-medium;
+    @apply hover:border-primary hover:text-primary transition-all duration-300;
+    @apply hover:scale-[1.02] active:scale-[0.98];
+  }
+  
+  /* Card styles */
+  .card-elevated {
+    @apply bg-card rounded-2xl shadow-md hover:shadow-lg transition-all duration-300;
+    @apply hover:-translate-y-1;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .card-elevated:hover {
+    box-shadow: var(--shadow-lg);
+  }
+  
+  /* Animations */
+  .animate-slide-up {
+    animation: slideUp 0.6s var(--ease-primary) forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.4s var(--ease-primary) forwards;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s var(--ease-primary) forwards;
+  }
+  
+  /* Staggered animations */
+  .animate-slide-up-1 { animation-delay: 0ms; }
+  .animate-slide-up-2 { animation-delay: 120ms; }
+  .animate-slide-up-3 { animation-delay: 240ms; }
+  .animate-slide-up-4 { animation-delay: 360ms; }
+  
+  /* Grid patterns */
+  .grid-pattern {
+    background-image: 
+      linear-gradient(hsla(220, 15%, 92%, 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, hsla(220, 15%, 92%, 0.5) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
 }
