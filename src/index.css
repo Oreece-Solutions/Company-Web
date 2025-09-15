@@ -166,6 +166,159 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
+
+  /* Enhanced Hero Animations */
+  @keyframes hero-badge {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes hero-title {
+    0% {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes hero-gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes hero-subtitle {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes hero-buttons {
+    0% {
+      opacity: 0;
+      transform: translateY(40px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes hero-stats {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes counter {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes float-slow {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px);
+    }
+    25% {
+      transform: translateY(-20px) translateX(10px);
+    }
+    50% {
+      transform: translateY(-10px) translateX(20px);
+    }
+    75% {
+      transform: translateY(-30px) translateX(5px);
+    }
+  }
+
+  @keyframes float-medium {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px) rotate(0deg);
+    }
+    33% {
+      transform: translateY(-15px) translateX(-10px) rotate(120deg);
+    }
+    66% {
+      transform: translateY(-25px) translateX(15px) rotate(240deg);
+    }
+  }
+
+  @keyframes float-fast {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-40px) rotate(180deg);
+    }
+  }
+
+  @keyframes scroll-indicator {
+    0%, 100% {
+      transform: translateX(-50%) translateY(0px);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translateX(-50%) translateY(-5px);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scroll-dot {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(24px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scroll-glow {
+    0%, 100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
   
   /* Glass morphism effects */
   .glass {
@@ -210,6 +363,76 @@
   
   .animate-fade-in {
     animation: fadeIn 0.5s var(--ease-primary) forwards;
+  }
+
+  /* Enhanced Hero Animations */
+  .animate-hero-badge {
+    animation: hero-badge 0.8s var(--ease-primary) forwards;
+    animation-delay: 0.2s;
+    opacity: 0;
+  }
+
+  .animate-hero-title {
+    animation: hero-title 0.9s var(--ease-primary) forwards;
+    animation-delay: 0.4s;
+    opacity: 0;
+  }
+
+  .animate-hero-gradient {
+    background-size: 400% 400%;
+    animation: hero-gradient 4s ease infinite;
+  }
+
+  .animate-hero-subtitle {
+    animation: hero-subtitle 0.8s var(--ease-primary) forwards;
+    animation-delay: 0.7s;
+    opacity: 0;
+  }
+
+  .animate-hero-buttons {
+    animation: hero-buttons 0.8s var(--ease-primary) forwards;
+    animation-delay: 1s;
+    opacity: 0;
+  }
+
+  .animate-hero-stats {
+    animation: hero-stats 0.8s var(--ease-primary) forwards;
+    animation-delay: 1.3s;
+    opacity: 0;
+  }
+
+  .animate-counter {
+    animation: counter 1.2s var(--ease-primary) forwards;
+    animation-delay: 1.6s;
+  }
+
+  .animate-float-slow {
+    animation: float-slow 8s ease-in-out infinite;
+  }
+
+  .animate-float-medium {
+    animation: float-medium 6s ease-in-out infinite;
+  }
+
+  .animate-float-fast {
+    animation: float-fast 4s ease-in-out infinite;
+  }
+
+  .animate-scroll-indicator {
+    animation: scroll-indicator 2s ease-in-out infinite;
+  }
+
+  .animate-scroll-dot {
+    animation: scroll-dot 2s ease-in-out infinite;
+  }
+
+  .animate-scroll-glow {
+    animation: scroll-glow 2s ease-in-out infinite;
+  }
+
+  /* Shadow effects */
+  .shadow-glow {
+    box-shadow: var(--shadow-brand), var(--shadow-lg);
   }
   
   /* Staggered animations */
