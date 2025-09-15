@@ -3,11 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { 
-  Code2, 
+  Code, 
   Smartphone, 
-  Cloud, 
   Palette, 
-  Database, 
+  Zap, 
+  Globe, 
   Shield,
   ArrowRight,
   CheckCircle
@@ -16,126 +16,69 @@ import {
 const Services = () => {
   const services = [
     {
-      icon: <Code2 className="h-12 w-12" />,
+      icon: <Code className="h-12 w-12" />,
       title: "Web Development",
-      description: "Custom web applications built with modern frameworks and best practices for scalability and performance.",
+      description: "Custom websites and web applications built with modern technologies for optimal performance and user experience.",
       features: [
-        "React, Next.js, Vue.js development",
-        "Progressive Web Apps (PWAs)",
-        "E-commerce platforms",
-        "Content Management Systems",
-        "API development & integration"
-      ],
-      technologies: ["React", "Next.js", "TypeScript", "Node.js", "Python"],
-      startingPrice: "$15,000"
+        "React & Next.js Applications",
+        "Responsive Design",
+        "Performance Optimization"
+      ]
+    },
+    {
+      icon: <Palette className="h-12 w-12" />,  
+      title: "UI/UX Design",
+      description: "Beautiful, intuitive designs that convert visitors into customers and provide exceptional user experiences.",
+      features: [
+        "User Research & Testing",
+        "Wireframing & Prototyping", 
+        "Design Systems"
+      ]
     },
     {
       icon: <Smartphone className="h-12 w-12" />,
-      title: "Mobile Development",
-      description: "Native and cross-platform mobile applications that deliver exceptional user experiences across all devices.",
+      title: "Mobile Development", 
+      description: "Cross-platform mobile applications that work seamlessly across iOS and Android devices.",
       features: [
-        "iOS & Android native apps",
-        "React Native & Flutter",
-        "Mobile-first design",
-        "App Store optimization",
-        "Push notifications & analytics"
-      ],
-      technologies: ["React Native", "Flutter", "Swift", "Kotlin", "Firebase"],
-      startingPrice: "$25,000"
+        "React Native Apps",
+        "Progressive Web Apps",
+        "App Store Optimization"
+      ]
     },
     {
-      icon: <Cloud className="h-12 w-12" />,
-      title: "Cloud Solutions",
-      description: "Scalable cloud infrastructure and DevOps solutions to power your applications and optimize performance.",
+      icon: <Zap className="h-12 w-12" />,
+      title: "Performance Optimization",
+      description: "Speed up your existing applications and improve user experience with advanced optimization techniques.",
       features: [
-        "AWS, Google Cloud, Azure setup",
-        "Containerization with Docker",
-        "CI/CD pipeline automation",
-        "Database optimization",
-        "Monitoring & analytics"
-      ],
-      technologies: ["AWS", "Docker", "Kubernetes", "Terraform", "MongoDB"],
-      startingPrice: "$10,000"
+        "Core Web Vitals",
+        "Database Optimization", 
+        "CDN Implementation"
+      ]
     },
     {
-      icon: <Palette className="h-12 w-12" />,
-      title: "UI/UX Design",
-      description: "User-centered design that combines beautiful aesthetics with intuitive functionality and conversion optimization.",
+      icon: <Globe className="h-12 w-12" />,
+      title: "Digital Strategy",
+      description: "Comprehensive digital strategies that align technology with your business goals and drive growth.",
       features: [
-        "User research & personas",
-        "Wireframing & prototyping",
-        "Design systems & style guides",
-        "Usability testing",
-        "Conversion optimization"
-      ],
-      technologies: ["Figma", "Adobe XD", "Sketch", "InVision", "Principle"],
-      startingPrice: "$8,000"
-    },
-    {
-      icon: <Database className="h-12 w-12" />,
-      title: "Data & Analytics",
-      description: "Transform your data into actionable insights with custom dashboards, reporting, and machine learning solutions.",
-      features: [
-        "Custom analytics dashboards",
-        "Business intelligence reporting",
-        "Machine learning models",
-        "Data pipeline automation",
-        "Performance monitoring"
-      ],
-      technologies: ["Python", "TensorFlow", "Tableau", "PostgreSQL", "BigQuery"],
-      startingPrice: "$20,000"
+        "Technical Consulting",
+        "Architecture Planning",
+        "Technology Roadmaps"
+      ]
     },
     {
       icon: <Shield className="h-12 w-12" />,
-      title: "Security & Compliance",
-      description: "Comprehensive security audits, implementation, and compliance solutions to protect your digital assets.",
+      title: "Maintenance & Support",
+      description: "Ongoing maintenance, updates, and support to keep your applications running smoothly and securely.",
       features: [
-        "Security audits & assessments",
-        "GDPR & CCPA compliance",
-        "Penetration testing",
-        "Data encryption & protection",
-        "Security training & consulting"
-      ],
-      technologies: ["OWASP", "SSL/TLS", "OAuth", "JWT", "Encryption"],
-      startingPrice: "$12,000"
-    }
-  ];
-
-  const processSteps = [
-    {
-      step: "01",
-      title: "Discovery",
-      description: "We start by understanding your business goals, target audience, and technical requirements through detailed consultations."
-    },
-    {
-      step: "02", 
-      title: "Strategy",
-      description: "We develop a comprehensive strategy and roadmap, including technology stack recommendations and project timeline."
-    },
-    {
-      step: "03",
-      title: "Design",
-      description: "Our design team creates user-centered interfaces and experiences that align with your brand and objectives."
-    },
-    {
-      step: "04",
-      title: "Development",
-      description: "We build your solution using agile methodologies with regular check-ins and progress updates."
-    },
-    {
-      step: "05",
-      title: "Testing",
-      description: "Comprehensive testing ensures your solution works flawlessly across all devices and scenarios."
-    },
-    {
-      step: "06",
-      title: "Launch",
-      description: "We handle deployment, monitoring, and provide ongoing support to ensure continued success."
+        "Security Updates",
+        "Performance Monitoring",
+        "24/7 Support"
+      ]
     }
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen animate-page-enter">
       <Navigation />
       
       {/* Hero Section */}
@@ -174,141 +117,28 @@ const Services = () => {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <div key={index} className="card-elevated p-8 group">
-                <div className="flex items-start mb-6">
-                  <div className="text-primary mr-6 transform group-hover:scale-110 transition-transform duration-200">
+              <div key={index} className={`card-elevated p-8 animate-card-stack animate-card-stack-${index + 1} hover:scale-105 transition-all duration-300`}>
+                <div className="w-16 h-16 bg-primary/10 rounded-lg mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="text-primary">
                     {service.icon}
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed mb-4">
-                      {service.description}
-                    </p>
-                    <div className="text-sm text-primary font-semibold mb-6">
-                      Starting from {service.startingPrice}
-                    </div>
-                  </div>
                 </div>
-
-                {/* Features */}
-                <div className="mb-6">
-                  <h4 className="font-semibold mb-3">What's Included:</h4>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center text-sm text-muted-foreground">
-                        <CheckCircle className="h-4 w-4 text-primary mr-3 flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Technologies */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {service.technologies.map((tech) => (
-                    <Badge key={tech} variant="outline" className="text-xs">
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* CTA */}
-                <Link to="/contact">
-                  <Button variant="ghost" className="btn-ghost w-full">
-                    Learn More
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Process Section */}
-      <section className="py-20 bg-surface/50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Process</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We follow a proven methodology that ensures successful project 
-              delivery from concept to launch.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {processSteps.map((step, index) => (
-              <div key={index} className="text-center group">
-                <div className="relative mb-6">
-                  <div className="w-20 h-20 mx-auto bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-xl mb-4 group-hover:scale-110 transition-transform duration-200">
-                    {step.step}
-                  </div>
-                  {index < processSteps.length - 1 && (
-                    <div className="hidden lg:block absolute top-10 left-full w-full h-0.5 bg-border transform -translate-x-1/2" />
-                  )}
-                </div>
-                <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {step.description}
+                <h3 className="text-2xl font-semibold mb-4">{service.title}</h3>
+                <p className="text-muted-foreground mb-6">
+                  {service.description}
                 </p>
+                <ul className="space-y-2 text-sm">
+                  {service.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center text-muted-foreground">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full mr-3"></div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <Badge className="mb-4">Why Choose Oreece</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Experience That Delivers Results
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                With over 5 years of experience and 50+ successful projects, 
-                we have the expertise and track record to bring your vision to life.
-              </p>
-              
-              <div className="space-y-4">
-                {[
-                  "Proven track record with 98% client satisfaction",
-                  "Agile development with regular communication",
-                  "Modern technology stack and best practices",
-                  "Ongoing support and maintenance available",
-                  "Transparent pricing with no hidden costs"
-                ].map((benefit, index) => (
-                  <div key={index} className="flex items-center">
-                    <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                    <span>{benefit}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              {[
-                { number: "50+", label: "Projects Completed" },
-                { number: "98%", label: "Client Satisfaction" },
-                { number: "5+", label: "Years Experience" },
-                { number: "24/7", label: "Support Available" }
-              ].map((stat, index) => (
-                <div key={index} className="flex items-center p-6 card-elevated">
-                  <div className="text-3xl font-bold text-primary mr-6">
-                    {stat.number}
-                  </div>
-                  <div>
-                    <div className="font-semibold">{stat.label}</div>
-                    <div className="text-sm text-muted-foreground">
-                      Trusted by businesses worldwide
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>

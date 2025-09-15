@@ -89,45 +89,6 @@ const Work = () => {
         { label: "Student Engagement", value: "+65%" },
         { label: "Completion Rate", value: "89%" }
       ]
-    },
-    {
-      id: "7",
-      title: "Real Estate Platform",
-      description: "Modern property listing platform with virtual tours and AI-powered property matching.",
-      image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop",
-      tags: ["React", "GraphQL", "AWS"],
-      category: "Real Estate",
-      slug: "real-estate-platform",
-      metrics: [
-        { label: "User Engagement", value: "+60%" },
-        { label: "Property Views", value: "500K+" }
-      ]
-    },
-    {
-      id: "8",
-      title: "Food Delivery App",
-      description: "On-demand food delivery platform with real-time tracking and restaurant management system.",
-      image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop",
-      tags: ["React Native", "Node.js", "MongoDB"],
-      category: "Food Tech",
-      slug: "food-delivery-app",
-      metrics: [
-        { label: "Order Volume", value: "+200%" },
-        { label: "Delivery Time", value: "25 min" }
-      ]
-    },
-    {
-      id: "9",
-      title: "Fitness Tracking App",
-      description: "Comprehensive fitness tracking application with social features and personalized workout plans.",
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
-      tags: ["Flutter", "Firebase", "ML"],
-      category: "Health & Fitness",
-      slug: "fitness-tracking-app",
-      metrics: [
-        { label: "Active Users", value: "50K+" },
-        { label: "Retention Rate", value: "85%" }
-      ]
     }
   ];
 
@@ -144,7 +105,7 @@ const Work = () => {
   });
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen animate-page-enter">
       <Navigation />
       
       {/* Hero Section */}
@@ -248,7 +209,7 @@ const Work = () => {
                   <ProjectCard
                     key={project.id}
                     project={project}
-                    className="animate-fade-in"
+                    className={`animate-card-stack animate-card-stack-${(index % 6) + 1}`}
                   />
                 ))}
               </div>

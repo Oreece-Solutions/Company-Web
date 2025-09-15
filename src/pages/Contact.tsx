@@ -52,7 +52,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen animate-page-enter">
       <Navigation />
       
       {/* Hero Section */}
@@ -300,7 +300,7 @@ const Contact = () => {
                 answer: "Yes! We offer various maintenance and support packages to keep your application running smoothly. We also provide training to help your team manage content and basic updates."
               }
             ].map((faq, index) => (
-              <div key={index} className="card-elevated p-6">
+              <div key={index} className={`card-elevated p-6 animate-card-stack animate-card-stack-${index + 1}`}>
                 <h3 className="font-bold mb-3">{faq.question}</h3>
                 <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
               </div>

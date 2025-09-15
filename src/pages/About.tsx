@@ -50,7 +50,7 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen animate-page-enter">
       <Navigation />
       
       {/* Hero Section */}
@@ -134,7 +134,7 @@ const About = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <div key={index} className="card-elevated p-8 text-center group">
+              <div key={index} className={`card-elevated p-8 text-center group animate-card-stack animate-card-stack-${index + 1} hover:scale-105 transition-all duration-300`}>
                 <div className="text-primary mb-4 flex justify-center transform group-hover:scale-110 transition-transform duration-200">
                   {value.icon}
                 </div>
@@ -161,7 +161,7 @@ const About = () => {
 
           <div className="grid md:grid-cols-3 gap-12 max-w-4xl mx-auto">
             {team.map((member, index) => (
-              <div key={index} className="text-center group">
+              <div key={index} className={`text-center group animate-card-stack animate-card-stack-${index + 1}`}>
                 <div className="relative mb-6">
                   <img
                     src={member.image}

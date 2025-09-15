@@ -20,24 +20,23 @@ const Hero = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium animate-hero-badge">
-            ✨ Premium Digital Solutions
-          </div>
-
           {/* Main Headline */}
-          <h1 className="text-5xl md:text-7xl font-bold animate-hero-title">
+          <h1 className="text-5xl md:text-7xl font-bold leading-tight animate-hero-title mb-6">
             We Build
-            <span className="block bg-gradient-primary bg-clip-text text-transparent animate-hero-gradient">
+            <span className="block bg-gradient-primary bg-clip-text text-transparent animate-hero-gradient mt-2">
               Exceptional
             </span>
-            Digital Experiences
+            <span className="block mt-2">
+              Digital Experiences
+            </span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto animate-hero-subtitle">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto animate-hero-subtitle leading-relaxed">
             Transforming ideas into powerful digital solutions that drive growth, 
-            engage users, and deliver measurable results for forward-thinking businesses.
+            <span className="block mt-2">
+              engage users, and deliver measurable results for forward-thinking businesses.
+            </span>
           </p>
 
           {/* CTA Buttons */}
