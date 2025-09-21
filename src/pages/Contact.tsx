@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
+import ScheduleCall from "@/components/ScheduleCall";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -25,12 +27,18 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: formData
+      });
+
+      if (error) throw error;
+
       toast({
         title: "Message sent successfully!",
         description: "We'll get back to you within 24 hours.",
       });
+      
       setFormData({
         name: "",
         email: "",
@@ -40,8 +48,16 @@ const Contact = () => {
         message: "",
         budget: ""
       });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error sending message",
+        description: "Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 2000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -59,14 +75,14 @@ const Contact = () => {
       <section className="pt-32 pb-20 bg-gradient-to-br from-background via-surface to-surface/50">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-4">Get In Touch</Badge>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <Badge className="mb-4 animate-slide-up">Get In Touch</Badge>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-slide-up animate-stagger-1">
               Let's Build Something
-              <span className="block bg-gradient-primary bg-clip-text text-transparent">
+              <span className="block bg-gradient-primary bg-clip-text text-transparent animate-float">
                 Amazing Together
               </span>
             </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed mb-8">
+            <p className="text-xl text-muted-foreground leading-relaxed mb-8 animate-slide-up animate-stagger-2">
               Ready to transform your digital presence? We'd love to hear about 
               your project and discuss how we can help you achieve your goals.
             </p>
@@ -80,22 +96,22 @@ const Contact = () => {
           <div className="grid lg:grid-cols-3 gap-12">
             
             {/* Contact Info */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 animate-slide-in-left">
               <h2 className="text-2xl font-bold mb-8">Get in Touch</h2>
               
               <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 bg-primary/10 rounded-lg">
+                <div className="flex items-start space-x-4 hover-lift">
+                  <div className="p-3 bg-primary/10 rounded-lg animate-pulse-slow">
                     <Mail className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
                     <p className="text-muted-foreground">hello@oreece.com</p>
-                    <p className="text-muted-foreground">projects@oreece.com</p>
+                    <p className="text-muted-foreground">info@oreece.com</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
+                <div className="flex items-start space-x-4 hover-lift animate-stagger-1">
                   <div className="p-3 bg-primary/10 rounded-lg">
                     <Phone className="h-6 w-6 text-primary" />
                   </div>
@@ -106,7 +122,7 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
+                <div className="flex items-start space-x-4 hover-lift animate-stagger-2">
                   <div className="p-3 bg-primary/10 rounded-lg">
                     <MapPin className="h-6 w-6 text-primary" />
                   </div>
@@ -117,7 +133,7 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
+                <div className="flex items-start space-x-4 hover-lift animate-stagger-3">
                   <div className="p-3 bg-primary/10 rounded-lg">
                     <Clock className="h-6 w-6 text-primary" />
                   </div>
@@ -130,22 +146,25 @@ const Contact = () => {
               </div>
 
               {/* Quick Booking */}
-              <div className="mt-12 p-6 bg-gradient-primary rounded-2xl text-white">
-                <h3 className="text-xl font-bold mb-3">Book a Discovery Call</h3>
+              <div className="mt-12 p-6 bg-gradient-primary rounded-2xl text-white animate-scale-in animate-stagger-4 hover-glow">
+                <h3 className="text-xl font-bold mb-3 animate-bounce">Book a Discovery Call</h3>
                 <p className="mb-4 opacity-90">
                   Prefer to talk directly? Schedule a 30-minute discovery call 
                   to discuss your project.
                 </p>
-                <Button className="bg-white text-primary hover:bg-white/90 w-full">
+                <ScheduleCall 
+                  variant="outline" 
+                  className="bg-white text-primary hover:bg-white/90 w-full border-white"
+                >
                   Schedule Call
-                </Button>
+                </ScheduleCall>
               </div>
             </div>
 
             {/* Contact Form */}
-            <div className="lg:col-span-2">
-              <div className="card-elevated p-8">
-                <h2 className="text-2xl font-bold mb-6">Tell Us About Your Project</h2>
+            <div className="lg:col-span-2 animate-slide-in-right">
+              <div className="card-elevated p-8 hover-lift">
+                <h2 className="text-2xl font-bold mb-6 animate-slide-up">Tell Us About Your Project</h2>
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
@@ -253,14 +272,14 @@ const Contact = () => {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="btn-hero w-full md:w-auto px-8 py-4"
+                    className="btn-hero w-full md:w-auto px-8 py-4 animate-scale-in"
                   >
                     {isSubmitting ? (
-                      "Sending..."
+                      <span className="animate-pulse">Sending...</span>
                     ) : (
                       <>
                         Send Message
-                        <Send className="ml-2 h-5 w-5" />
+                        <Send className="ml-2 h-5 w-5 animate-bounce" />
                       </>
                     )}
                   </Button>
