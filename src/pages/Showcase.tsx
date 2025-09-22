@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import Navigation from "@/components/Navigation";
+import { ChevronLeft, ChevronRight, ExternalLink, Github, Play, ArrowLeft, ArrowRight, Calendar, Clock, Users, Star, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, ArrowLeft, Play, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
+import Navigation from "@/components/Navigation";
+import { AnimatedSection } from "@/components/AnimatedSection";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const showcaseProjects = [
   {
@@ -17,8 +19,8 @@ const showcaseProjects = [
       { label: "Page Load Time", value: "0.8s" },
       { label: "User Satisfaction", value: "98%" }
     ],
-    technologies: ["React", "Node.js", "AWS", "AI/ML"],
-    color: "from-green-500 to-blue-600"
+    technologies: ["React", "Node.js", "AWS", "AI/ML", "TypeScript", "GraphQL"],
+    gradient: "linear-gradient(135deg, #10b981, #3b82f6)"
   },
   {
     id: "2", 
@@ -31,8 +33,8 @@ const showcaseProjects = [
       { label: "Patient Outcomes", value: "+25%" },
       { label: "Clinical Efficiency", value: "2.5x" }
     ],
-    technologies: ["Next.js", "TypeScript", "PostgreSQL", "Real-time"],
-    color: "from-blue-500 to-purple-600"
+    technologies: ["Next.js", "TypeScript", "PostgreSQL", "Real-time", "WebSocket", "Docker"],
+    gradient: "linear-gradient(135deg, #3b82f6, #8b5cf6)"
   },
   {
     id: "3",
@@ -45,8 +47,8 @@ const showcaseProjects = [
       { label: "Generation Speed", value: "10x" },
       { label: "Cost Reduction", value: "80%" }
     ],
-    technologies: ["Python", "TensorFlow", "React", "GPT-4"],
-    color: "from-purple-500 to-pink-600"
+    technologies: ["Python", "TensorFlow", "React", "GPT-4", "Kubernetes", "Redis"],
+    gradient: "linear-gradient(135deg, #8b5cf6, #ec4899)"
   },
   {
     id: "4",
@@ -59,8 +61,8 @@ const showcaseProjects = [
       { label: "Traffic Optimization", value: "+40%" },
       { label: "Citizen Satisfaction", value: "92%" }
     ],
-    technologies: ["IoT", "React", "MongoDB", "Analytics"],
-    color: "from-orange-500 to-red-600"
+    technologies: ["IoT", "React", "MongoDB", "Analytics", "MQTT", "Grafana"],
+    gradient: "linear-gradient(135deg, #f97316, #ef4444)"
   }
 ];
 
@@ -92,186 +94,247 @@ const Showcase = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isTransitioning]);
 
-  const project = showcaseProjects[currentProject];
+  const currentProjectData = showcaseProjects[currentProject];
+  const { ref: showcaseRef, isVisible } = useScrollAnimation();
 
   return (
-    <div className="min-h-screen overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface-secondary">
       <Navigation />
       
-      {/* Main Showcase Container */}
-      <div className="relative h-screen flex">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0">
-          <img
-            src={project.image}
-            alt={project.title}
-            className={`w-full h-full object-cover transition-all duration-1000 ${
-              isTransitioning ? "scale-110 blur-sm" : "scale-100 blur-0"
-            }`}
+      {/* Modern Showcase Layout */}
+      <div className="pt-20">
+        {/* Hero Section */}
+        <AnimatedSection className="relative min-h-screen flex items-center justify-center overflow-hidden">
+          {/* Dynamic Background */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-in-out"
+            style={{
+              backgroundImage: `url(${currentProjectData.image})`,
+              filter: 'brightness(0.2) blur(2px)',
+            }}
           />
-          <div className={`absolute inset-0 bg-gradient-to-r ${project.color} opacity-80`} />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 flex items-center w-full">
-          <div className="container mx-auto px-6">
+          
+          {/* Gradient Overlay */}
+          <div 
+            className="absolute inset-0 opacity-90 transition-all duration-1000"
+            style={{
+              background: `${currentProjectData.gradient}, rgba(0,0,0,0.8)`
+            }}
+          />
+          
+          {/* Main Content Container */}
+          <div className="relative z-10 container mx-auto px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               
-              {/* Project Info */}
-              <div className="text-white">
-                <div className="flex items-center gap-4 mb-6">
-                  <Badge className="bg-white/20 text-white border-white/30">
-                    {project.category}
-                  </Badge>
-                  <div className="text-sm opacity-80">
-                    Project {currentProject + 1} of {showcaseProjects.length}
+              {/* Left Column - Project Info */}
+              <div className="text-white space-y-8">
+                <AnimatedSection animation="fadeLeft" delay={200}>
+                  <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium mb-6 transition-all duration-500 ${
+                    isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                  }`} style={{
+                    background: 'rgba(255,255,255,0.1)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)'
+                  }}>
+                    <Star className="w-4 h-4 mr-2" />
+                    {currentProjectData.category}
                   </div>
-                </div>
+                </AnimatedSection>
 
-                <h1 className={`text-4xl md:text-6xl font-bold mb-6 transition-all duration-600 ${
-                  isTransitioning ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"
-                }`}>
-                  {project.title}
-                </h1>
+                <AnimatedSection animation="fadeLeft" delay={400}>
+                  <h1 className={`text-4xl lg:text-6xl font-bold mb-6 leading-tight transition-all duration-500 ${
+                    isTransitioning ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'
+                  }`}>
+                    {currentProjectData.title}
+                  </h1>
+                </AnimatedSection>
 
-                <p className={`text-xl mb-8 leading-relaxed opacity-90 transition-all duration-600 delay-100 ${
-                  isTransitioning ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"  
-                }`}>
-                  {project.description}
-                </p>
+                <AnimatedSection animation="fadeLeft" delay={600}>
+                  <p className={`text-lg lg:text-xl text-white/90 mb-8 leading-relaxed transition-all duration-500 ${
+                    isTransitioning ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'
+                  }`}>
+                    {currentProjectData.description}
+                  </p>
+                </AnimatedSection>
 
-                {/* Metrics */}
-                <div className={`grid grid-cols-3 gap-6 mb-8 transition-all duration-600 delay-200 ${
-                  isTransitioning ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"
-                }`}>
-                  {project.metrics.map((metric, index) => (
-                    <div key={index} className="text-center">
-                      <div className="text-2xl md:text-3xl font-bold text-white mb-1">
-                        {metric.value}
-                      </div>
-                      <div className="text-sm opacity-80">{metric.label}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Technologies */}
-                <div className={`flex flex-wrap gap-3 mb-8 transition-all duration-600 delay-300 ${
-                  isTransitioning ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"
-                }`}>
-                  {project.technologies.map((tech) => (
-                    <Badge key={tech} variant="outline" className="bg-white/10 text-white border-white/30">
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* CTAs */}
-                <div className={`flex flex-col sm:flex-row gap-4 transition-all duration-600 delay-400 ${
-                  isTransitioning ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"
-                }`}>
-                  <Link to={`/work/${project.id}`}>
-                    <Button className="bg-white text-foreground hover:bg-white/90 px-8 py-4">
-                      View Case Study
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                  <Button variant="ghost" className="text-white border-white hover:bg-white/10 px-8 py-4">
-                    <ExternalLink className="mr-2 h-5 w-5" />
-                    Live Demo
-                  </Button>
-                </div>
-              </div>
-
-              {/* Navigation Panel */}
-              <div className="hidden lg:block">
-                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-                  <h3 className="text-white text-xl font-semibold mb-6">
-                    Featured Projects
-                  </h3>
-                  
-                  <div className="space-y-4">
-                    {showcaseProjects.map((proj, index) => (
-                      <button
-                        key={proj.id}
-                        onClick={() => {
-                          if (index !== currentProject && !isTransitioning) {
-                            setIsTransitioning(true);
-                            setCurrentProject(index);
-                            setTimeout(() => setIsTransitioning(false), 600);
-                          }
-                        }}
-                        className={`w-full text-left p-4 rounded-lg transition-all duration-300 ${
-                          index === currentProject
-                            ? "bg-white/20 text-white"
-                            : "text-white/70 hover:bg-white/10 hover:text-white"
-                        }`}
-                      >
-                        <div className="font-medium mb-1">{proj.title}</div>
-                        <div className="text-xs opacity-80">{proj.category}</div>
-                      </button>
+                {/* Enhanced Metrics Grid */}
+                <AnimatedSection animation="fadeLeft" delay={800}>
+                  <div className={`grid grid-cols-2 lg:grid-cols-3 gap-6 mb-8 transition-all duration-500 ${
+                    isTransitioning ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'
+                  }`}>
+                    {currentProjectData.metrics.map((metric, index) => (
+                      <Card key={index} className="bg-white/10 backdrop-blur-lg border-white/20 text-center p-4">
+                        <CardContent className="p-0">
+                          <div className="flex items-center justify-center mb-2">
+                            {index === 0 && <TrendingUp className="w-5 h-5 text-white/70" />}
+                            {index === 1 && <Users className="w-5 h-5 text-white/70" />}
+                            {index === 2 && <Clock className="w-5 h-5 text-white/70" />}
+                          </div>
+                          <div className="text-2xl font-bold text-white">{metric.value}</div>
+                          <div className="text-white/70 text-sm">{metric.label}</div>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
+                </AnimatedSection>
+
+                {/* Action Buttons */}
+                <AnimatedSection animation="fadeLeft" delay={1000}>
+                  <div className={`flex flex-wrap gap-4 transition-all duration-500 ${
+                    isTransitioning ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'
+                  }`}>
+                    <Button size="lg" className="bg-white text-black hover:bg-white/90 rounded-2xl px-8 py-4 font-semibold">
+                      <ExternalLink className="mr-2 h-5 w-5" />
+                      View Case Study
+                    </Button>
+                    <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 rounded-2xl px-8 py-4 font-semibold">
+                      <Play className="mr-2 h-5 w-5" />
+                      Live Demo
+                    </Button>
+                  </div>
+                </AnimatedSection>
+              </div>
+
+              {/* Right Column - Project Visual */}
+              <AnimatedSection animation="fadeRight" delay={600} className="relative">
+                <div className="relative">
+                  {/* Project Image */}
+                  <div className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 ${
+                    isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                  }`}>
+                    <img 
+                      src={currentProjectData.image} 
+                      alt={currentProjectData.title}
+                      className="w-full h-[400px] lg:h-[500px] object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  </div>
+
+                  {/* Floating Tech Stack */}
+                  <div className="absolute -bottom-6 left-6 right-6">
+                    <Card className="bg-white/95 backdrop-blur-lg border-0 shadow-xl">
+                      <CardContent className="p-4">
+                        <div className="flex flex-wrap gap-2">
+                          {currentProjectData.technologies.slice(0, 6).map((tech, index) => (
+                            <Badge key={index} variant="secondary" className="bg-surface text-foreground">
+                              {tech}
+                            </Badge>
+                          ))}
+                          {currentProjectData.technologies.length > 6 && (
+                            <Badge variant="secondary" className="bg-surface text-foreground">
+                              +{currentProjectData.technologies.length - 6} more
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
+              </AnimatedSection>
+            </div>
+          </div>
+        </AnimatedSection>
+
+        {/* Project Navigation Section */}
+        <AnimatedSection className="py-16 bg-surface/50">
+          <div className="container mx-auto px-6 lg:px-8">
+            <h2 className="text-2xl font-bold text-center mb-12">Explore More Projects</h2>
+            
+            {/* Project Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {showcaseProjects.map((project, index) => (
+                <AnimatedSection key={index} delay={index * 100}>
+                  <Card 
+                    className={`cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
+                      index === currentProject ? 'ring-2 ring-primary bg-primary/5' : ''
+                    }`}
+                    onClick={() => setCurrentProject(index)}
+                  >
+                    <CardContent className="p-0">
+                      <div className="relative h-48 overflow-hidden rounded-t-lg">
+                        <img 
+                          src={project.image} 
+                          alt={project.title}
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <Badge 
+                          className="absolute top-4 left-4 text-white border-0"
+                          style={{ background: project.gradient }}
+                        >
+                          {project.category}
+                        </Badge>
+                      </div>
+                      <div className="p-6">
+                        <h3 className="font-semibold text-lg mb-2">{project.title}</h3>
+                        <p className="text-muted-foreground text-sm line-clamp-2">
+                          {project.description}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </AnimatedSection>
+              ))}
+            </div>
+
+            {/* Navigation Controls */}
+            <div className="flex items-center justify-center space-x-8">
+              <Button
+                onClick={prevProject}
+                variant="outline"
+                size="lg"
+                className="rounded-full p-4"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </Button>
+              
+              {/* Progress Indicators */}
+              <div className="flex space-x-2">
+                {showcaseProjects.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentProject(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentProject
+                        ? 'bg-primary scale-125'
+                        : 'bg-muted hover:bg-muted-foreground/50'
+                    }`}
+                  />
+                ))}
+              </div>
+              
+              <Button
+                onClick={nextProject}
+                variant="outline"
+                size="lg"
+                className="rounded-full p-4"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </Button>
+            </div>
+
+            {/* Keyboard Navigation Hint */}
+            <div className="text-center mt-8">
+              <div className="inline-flex items-center space-x-2 text-muted-foreground text-sm bg-surface rounded-full px-4 py-2">
+                <ArrowLeft className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4" />
+                <span>Use arrow keys for navigation</span>
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedSection>
 
-        {/* Navigation Controls */}
-        <button
-          onClick={prevProject}
-          disabled={isTransitioning}
-          className="absolute left-6 top-1/2 -translate-y-1/2 z-20 p-4 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 disabled:opacity-50"
-          aria-label="Previous project"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </button>
-
-        <button
-          onClick={nextProject}
-          disabled={isTransitioning}
-          className="absolute right-6 top-1/2 -translate-y-1/2 z-20 p-4 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 disabled:opacity-50"
-          aria-label="Next project"
-        >
-          <ArrowRight className="h-6 w-6" />
-        </button>
-
-        {/* Progress Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
-          {showcaseProjects.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                if (index !== currentProject && !isTransitioning) {
-                  setIsTransitioning(true);
-                  setCurrentProject(index);
-                  setTimeout(() => setIsTransitioning(false), 600);
-                }
-              }}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentProject
-                  ? "bg-white scale-125"  
-                  : "bg-white/50 hover:bg-white/75"
-              }`}
-              aria-label={`Go to project ${index + 1}`}
-            />
-          ))}
-        </div>
-
-        {/* Keyboard Hint */}
-        <div className="absolute bottom-8 right-8 z-20 text-white/60 text-sm">
-          Use ← → keys to navigate
+        {/* Exit Section */}
+        <div className="fixed top-24 right-6 z-50">
+          <Button
+            onClick={() => window.history.back()}
+            variant="ghost"
+            className="bg-background/80 backdrop-blur-lg border border-border/50 rounded-2xl"
+          >
+            Exit Showcase
+          </Button>
         </div>
       </div>
-
-      {/* Exit to Home */}
-      <Link
-        to="/"
-        className="fixed top-6 right-6 z-50 glass text-white px-4 py-2 rounded-lg hover:bg-white/20 transition-all duration-200"
-      >
-        Exit Showcase
-      </Link>
     </div>
   );
 };
