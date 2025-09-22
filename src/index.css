@@ -120,6 +120,15 @@
   body {
     @apply bg-background text-foreground font-inter;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    /* Performance optimizations */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    will-change: scroll-position;
+    /* GPU acceleration for smooth animations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
   }
   
   html {
@@ -464,12 +473,32 @@
     }
   }
   
-  /* Glass morphism effects */
-  .glass {
-    background: var(--gradient-glass);
-    backdrop-filter: blur(12px);
-    border: 1px solid hsla(0, 0%, 100%, 0.1);
-  }
+/* Performance optimizations */
+.animate-fade-in,
+.animate-scale-in,
+.animate-slide-up {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Critical CSS loading optimization */
+.critical-loading {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px;
+}
   
   /* Enhanced Interactive Elements */
   .btn-hero {

@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { initPerformanceOptimizations } from "@/utils/performance";
 import Index from "./pages/Index";
 import Showcase from "./pages/Showcase";
 import About from "./pages/About";
@@ -22,28 +23,41 @@ function ScrollToTop() {
   return null;
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    },
+  },
+});
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/showcase" element={<Showcase />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/work" element={<Work />} />
-          <Route path="/contact" element={<Contact />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  useEffect(() => {
+    initPerformanceOptimizations();
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <Router>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/showcase" element={<Showcase />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/work" element={<Work />} />
+            <Route path="/contact" element={<Contact />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
