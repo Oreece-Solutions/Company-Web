@@ -27,6 +27,7 @@ const Navigation = () => {
     { name: "Work", href: "/work" },
     { name: "About", href: "/about" },
     { name: "Services", href: "/services" },
+    { name: "Careers", href: "/careers" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -49,22 +50,19 @@ const Navigation = () => {
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-brand-red-dark transition-all duration-300 group-hover:w-full"></div>
             </Link>
 
-            {/* Modern Desktop Navigation */}
-            <div className="hidden lg:flex items-center bg-surface/50 backdrop-blur-sm rounded-2xl px-2 py-2 border border-border/20">
+            {/* Modern Pill-Shaped Desktop Navigation */}
+            <div className="hidden lg:flex items-center bg-white/95 backdrop-blur-xl rounded-full px-6 py-3 shadow-2xl shadow-primary/10 border border-white/20">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`relative px-6 py-3 rounded-xl font-medium transition-all duration-300 group ${
+                  className={`relative px-5 py-2.5 rounded-full font-medium transition-all duration-300 group ${
                     location.pathname === item.href
-                      ? "text-primary bg-background shadow-sm border border-border/20"
-                      : "text-foreground/70 hover:text-foreground hover:bg-background/50"
+                      ? "text-white bg-gradient-to-r from-primary to-brand-red-dark shadow-lg"
+                      : "text-gray-700 hover:text-gray-900 hover:bg-gray-100/80"
                   }`}
                 >
                   {item.name}
-                  {location.pathname === item.href && (
-                    <div className="absolute inset-x-0 -bottom-1 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-                  )}
                 </Link>
               ))}
             </div>
