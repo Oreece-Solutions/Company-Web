@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
+import BackToTop from "@/components/BackToTop";
 import ScheduleCall from "@/components/ScheduleCall";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -72,8 +73,18 @@ const Contact = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-background via-surface to-surface/50">
-        <div className="container mx-auto px-6">
+      <section className="relative pt-32 pb-20 bg-gradient-to-br from-background via-surface to-surface/50 overflow-hidden">
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 grid-pattern opacity-20 animate-pulse" />
+        
+        {/* Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/3 left-1/5 w-60 h-60 bg-primary/4 rounded-full animate-float-slow" />
+          <div className="absolute bottom-1/4 right-1/3 w-44 h-44 bg-accent/8 rounded-full animate-float-medium" />
+          <div className="absolute top-1/5 right-1/6 w-36 h-36 bg-gradient-primary opacity-6 rounded-full animate-float-fast" />
+        </div>
+        
+        <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-4 animate-slide-up">Get In Touch</Badge>
             <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-slide-up animate-stagger-1">
@@ -343,6 +354,9 @@ const Contact = () => {
           </div>
         </div>
       </footer>
+      
+      {/* Back to Top Button */}
+      <BackToTop />
     </div>
   );
 };

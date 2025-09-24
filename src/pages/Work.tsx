@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
+import BackToTop from "@/components/BackToTop";
 import ProjectCard from "@/components/ProjectCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -109,8 +110,18 @@ const Work = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-background via-surface to-surface/50">
-        <div className="container mx-auto px-6">
+      <section className="relative pt-32 pb-20 bg-gradient-to-br from-background via-surface to-surface/50 overflow-hidden">
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 grid-pattern opacity-20 animate-pulse" />
+        
+        {/* Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/6 right-1/4 w-52 h-52 bg-primary/6 rounded-full animate-float-slow" />
+          <div className="absolute bottom-1/5 left-1/6 w-40 h-40 bg-accent/10 rounded-full animate-float-medium" />
+          <div className="absolute top-1/2 right-3/4 w-48 h-48 bg-gradient-primary opacity-6 rounded-full animate-float-fast" />
+        </div>
+        
+        <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-4">Our Work</Badge>
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -291,6 +302,9 @@ const Work = () => {
           </div>
         </div>
       </footer>
+      
+      {/* Back to Top Button */}
+      <BackToTop />
     </div>
   );
 };

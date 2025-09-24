@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
+import BackToTop from "@/components/BackToTop";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
@@ -335,6 +336,9 @@ const Showcase = () => {
           </Button>
         </div>
       </div>
+      
+      {/* Back to Top Button */}
+      <BackToTop />
     </div>
   );
 };

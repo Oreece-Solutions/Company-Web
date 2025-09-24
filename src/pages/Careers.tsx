@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,10 +8,20 @@ import { MapPin, Clock, Users, Code, Briefcase, GraduationCap, Star } from "luci
 
 const Careers = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 relative overflow-hidden">
+      {/* Animated Background Pattern */}
+      <div className="absolute inset-0 grid-pattern opacity-30 animate-pulse" />
+      
+      {/* Floating Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/6 w-64 h-64 bg-primary/5 rounded-full animate-float-slow" />
+        <div className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-accent/8 rounded-full animate-float-medium" />
+        <div className="absolute top-1/2 right-1/5 w-56 h-56 bg-gradient-primary opacity-4 rounded-full animate-float-fast" />
+      </div>
+      
       <Navigation />
       
-      <main className="pt-28 pb-16">
+      <main className="pt-28 pb-16 relative z-10">
         <div className="container mx-auto px-6 lg:px-8">
           {/* Hero Section */}
           <AnimatedSection className="text-center mb-16">
@@ -200,6 +211,9 @@ const Careers = () => {
           </AnimatedSection>
         </div>
       </main>
+      
+      {/* Back to Top Button */}
+      <BackToTop />
     </div>
   );
 };
