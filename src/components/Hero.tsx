@@ -21,18 +21,18 @@ const Hero = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Main Headline */}
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight animate-hero-title mb-6">
-            We Build
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight animate-hero-title mb-6">
+            <span className="block text-foreground">We Build</span>
             <span className="block bg-gradient-primary bg-clip-text text-transparent animate-hero-gradient mt-2">
               Exceptional
             </span>
-            <span className="block mt-2">
+            <span className="block mt-2 text-foreground">
               Digital Experiences
             </span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto animate-hero-subtitle leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto animate-hero-subtitle leading-relaxed px-4">
             Transforming ideas into powerful digital solutions that drive growth, 
             <span className="block mt-2">
               engage users, and deliver measurable results for forward-thinking businesses.
@@ -40,17 +40,17 @@ const Hero = () => {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center sm:gap-4 animate-hero-buttons">
-            <Link to="/contact">
-              <Button className="btn-hero text-lg px-8 py-4 transform hover:scale-105 transition-all duration-300 hover:shadow-glow">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-hero-buttons mt-8 px-4">
+            <Link to="/contact" className="w-full sm:w-auto">
+              <Button className="btn-hero text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto transform hover:scale-105 transition-all duration-300 hover:shadow-glow">
                 Start Your Project
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="ml-2 h-4 sm:h-5 w-4 sm:w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
             
-            <Link to="/showcase">
-              <Button variant="ghost" className="text-lg px-8 py-4 btn-ghost transform hover:scale-105 transition-all duration-300">
-                <Play className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+            <Link to="/showcase" className="w-full sm:w-auto">
+              <Button variant="ghost" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto btn-ghost transform hover:scale-105 transition-all duration-300">
+                <Play className="mr-2 h-4 sm:h-5 w-4 sm:w-5 transition-transform group-hover:scale-110" />
                 View Showcase
               </Button>
             </Link>
