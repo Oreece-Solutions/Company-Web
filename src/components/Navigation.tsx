@@ -57,10 +57,10 @@ const Navigation = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`relative px-5 py-2.5 rounded-full font-medium transition-all duration-300 group ${
+                  className={`relative px-5 py-2.5 rounded-full font-medium transition-all duration-300 group transform ${
                     location.pathname === item.href
-                      ? "text-white bg-gradient-to-r from-primary to-brand-red-dark shadow-lg"
-                      : "text-gray-700 hover:text-gray-900 hover:bg-gray-100/80"
+                      ? "text-white bg-gradient-to-r from-primary to-brand-red-dark shadow-lg scale-105"
+                      : "text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 hover:scale-105 active:scale-95"
                   }`}
                 >
                   {item.name}
@@ -145,10 +145,10 @@ const Navigation = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`flex items-center justify-between p-4 rounded-2xl font-medium transition-all duration-300 group animate-fade-in ${
+                    className={`flex items-center justify-between p-4 rounded-2xl font-medium transition-all duration-300 group animate-fade-in transform ${
                       location.pathname === item.href
-                        ? "text-primary bg-primary/10 shadow-sm"
-                        : "text-foreground/80 hover:text-foreground hover:bg-surface/50"
+                        ? "text-primary bg-primary/10 shadow-sm scale-105"
+                        : "text-foreground/80 hover:text-foreground hover:bg-surface/50 hover:scale-105 active:scale-95"
                     }`}
                     onClick={() => setIsOpen(false)}
                     style={{ animationDelay: `${index * 50}ms` }}

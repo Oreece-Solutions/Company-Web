@@ -4,7 +4,7 @@ import { ArrowRight, Play } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 lg:pt-0">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 lg:pt-28">
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 grid-pattern opacity-30 animate-pulse" />
       
