@@ -117,7 +117,7 @@ const Work = () => {
         {/* Enhanced Floating Elements with Blur */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/6 right-1/4 w-52 h-52 bg-primary/10 rounded-full animate-float-slow backdrop-blur-sm" />
-          <div className="absolute bottom-1/5 left-1/6 w-40 h-40 bg-accent/15 rounded-full animate-float-medium backdrop-blur-md" />
+          <div className="absolute bottom-1/5 left-1/6 w-40 h-40 bg-accent/15 rounded-full animate-float-medium backdrop-blur-md filter blur-sm" />
           <div className="absolute top-1/2 right-3/4 w-48 h-48 bg-gradient-primary opacity-8 rounded-full animate-float-fast backdrop-blur-lg" />
           <div className="absolute bottom-1/3 right-1/5 w-36 h-36 bg-primary/6 rounded-full animate-pulse backdrop-blur-xl opacity-60" />
           <div className="absolute top-3/4 left-1/3 w-44 h-44 bg-accent/8 rounded-full animate-spin-slow backdrop-blur-sm" />
