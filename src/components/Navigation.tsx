@@ -35,13 +35,14 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled 
-          ? 'bg-background/95 backdrop-blur-2xl border-b border-border/50 shadow-lg' 
-          : 'bg-background/90 backdrop-blur-xl'
-      }`}>
-        <div className="container mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+      {/* Desktop Boxed Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-8 pt-4 hidden lg:block">
+        <div className={`max-w-7xl mx-auto rounded-2xl transition-all duration-500 ${
+          isScrolled 
+            ? 'bg-background/95 backdrop-blur-2xl border border-border/50 shadow-2xl shadow-primary/5' 
+            : 'bg-background/90 backdrop-blur-xl border border-border/20 shadow-xl shadow-primary/3'
+        }`}>
+          <div className="flex items-center justify-between h-20 px-8">
             {/* Modern Logo */}
             <Link to="/" className="relative group">
               <div className="text-2xl font-bold bg-gradient-to-r from-primary to-brand-red-dark bg-clip-text text-transparent transition-all duration-300 group-hover:scale-105">
@@ -51,7 +52,7 @@ const Navigation = () => {
             </Link>
 
             {/* Modern Pill-Shaped Desktop Navigation */}
-            <div className="hidden lg:flex items-center bg-white/95 backdrop-blur-xl rounded-full px-6 py-3 shadow-2xl shadow-primary/10 border border-white/20">
+            <div className="flex items-center bg-white/95 backdrop-blur-xl rounded-full px-6 py-3 shadow-2xl shadow-primary/10 border border-white/20">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -68,7 +69,7 @@ const Navigation = () => {
             </div>
 
             {/* Modern Desktop Actions */}
-            <div className="hidden lg:flex items-center space-x-3">
+            <div className="flex items-center space-x-3">
               {!isShowcase && (
                 <Link to="/showcase">
                   <Button variant="ghost" size="sm" className="font-medium rounded-2xl hover:bg-surface/50 transition-all duration-300 group border border-transparent hover:border-border/20">
@@ -84,10 +85,29 @@ const Navigation = () => {
                 </Button>
               </Link>
             </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Navigation */}
+      <nav className={`lg:hidden fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled 
+          ? 'bg-background/95 backdrop-blur-2xl border-b border-border/50 shadow-lg' 
+          : 'bg-background/90 backdrop-blur-xl'
+      }`}>
+        <div className="container mx-auto px-6">
+          <div className="flex items-center justify-between h-20">
+            {/* Modern Logo */}
+            <Link to="/" className="relative group">
+              <div className="text-2xl font-bold bg-gradient-to-r from-primary to-brand-red-dark bg-clip-text text-transparent transition-all duration-300 group-hover:scale-105">
+                Oreece
+              </div>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-brand-red-dark transition-all duration-300 group-hover:w-full"></div>
+            </Link>
 
             {/* Mobile menu button */}
             <button
-              className="lg:hidden relative p-3 rounded-2xl hover:bg-surface/50 transition-all duration-300 border border-transparent hover:border-border/20"
+              className="relative p-3 rounded-2xl hover:bg-surface/50 transition-all duration-300 border border-transparent hover:border-border/20"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
