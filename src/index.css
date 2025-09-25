@@ -713,6 +713,10 @@
     animation: float-fast 4s ease-in-out infinite;
   }
 
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
+
   .animate-scroll-indicator {
     animation: scroll-indicator 2s ease-in-out infinite;
   }

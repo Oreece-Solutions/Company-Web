@@ -74,14 +74,19 @@ const Contact = () => {
       
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 bg-gradient-to-br from-background via-surface to-surface/50 overflow-hidden">
+        {/* Enhanced Background Blur Layer */}
+        <div className="absolute inset-0 backdrop-blur-3xl bg-gradient-to-r from-primary/5 via-transparent to-accent/5 opacity-60" />
+        
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 grid-pattern opacity-20 animate-pulse" />
         
-        {/* Floating Elements */}
+        {/* Enhanced Floating Elements with Blur */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/3 left-1/5 w-60 h-60 bg-primary/4 rounded-full animate-float-slow" />
-          <div className="absolute bottom-1/4 right-1/3 w-44 h-44 bg-accent/8 rounded-full animate-float-medium" />
-          <div className="absolute top-1/5 right-1/6 w-36 h-36 bg-gradient-primary opacity-6 rounded-full animate-float-fast" />
+          <div className="absolute top-1/3 left-1/5 w-60 h-60 bg-primary/8 rounded-full animate-float-slow backdrop-blur-sm" />
+          <div className="absolute bottom-1/4 right-1/3 w-44 h-44 bg-accent/12 rounded-full animate-float-medium backdrop-blur-md" />
+          <div className="absolute top-1/5 right-1/6 w-36 h-36 bg-gradient-primary opacity-10 rounded-full animate-float-fast backdrop-blur-lg" />
+          <div className="absolute bottom-1/3 left-1/4 w-52 h-52 bg-primary/4 rounded-full animate-pulse backdrop-blur-xl opacity-40" />
+          <div className="absolute top-2/3 right-1/4 w-32 h-32 bg-accent/6 rounded-full animate-spin-slow backdrop-blur-sm" />
         </div>
         
         <div className="container mx-auto px-6 relative z-10">
@@ -117,8 +122,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-muted-foreground">hello@oreece.com</p>
-                    <p className="text-muted-foreground">info@oreece.com</p>
+                    <a href="mailto:hello@oreece.com" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">hello@oreece.com</a>
+                    <a href="mailto:info@oreece.com" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">info@oreece.com</a>
                   </div>
                 </div>
 
@@ -128,7 +133,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Phone</h3>
-                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                    <a href="tel:+15551234567" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">+1 (555) 123-4567</a>
                     <p className="text-muted-foreground">Mon-Fri 9AM-6PM EST</p>
                   </div>
                 </div>
