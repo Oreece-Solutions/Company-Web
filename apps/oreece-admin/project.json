@@ -1,0 +1,64 @@
+{
+  "name": "oreece-admin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/oreece-admin/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/oreece-admin"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "oreece-admin:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "oreece-admin:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "oreece-admin:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "oreece-admin:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "oreece-admin:build:development"
+        },
+        "production": {
+          "buildTarget": "oreece-admin:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/oreece-admin/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": ["type:app", "scope:oreece-admin"]
+}

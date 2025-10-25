@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
+    "outDir": "../../dist/libs/shared/utils",
     "types": ["node"],
     "jsx": "react-jsx",
     "allowJs": false,

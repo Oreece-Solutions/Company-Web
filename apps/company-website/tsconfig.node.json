@@ -9,7 +9,8 @@
     "noImplicitAny": false,
     "noUnusedParameters": false,
     "noUnusedLocals": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "types": ["node"]
   },
   "include": ["vite.config.ts"]
 }

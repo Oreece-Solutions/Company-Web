@@ -1,0 +1,604 @@
+{
+  "graph": {
+    "nodes": {
+      "company-website-features": {
+        "name": "company-website-features",
+        "type": "lib",
+        "data": {
+          "root": "libs/company-website/features",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "options": {
+                "lintFilePatterns": [
+                  "libs/company-website/features/**/*.{ts,tsx,js,jsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true,
+              "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json"
+              ],
+              "cache": true
+            }
+          },
+          "name": "company-website-features",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "libs/company-website/features/src",
+          "projectType": "library",
+          "tags": [
+            "type:lib",
+            "scope:company-website",
+            "scope:features"
+          ],
+          "implicitDependencies": []
+        }
+      },
+      "shared-data-access": {
+        "name": "shared-data-access",
+        "type": "lib",
+        "data": {
+          "root": "libs/shared/data-access",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "options": {
+                "lintFilePatterns": [
+                  "libs/shared/data-access/**/*.{ts,tsx,js,jsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true,
+              "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json"
+              ],
+              "cache": true
+            }
+          },
+          "name": "shared-data-access",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "libs/shared/data-access/src",
+          "projectType": "library",
+          "tags": [
+            "type:lib",
+            "scope:shared",
+            "scope:data-access"
+          ],
+          "implicitDependencies": []
+        }
+      },
+      "company-website": {
+        "name": "company-website",
+        "type": "app",
+        "data": {
+          "root": "apps/company-website",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "options": {
+                "lintFilePatterns": [
+                  "apps/company-website/**/*.{ts,tsx,js,jsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true,
+              "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json"
+              ],
+              "cache": true
+            },
+            "build": {
+              "executor": "@nx/vite:build",
+              "outputs": [
+                "{options.outputPath}"
+              ],
+              "defaultConfiguration": "production",
+              "options": {
+                "outputPath": "dist/apps/company-website"
+              },
+              "configurations": {
+                "development": {
+                  "mode": "development"
+                },
+                "production": {
+                  "mode": "production"
+                }
+              },
+              "parallelism": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
+              "cache": true
+            },
+            "serve": {
+              "executor": "@nx/vite:dev-server",
+              "defaultConfiguration": "development",
+              "options": {
+                "buildTarget": "company-website:build"
+              },
+              "configurations": {
+                "development": {
+                  "buildTarget": "company-website:build:development",
+                  "hmr": true
+                },
+                "production": {
+                  "buildTarget": "company-website:build:production",
+                  "hmr": false
+                }
+              },
+              "parallelism": true,
+              "continuous": true
+            },
+            "preview": {
+              "executor": "@nx/vite:preview-server",
+              "defaultConfiguration": "development",
+              "options": {
+                "buildTarget": "company-website:build"
+              },
+              "configurations": {
+                "development": {
+                  "buildTarget": "company-website:build:development"
+                },
+                "production": {
+                  "buildTarget": "company-website:build:production"
+                }
+              },
+              "parallelism": true,
+              "continuous": true
+            }
+          },
+          "name": "company-website",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "apps/company-website/src",
+          "projectType": "application",
+          "tags": [
+            "type:app",
+            "scope:company-website"
+          ],
+          "implicitDependencies": []
+        }
+      },
+      "customer-portal": {
+        "name": "customer-portal",
+        "type": "app",
+        "data": {
+          "root": "apps/customer-portal",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "options": {
+                "lintFilePatterns": [
+                  "apps/customer-portal/**/*.{ts,tsx,js,jsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true,
+              "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json"
+              ],
+              "cache": true
+            },
+            "build": {
+              "executor": "@nx/vite:build",
+              "outputs": [
+                "{options.outputPath}"
+              ],
+              "defaultConfiguration": "production",
+              "options": {
+                "outputPath": "dist/apps/customer-portal"
+              },
+              "configurations": {
+                "development": {
+                  "mode": "development"
+                },
+                "production": {
+                  "mode": "production"
+                }
+              },
+              "parallelism": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
+              "cache": true
+            },
+            "serve": {
+              "executor": "@nx/vite:dev-server",
+              "defaultConfiguration": "development",
+              "options": {
+                "buildTarget": "customer-portal:build"
+              },
+              "configurations": {
+                "development": {
+                  "buildTarget": "customer-portal:build:development",
+                  "hmr": true
+                },
+                "production": {
+                  "buildTarget": "customer-portal:build:production",
+                  "hmr": false
+                }
+              },
+              "parallelism": true,
+              "continuous": true
+            },
+            "preview": {
+              "executor": "@nx/vite:preview-server",
+              "defaultConfiguration": "development",
+              "options": {
+                "buildTarget": "customer-portal:build"
+              },
+              "configurations": {
+                "development": {
+                  "buildTarget": "customer-portal:build:development"
+                },
+                "production": {
+                  "buildTarget": "customer-portal:build:production"
+                }
+              },
+              "parallelism": true,
+              "continuous": true
+            }
+          },
+          "name": "customer-portal",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "apps/customer-portal/src",
+          "projectType": "application",
+          "tags": [
+            "type:app",
+            "scope:customer-portal"
+          ],
+          "implicitDependencies": []
+        }
+      },
+      "oreece-admin": {
+        "name": "oreece-admin",
+        "type": "app",
+        "data": {
+          "root": "apps/oreece-admin",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "options": {
+                "lintFilePatterns": [
+                  "apps/oreece-admin/**/*.{ts,tsx,js,jsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true,
+              "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json"
+              ],
+              "cache": true
+            },
+            "build": {
+              "executor": "@nx/vite:build",
+              "outputs": [
+                "{options.outputPath}"
+              ],
+              "defaultConfiguration": "production",
+              "options": {
+                "outputPath": "dist/apps/oreece-admin"
+              },
+              "configurations": {
+                "development": {
+                  "mode": "development"
+                },
+                "production": {
+                  "mode": "production"
+                }
+              },
+              "parallelism": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
+              "cache": true
+            },
+            "serve": {
+              "executor": "@nx/vite:dev-server",
+              "defaultConfiguration": "development",
+              "options": {
+                "buildTarget": "oreece-admin:build"
+              },
+              "configurations": {
+                "development": {
+                  "buildTarget": "oreece-admin:build:development",
+                  "hmr": true
+                },
+                "production": {
+                  "buildTarget": "oreece-admin:build:production",
+                  "hmr": false
+                }
+              },
+              "parallelism": true,
+              "continuous": true
+            },
+            "preview": {
+              "executor": "@nx/vite:preview-server",
+              "defaultConfiguration": "development",
+              "options": {
+                "buildTarget": "oreece-admin:build"
+              },
+              "configurations": {
+                "development": {
+                  "buildTarget": "oreece-admin:build:development"
+                },
+                "production": {
+                  "buildTarget": "oreece-admin:build:production"
+                }
+              },
+              "parallelism": true,
+              "continuous": true
+            }
+          },
+          "name": "oreece-admin",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "apps/oreece-admin/src",
+          "projectType": "application",
+          "tags": [
+            "type:app",
+            "scope:oreece-admin"
+          ],
+          "implicitDependencies": []
+        }
+      },
+      "shared-types": {
+        "name": "shared-types",
+        "type": "lib",
+        "data": {
+          "root": "libs/shared/types",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "options": {
+                "lintFilePatterns": [
+                  "libs/shared/types/**/*.{ts,tsx,js,jsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true,
+              "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json"
+              ],
+              "cache": true
+            }
+          },
+          "name": "shared-types",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "libs/shared/types/src",
+          "projectType": "library",
+          "tags": [
+            "type:lib",
+            "scope:shared",
+            "scope:types"
+          ],
+          "implicitDependencies": []
+        }
+      },
+      "shared-utils": {
+        "name": "shared-utils",
+        "type": "lib",
+        "data": {
+          "root": "libs/shared/utils",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "options": {
+                "lintFilePatterns": [
+                  "libs/shared/utils/**/*.{ts,tsx,js,jsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true,
+              "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json"
+              ],
+              "cache": true
+            },
+            "build": {
+              "executor": "@nx/js:tsc",
+              "outputs": [
+                "{options.outputPath}"
+              ],
+              "options": {
+                "outputPath": "dist/libs/shared/utils",
+                "main": "libs/shared/utils/src/index.ts",
+                "tsConfig": "libs/shared/utils/tsconfig.lib.json",
+                "assets": []
+              },
+              "configurations": {},
+              "parallelism": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
+              "cache": true
+            }
+          },
+          "name": "shared-utils",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "libs/shared/utils/src",
+          "projectType": "library",
+          "tags": [
+            "type:lib",
+            "scope:shared",
+            "scope:utils"
+          ],
+          "implicitDependencies": []
+        }
+      },
+      "shared-ui": {
+        "name": "shared-ui",
+        "type": "lib",
+        "data": {
+          "root": "libs/shared/ui",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "options": {
+                "lintFilePatterns": [
+                  "libs/shared/ui/**/*.{ts,tsx,js,jsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true,
+              "inputs": [
+                "default",
+                "{workspaceRoot}/.eslintrc.json"
+              ],
+              "cache": true
+            },
+            "build": {
+              "executor": "@nx/js:tsc",
+              "outputs": [
+                "{options.outputPath}"
+              ],
+              "options": {
+                "outputPath": "dist/libs/shared/ui",
+                "main": "libs/shared/ui/src/index.ts",
+                "tsConfig": "libs/shared/ui/tsconfig.lib.json",
+                "assets": []
+              },
+              "configurations": {},
+              "parallelism": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
+              "cache": true
+            }
+          },
+          "name": "shared-ui",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "libs/shared/ui/src",
+          "projectType": "library",
+          "tags": [
+            "type:lib",
+            "scope:shared",
+            "scope:ui"
+          ],
+          "implicitDependencies": [
+            "shared-utils"
+          ]
+        }
+      }
+    },
+    "dependencies": {
+      "company-website-features": [
+        {
+          "source": "company-website-features",
+          "target": "shared-utils",
+          "type": "static"
+        },
+        {
+          "source": "company-website-features",
+          "target": "shared-ui",
+          "type": "static"
+        },
+        {
+          "source": "company-website-features",
+          "target": "shared-data-access",
+          "type": "static"
+        }
+      ],
+      "shared-data-access": [],
+      "company-website": [
+        {
+          "source": "company-website",
+          "target": "shared-ui",
+          "type": "static"
+        },
+        {
+          "source": "company-website",
+          "target": "shared-utils",
+          "type": "static"
+        },
+        {
+          "source": "company-website",
+          "target": "company-website-features",
+          "type": "static"
+        },
+        {
+          "source": "company-website",
+          "target": "shared-data-access",
+          "type": "static"
+        }
+      ],
+      "customer-portal": [
+        {
+          "source": "customer-portal",
+          "target": "shared-ui",
+          "type": "static"
+        }
+      ],
+      "oreece-admin": [
+        {
+          "source": "oreece-admin",
+          "target": "shared-ui",
+          "type": "static"
+        }
+      ],
+      "shared-types": [],
+      "shared-utils": [],
+      "shared-ui": [
+        {
+          "source": "shared-ui",
+          "target": "shared-utils",
+          "type": "implicit"
+        },
+        {
+          "source": "shared-ui",
+          "target": "shared-utils",
+          "type": "static"
+        }
+      ]
+    }
+  }
+}

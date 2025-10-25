@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
+    "outDir": "../../dist/libs/shared/ui",
     "types": ["node"],
     "jsx": "react-jsx",
     "allowJs": false,
@@ -15,9 +15,9 @@
     "noUnusedParameters": false,
     "noUnusedLocals": false,
     "strictNullChecks": false,
-    "baseUrl": ".",
+    "baseUrl": "../../",
     "paths": {
-      "@company-web/shared/utils": ["../../libs/shared/utils/src/index.ts"]
+      "@company-web/shared/utils": ["libs/shared/utils/src/index.ts"]
     }
   },
   "files": [],
