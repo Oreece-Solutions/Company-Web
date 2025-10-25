@@ -5,43 +5,50 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/company-website"
+        "outputPath": "dist/apps/company-website",
+        "webpackConfig": "apps/company-website/webpack.config.cjs"
       },
       "configurations": {
         "development": {
-          "mode": "development"
+          "optimization": false,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": []
         },
         "production": {
-          "mode": "production"
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": []
         }
       }
     },
     "serve": {
-      "executor": "@nx/vite:dev-server",
+      "executor": "@nx/webpack:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "company-website:build"
+        "buildTarget": "company-website:build",
+        "port": 8080
       },
       "configurations": {
         "development": {
-          "buildTarget": "company-website:build:development",
-          "hmr": true
+          "buildTarget": "company-website:build:development"
         },
         "production": {
-          "buildTarget": "company-website:build:production",
-          "hmr": false
+          "buildTarget": "company-website:build:production"
         }
       }
     },
     "preview": {
-      "executor": "@nx/vite:preview-server",
+      "executor": "@nx/web:file-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "company-website:build"
+        "buildTarget": "company-website:build",
+        "port": 8080
       },
       "configurations": {
         "development": {

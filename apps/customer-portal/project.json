@@ -5,43 +5,50 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/customer-portal"
+        "outputPath": "dist/apps/customer-portal",
+        "webpackConfig": "apps/customer-portal/webpack.config.cjs"
       },
       "configurations": {
         "development": {
-          "mode": "development"
+          "optimization": false,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": []
         },
         "production": {
-          "mode": "production"
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": []
         }
       }
     },
     "serve": {
-      "executor": "@nx/vite:dev-server",
+      "executor": "@nx/webpack:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "customer-portal:build"
+        "buildTarget": "customer-portal:build",
+        "port": 8081
       },
       "configurations": {
         "development": {
-          "buildTarget": "customer-portal:build:development",
-          "hmr": true
+          "buildTarget": "customer-portal:build:development"
         },
         "production": {
-          "buildTarget": "customer-portal:build:production",
-          "hmr": false
+          "buildTarget": "customer-portal:build:production"
         }
       }
     },
     "preview": {
-      "executor": "@nx/vite:preview-server",
+      "executor": "@nx/web:file-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "customer-portal:build"
+        "buildTarget": "customer-portal:build",
+        "port": 8081
       },
       "configurations": {
         "development": {

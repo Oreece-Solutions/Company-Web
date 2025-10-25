@@ -5,43 +5,50 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/oreece-admin"
+        "outputPath": "dist/apps/oreece-admin",
+        "webpackConfig": "apps/oreece-admin/webpack.config.cjs"
       },
       "configurations": {
         "development": {
-          "mode": "development"
+          "optimization": false,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": []
         },
         "production": {
-          "mode": "production"
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": []
         }
       }
     },
     "serve": {
-      "executor": "@nx/vite:dev-server",
+      "executor": "@nx/webpack:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "oreece-admin:build"
+        "buildTarget": "oreece-admin:build",
+        "port": 4200
       },
       "configurations": {
         "development": {
-          "buildTarget": "oreece-admin:build:development",
-          "hmr": true
+          "buildTarget": "oreece-admin:build:development"
         },
         "production": {
-          "buildTarget": "oreece-admin:build:production",
-          "hmr": false
+          "buildTarget": "oreece-admin:build:production"
         }
       }
     },
     "preview": {
-      "executor": "@nx/vite:preview-server",
+      "executor": "@nx/web:file-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "oreece-admin:build"
+        "buildTarget": "oreece-admin:build",
+        "port": 4200
       },
       "configurations": {
         "development": {
