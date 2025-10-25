@@ -32,12 +32,12 @@ const Hero = () => {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto animate-hero-subtitle leading-relaxed px-4">
+          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto animate-hero-subtitle leading-relaxed px-4 mt-6">
           Helping Businesses Scale with Innovative IT & Digital Solutions.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-hero-buttons mt-8 px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 animate-hero-buttons mt-8 px-4">
             <Link to="/contact" className="w-full sm:w-auto">
               <Button className="btn-hero text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto transform hover:scale-105 transition-all duration-300 hover:shadow-glow">
                 Start Your Project
@@ -54,7 +54,7 @@ const Hero = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 sm:gap-4 animate-hero-stats">
+          <div className="grid grid-cols-3 sm:gap-4 animate-hero-stats mt-12">
             <div className="text-center transform hover:scale-110 transition-all duration-300 cursor-pointer">
               <div className="text-3xl md:text-4xl font-bold text-primary animate-counter">30+</div>
               <div className="text-muted-foreground text-sm md:text-base">Projects Delivered</div>
