@@ -1,73 +1,138 @@
-# Welcome to your Lovable project
+# Company Web - Nx Monorepo
 
-## Project info
+A modern React application built with Nx monorepo architecture, featuring a company website with responsive design and Supabase integration.
 
-**URL**: https://lovable.dev/projects/bed33750-876c-4261-b2bb-f661c6560a7f
+## 🏗️ Architecture
 
-## How can I edit this code?
+This project uses an **Nx monorepo** structure with the following organization:
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/bed33750-876c-4261-b2bb-f661c6560a7f) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+company-web-monorepo/
+├── apps/
+│   └── company-website/          # Main React application
+├── libs/
+│   ├── shared/
+│   │   ├── ui/                   # Shared UI components (shadcn/ui)
+│   │   ├── utils/                # Utility functions and hooks
+│   │   ├── types/                # Shared TypeScript types
+│   │   └── data-access/          # Supabase client & API calls
+│   └── company-website/
+│       └── features/             # Feature-specific components
+├── supabase/                     # Supabase configuration
+└── nx.json                       # Nx workspace configuration
 ```
 
-**Edit a file directly in GitHub**
+## 🚀 Getting Started
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Prerequisites
+- Node.js 18+ 
+- Yarn package manager
 
-**Use GitHub Codespaces**
+### Installation
+```bash
+# Install dependencies
+yarn install
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Start development server
+yarn dev
 
-## What technologies are used for this project?
+# Build for production
+yarn build
 
-This project is built with:
+# Run linting
+yarn lint
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📦 Available Scripts
 
-## How can I deploy this project?
+| Command | Description |
+|---------|-------------|
+| `yarn dev` | Start development server |
+| `yarn build` | Build for production |
+| `yarn lint` | Run ESLint |
+| `yarn nx graph` | Visualize project dependencies |
+| `yarn nx serve company-website` | Serve the main app |
+| `yarn nx build company-website` | Build the main app |
 
-Simply open [Lovable](https://lovable.dev/projects/bed33750-876c-4261-b2bb-f661c6560a7f) and click on Share -> Publish.
+## 🏛️ Libraries
 
-## Can I connect a custom domain to my Lovable project?
+### Shared Libraries
+- **`@company-web/shared/ui`** - All shadcn/ui components
+- **`@company-web/shared/utils`** - Utility functions and custom hooks
+- **`@company-web/shared/types`** - Shared TypeScript interfaces
+- **`@company-web/shared/data-access`** - Supabase client and API calls
 
-Yes, you can!
+### Feature Libraries
+- **`@company-web/features`** - Company website specific components
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🛠️ Development
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Adding New Components
+```bash
+# Generate a new component in the features library
+yarn nx g @nx/react:component my-component --project=company-website-features
+
+# Generate a new component in the shared UI library
+yarn nx g @nx/react:component my-ui-component --project=shared-ui
+```
+
+### Adding New Libraries
+```bash
+# Generate a new shared library
+yarn nx g @nx/react:library my-lib --directory=libs/shared --importPath=@company-web/shared/my-lib
+```
+
+## 🔧 Configuration
+
+### Path Aliases
+The following path aliases are configured:
+- `@company-web/shared/ui` → `libs/shared/ui/src`
+- `@company-web/shared/utils` → `libs/shared/utils/src`
+- `@company-web/shared/types` → `libs/shared/types/src`
+- `@company-web/shared/data-access` → `libs/shared/data-access/src`
+- `@company-web/features` → `libs/company-website/features/src`
+
+### Build Configuration
+- **Vite** for fast development and building
+- **TypeScript** for type safety
+- **TailwindCSS** for styling
+- **ESLint** for code quality
+
+## 📱 Features
+
+- ✅ **Responsive Design** - Mobile-first approach with TailwindCSS
+- ✅ **Modern UI** - shadcn/ui component library
+- ✅ **Type Safety** - Full TypeScript support
+- ✅ **Performance** - Optimized with Vite and Nx caching
+- ✅ **Supabase Integration** - Backend services and edge functions
+- ✅ **Monorepo Benefits** - Code sharing and scalability
+
+## 🚀 Deployment
+
+The application builds to `dist/apps/company-website/` and can be deployed to any static hosting service.
+
+```bash
+# Build for production
+yarn build
+
+# Preview production build
+yarn preview
+```
+
+## 📊 Project Graph
+
+Visualize the project dependencies:
+```bash
+yarn nx graph
+```
+
+## 🤝 Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Run tests and linting
+4. Submit a pull request
+
+## 📄 License
+
+This project is private and proprietary.

@@ -1,0 +1,16 @@
+{
+  "name": "company-website-features",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/company-website/features/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/company-website/features/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": ["type:lib", "scope:company-website", "scope:features"]
+}

@@ -1,15 +1,18 @@
 {
-  "extends": "./tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "files": [],
+  "include": [],
   "references": [
-    { "path": "./apps/company-website" }
+    {
+      "path": "./tsconfig.app.json"
+    }
   ],
   "compilerOptions": {
     "plugins": [
       {
         "name": "@nx/typescript/tsc",
         "options": {
-          "project": "./apps/company-website/tsconfig.app.json"
+          "project": "../../apps/company-website/tsconfig.app.json"
         }
       }
     ]
