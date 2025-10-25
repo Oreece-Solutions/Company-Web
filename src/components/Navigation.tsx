@@ -45,9 +45,7 @@ const Navigation = () => {
           <div className="flex items-center justify-between h-20 px-8">
             {/* Modern Logo */}
             <Link to="/" className="relative group">
-              <div className="text-2xl font-bold bg-gradient-to-r from-primary to-brand-red-dark bg-clip-text text-transparent transition-all duration-300 group-hover:scale-105">
-                Oreece
-              </div>
+              <img src="/Oreece-logo.png" alt="Oreece logo" className="h-8 w-auto transition-all duration-300 group-hover:scale-105" />
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-brand-red-dark transition-all duration-300 group-hover:w-full"></div>
             </Link>
 
@@ -99,9 +97,7 @@ const Navigation = () => {
           <div className="flex items-center justify-between h-20">
             {/* Modern Logo */}
             <Link to="/" className="relative group">
-              <div className="text-2xl font-bold bg-gradient-to-r from-primary to-brand-red-dark bg-clip-text text-transparent transition-all duration-300 group-hover:scale-105">
-                Oreece
-              </div>
+              <img src="/Oreece-logo.png" alt="Oreece logo" className="h-8 w-auto transition-all duration-300 group-hover:scale-105" />
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-brand-red-dark transition-all duration-300 group-hover:w-full"></div>
             </Link>
 

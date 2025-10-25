@@ -16,7 +16,6 @@ const Careers = () => {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/6 w-64 h-64 bg-primary/5 rounded-full animate-float-slow" />
         <div className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-accent/8 rounded-full animate-float-medium" />
-        <div className="absolute top-1/2 right-1/5 w-56 h-56 bg-gradient-primary opacity-4 rounded-full animate-float-fast" />
       </div>
       
       <Navigation />
@@ -26,9 +25,6 @@ const Careers = () => {
           {/* Hero Section */}
           <AnimatedSection className="text-center mb-16">
             <div className="max-w-4xl mx-auto">
-              <Badge className="mb-6 px-4 py-2 text-sm font-medium">
-                🚀 Join Our Team
-              </Badge>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
                 Build the Future with Oreece
               </h1>

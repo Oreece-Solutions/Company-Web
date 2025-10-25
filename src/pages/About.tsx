@@ -8,12 +8,12 @@ import { Users, Award, Target, Heart } from "lucide-react";
 const About = () => {
   const team = [
     {
-      name: "Alex Rodriguez",
+      name: "Nishan Gamage",
       role: "Founder & CEO",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-      bio: "10+ years building digital products that matter"
+      image: "Team/Nishan Gamage.png",
+      bio: "Helping Brands Scale and Grow in the Digital World"
     },
-    {
+    /*{
       name: "Sarah Chen", 
       role: "CTO",
       image: "https://images.unsplash.com/photo-1494790108755-2616b332eb80?w=400&h=400&fit=crop&crop=face",
@@ -24,7 +24,7 @@ const About = () => {
       role: "Lead Designer", 
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
       bio: "Creating beautiful, user-centered digital experiences"
-    }
+    }*/
   ];
 
   const values = [
@@ -105,6 +105,40 @@ const About = () => {
         </div>
       </section>
 
+      {/* Our Vision */}
+      <section className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Our Vision</h2>
+            <div className="prose prose-lg mx-auto text-muted-foreground text-center">
+              <p className="text-xl leading-relaxed mb-6">
+              Scaling brands through technology, scaling impact through purpose.
+              </p>
+              <p className="text-xl leading-relaxed mb-6">
+              We envision a world where technology empowers businesses to grow sustainably while making a positive difference in communities, the environment, and society at large.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+        {/* Our Mission */}
+        <section className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Our Mission</h2>
+            <div className="prose prose-lg mx-auto text-muted-foreground text-center">
+              <p className="text-xl leading-relaxed mb-6">
+              Scaling brands through technology, scaling impact through purpose.
+              </p>
+              <p className="text-xl leading-relaxed mb-6">
+              We envision a world where technology empowers businesses to grow sustainably while making a positive difference in communities, the environment, and society at large.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Our Story */}
       <section className="py-20">
         <div className="container mx-auto px-6">
@@ -112,20 +146,15 @@ const About = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Our Story</h2>
             <div className="prose prose-lg mx-auto text-muted-foreground">
               <p className="text-xl leading-relaxed mb-6">
-                Oreece was born from a simple belief: technology should solve real problems 
-                and create meaningful impact. What started as a passion project between 
-                three friends has evolved into a full-service digital agency trusted by 
-                companies worldwide.
+              Founded by Mr. Nishan Gamage, our company stands on the belief that technology should drive not only business success but also positive change in communities, the environment, and society. Nishan’s leadership is grounded in a clear vision: to blend innovation with purpose, demonstrating that sustainable growth comes from committing to ethical and responsible practices.
+              Guided by Nishan’s vision, our team is dedicated to building solutions that empower clients to grow responsibly and contribute to a better world. We are proud to support businesses ready to embrace technology as a catalyst for both progress and positive impact.
               </p>
-              <p className="text-lg leading-relaxed mb-6">
-                We've had the privilege of working with startups disrupting entire industries 
-                and established enterprises modernizing their digital infrastructure. Each 
-                project teaches us something new and pushes us to innovate further.
+              <p className="text-xl leading-relaxed mb-6">
+              With deep experience in both technology and strategic business development, Nishan saw how digital transformation could be a force for good—helping organizations improve operations while making a meaningful social and environmental impact. His passion for creating such transformative value guides our company’s mission and culture.
+
               </p>
-              <p className="text-lg leading-relaxed">
-                Today, we continue to be driven by the same passion that started it all: 
-                creating digital experiences that not only look great but deliver real 
-                business value and positive user outcomes.
+              <p className="text-xl leading-relaxed">
+              With deep experience in both technology and strategic business development, Nishan saw how digital transformation could be a force for good—helping organizations improve operations while making a meaningful social and environmental impact. His passion for creating such transformative value guides our company’s mission and culture.
               </p>
             </div>
           </div>

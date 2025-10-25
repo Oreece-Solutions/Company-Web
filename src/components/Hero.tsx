@@ -33,10 +33,7 @@ const Hero = () => {
 
           {/* Subheadline */}
           <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto animate-hero-subtitle leading-relaxed px-4">
-            Transforming ideas into powerful digital solutions that drive growth, 
-            <span className="block mt-2">
-              engage users, and deliver measurable results for forward-thinking businesses.
-            </span>
+          Helping Businesses Scale with Innovative IT & Digital Solutions.
           </p>
 
           {/* CTA Buttons */}
@@ -59,7 +56,7 @@ const Hero = () => {
           {/* Stats */}
           <div className="grid grid-cols-3 sm:gap-4 animate-hero-stats">
             <div className="text-center transform hover:scale-110 transition-all duration-300 cursor-pointer">
-              <div className="text-3xl md:text-4xl font-bold text-primary animate-counter">50+</div>
+              <div className="text-3xl md:text-4xl font-bold text-primary animate-counter">30+</div>
               <div className="text-muted-foreground text-sm md:text-base">Projects Delivered</div>
             </div>
             <div className="text-center transform hover:scale-110 transition-all duration-300 cursor-pointer">
@@ -74,13 +71,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Enhanced Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-scroll-indicator">
-        <div className="w-6 h-10 border-2 border-foreground/20 rounded-full flex justify-center relative overflow-hidden">
-          <div className="w-1 h-3 bg-foreground/40 rounded-full mt-1 animate-scroll-dot" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/10 to-transparent animate-scroll-glow" />
-        </div>
-      </div>
+
     </section>
   );
 };
