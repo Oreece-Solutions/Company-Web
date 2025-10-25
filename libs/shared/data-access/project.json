@@ -1,0 +1,16 @@
+{
+  "name": "shared-data-access",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/data-access/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/shared/data-access/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": ["type:lib", "scope:shared", "scope:data-access"]
+}

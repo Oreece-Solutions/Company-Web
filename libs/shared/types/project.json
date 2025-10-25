@@ -1,0 +1,16 @@
+{
+  "name": "shared-types",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/types/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/shared/types/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": ["type:lib", "scope:shared", "scope:types"]
+}

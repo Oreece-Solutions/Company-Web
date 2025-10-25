@@ -1,0 +1,40 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2020",
+    "module": "esnext",
+    "lib": ["ES2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@company-web/shared/ui": ["libs/shared/ui/src/index.ts"],
+      "@company-web/shared/utils": ["libs/shared/utils/src/index.ts"],
+      "@company-web/shared/types": ["libs/shared/types/src/index.ts"],
+      "@company-web/shared/data-access": ["libs/shared/data-access/src/index.ts"],
+      "@company-web/features": ["libs/company-website/features/src/index.ts"]
+    },
+    "jsx": "react-jsx",
+    "allowJs": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noImplicitAny": false,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+    "strictNullChecks": false
+  },
+  "exclude": ["node_modules", "tmp"]
+}
+

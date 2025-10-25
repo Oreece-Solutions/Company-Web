@@ -1,9 +1,3 @@
----
-description: Nx Monorepo Development Rules
-globs: "*.ts, *.tsx, *.html, *.css, *.js, *.jsx, package.json, project.json, tsconfig*.json"
-alwaysApply: true
----
-
 # Nx Monorepo Development Rules
 
 ## Project Structure

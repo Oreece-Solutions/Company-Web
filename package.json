@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "nx serve company-website",
+    "build": "nx build company-website",
+    "build:dev": "nx build company-website --configuration=development",
+    "lint": "nx lint company-website",
+    "preview": "nx preview company-website",
+    "nx": "nx"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -64,7 +65,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@nx/eslint": "^22.0.1",
+    "@nx/js": "^22.0.1",
+    "@nx/react": "^22.0.1",
+    "@nx/vite": "^22.0.1",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/bun": "latest",
     "@types/node": "^22.16.5",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
@@ -75,11 +81,11 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
     "lovable-tagger": "^1.1.9",
+    "nx": "^22.0.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
-    "vite": "^5.4.19",
-    "@types/bun": "latest"
+    "vite": "^5.4.19"
   }
 }

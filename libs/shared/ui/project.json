@@ -1,0 +1,27 @@
+{
+  "name": "shared-ui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ui/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/shared/ui",
+        "main": "libs/shared/ui/src/index.ts",
+        "tsConfig": "libs/shared/ui/tsconfig.lib.json",
+        "assets": []
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/shared/ui/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": ["type:lib", "scope:shared", "scope:ui"],
+  "implicitDependencies": ["shared-utils"]
+}
