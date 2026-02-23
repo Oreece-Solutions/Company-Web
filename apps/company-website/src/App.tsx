@@ -5,6 +5,7 @@ import { Toaster } from "@company-web/shared/ui";
 import { TooltipProvider } from "@company-web/shared/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { initPerformanceOptimizations } from "@company-web/shared/utils";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Index from "./pages/Index";
 import Showcase from "./pages/Showcase";
 import About from "./pages/About";
@@ -62,6 +63,7 @@ const App = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
+        <SpeedInsights />
       </TooltipProvider>
     </QueryClientProvider>
   );
