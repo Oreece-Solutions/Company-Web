@@ -1,5 +1,5 @@
 {
-    "buildCommand": "NX_DAEMON=false yarn build",
+    "buildCommand": "cd apps/company-website && npx vite build --outDir ../../dist/apps/company-website",
     "outputDirectory": "dist/apps/company-website",
     "installCommand": "yarn install",
     "framework": null,
