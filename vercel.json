@@ -1,5 +1,5 @@
 {
-    "buildCommand": "cd apps/company-website && npx vite build --outDir ../../dist/apps/company-website",
+    "buildCommand": "yarn vercel:build",
     "outputDirectory": "dist/apps/company-website",
     "installCommand": "yarn install",
     "framework": null,

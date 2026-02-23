@@ -9,7 +9,8 @@
     "build:dev": "nx build company-website --configuration=development",
     "lint": "nx lint company-website",
     "preview": "nx preview company-website",
-    "nx": "nx"
+    "nx": "nx",
+    "vercel:build": "vite build apps/company-website --outDir ../../dist/apps/company-website"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
