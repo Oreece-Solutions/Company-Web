@@ -33,7 +33,7 @@ const Contact = () => {
         title: "Message sent successfully!",
         description: "We'll get back to you within 24 hours.",
       });
-      
+
       setFormData({
         name: "",
         email: "",
@@ -65,15 +65,15 @@ const Contact = () => {
   return (
     <div className="min-h-screen animate-page-enter">
       <Navigation />
-      
+
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 bg-gradient-to-br from-background via-surface to-surface/50 overflow-hidden">
         {/* Enhanced Background Blur Layer */}
         <div className="absolute inset-0 backdrop-blur-3xl bg-gradient-to-r from-primary/5 via-transparent to-accent/5 opacity-60" />
-        
+
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 grid-pattern opacity-20 animate-pulse" />
-        
+
         {/* Enhanced Floating Elements with Blur */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/3 left-1/5 w-60 h-60 bg-primary/8 rounded-full animate-float-slow backdrop-blur-sm" />
@@ -82,7 +82,7 @@ const Contact = () => {
           <div className="absolute bottom-1/3 left-1/4 w-52 h-52 bg-primary/4 rounded-full animate-pulse backdrop-blur-xl opacity-40" />
           <div className="absolute top-2/3 right-1/4 w-32 h-32 bg-accent/6 rounded-full animate-spin-slow backdrop-blur-sm" />
         </div>
-        
+
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-4 animate-slide-up">Get In Touch</Badge>
@@ -93,7 +93,7 @@ const Contact = () => {
               </span>
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8 animate-slide-up animate-stagger-2">
-              Ready to transform your digital presence? We'd love to hear about 
+              Ready to transform your digital presence? We'd love to hear about
               your project and discuss how we can help you achieve your goals.
             </p>
           </div>
@@ -104,11 +104,11 @@ const Contact = () => {
       <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-3 gap-12">
-            
+
             {/* Contact Info */}
             <div className="lg:col-span-1 animate-slide-in-left">
               <h2 className="text-2xl font-bold mb-8">Get in Touch</h2>
-              
+
               <div className="space-y-6">
                 <div className="flex items-start space-x-4 hover-lift">
                   <div className="p-3 bg-primary/10 rounded-lg animate-pulse-slow">
@@ -116,7 +116,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <a href="mailto:hello@oreece.com" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">hello@oreece.com</a>
+                    <a href="mailto:nishan.sandeepagamage@gmail.com" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">hello@oreece.com</a>
                     <a href="mailto:info@oreece.com" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">info@oreece.com</a>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Phone</h3>
-                    <a href="tel:+15551234567" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">+1 (555) 123-4567</a>
+                    <a href="tel:+94714043333" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">+94712345678</a>
                     <p className="text-muted-foreground">Mon-Fri 9AM-6PM EST</p>
                   </div>
                 </div>
@@ -138,8 +138,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Office</h3>
-                    <p className="text-muted-foreground">123 Innovation St</p>
-                    <p className="text-muted-foreground">Tech District, CA 94103</p>
+                    <p className="text-muted-foreground">No.45,Angunakolapelessa</p>
+                    <p className="text-muted-foreground">Hambanthota</p>
                   </div>
                 </div>
 
@@ -159,11 +159,11 @@ const Contact = () => {
               <div className="mt-12 p-6 bg-gradient-primary rounded-2xl text-white animate-scale-in animate-stagger-4 hover-glow">
                 <h3 className="text-xl font-bold mb-3 animate-bounce">Book a Discovery Call</h3>
                 <p className="mb-4 opacity-90">
-                  Prefer to talk directly? Schedule a 30-minute discovery call 
+                  Prefer to talk directly? Schedule a 30-minute discovery call
                   to discuss your project.
                 </p>
-                <ScheduleCall 
-                  variant="outline" 
+                <ScheduleCall
+                  variant="outline"
                   className="bg-white text-primary hover:bg-white/90 w-full border-white"
                 >
                   Schedule Call
@@ -175,7 +175,7 @@ const Contact = () => {
             <div className="lg:col-span-2 animate-slide-in-right">
               <div className="card-elevated p-8 hover-lift">
                 <h2 className="text-2xl font-bold mb-6 animate-slide-up">Tell Us About Your Project</h2>
-                
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
@@ -344,7 +344,7 @@ const Contact = () => {
           <div className="text-center">
             <h3 className="text-2xl font-bold mb-4">Oreece</h3>
             <p className="text-background/80 max-w-md mx-auto">
-              Building exceptional digital experiences that drive growth 
+              Building exceptional digital experiences that drive growth
               and deliver measurable results.
             </p>
           </div>
@@ -353,7 +353,7 @@ const Contact = () => {
           </div>
         </div>
       </footer>
-      
+
       {/* Back to Top Button */}
       <BackToTop />
     </div>
