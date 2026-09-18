@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, FileText, Users, Settings, Building2, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, FolderKanban, Settings, Building2, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import { cn } from '@company-web/shared/utils';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -17,6 +17,10 @@ const navigation = [{
   name: 'Clients',
   href: '/clients',
   icon: Users
+}, {
+  name: 'Projects',
+  href: '/projects',
+  icon: FolderKanban
 }, {
   name: 'Settings',
   href: '/settings',
