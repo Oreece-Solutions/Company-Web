@@ -66,6 +66,7 @@ export interface Invoice {
   id: string;
   invoiceNumber: string;
   clientId: string;
+  projectId?: string;
   invoiceDate: string;
   dueDate: string;
   currency: Currency;

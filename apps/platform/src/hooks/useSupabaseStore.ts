@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, Json } from '@company-web/shared/data-access';
 import { useAuth } from '@/contexts/AuthContext';
-import { Company, Client, Invoice, LineItem, Currency, Payment, InvoiceStatus } from '@/types/invoice';
+import { Company, Client, ClientActivity, Invoice, LineItem, Currency, Payment, InvoiceStatus } from '@/types/invoice';
+import { Project, Task } from '@/types/project';
 import { toast } from 'sonner';
 
 // All business data below is shared across the whole team (see
@@ -44,6 +45,7 @@ interface DbInvoice {
   id: string;
   user_id: string | null;
   client_id: string | null;
+  project_id: string | null;
   invoice_number: string;
   date: string;
   due_date: string | null;
@@ -67,6 +69,40 @@ interface DbPayment {
   amount: number;
   reference: string | null;
   created_at: string;
+}
+
+interface DbActivity {
+  id: string;
+  client_id: string;
+  type: string;
+  note: string;
+  created_at: string;
+}
+
+interface DbProject {
+  id: string;
+  client_id: string | null;
+  name: string;
+  description: string | null;
+  status: string;
+  start_date: string | null;
+  due_date: string | null;
+  budget: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface DbTask {
+  id: string;
+  project_id: string;
+  title: string;
+  description: string | null;
+  status: string;
+  priority: string;
+  assignee: string | null;
+  due_date: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 function mapDbCompanyToCompany(db: DbCompanySettings): Company {
@@ -128,6 +164,46 @@ function mapDbPaymentToPayment(db: DbPayment): Payment {
   };
 }
 
+function mapDbActivityToActivity(db: DbActivity): ClientActivity {
+  return {
+    id: db.id,
+    clientId: db.client_id,
+    type: (db.type as ClientActivity['type']) || 'note',
+    note: db.note,
+    createdAt: db.created_at,
+  };
+}
+
+function mapDbProjectToProject(db: DbProject): Project {
+  return {
+    id: db.id,
+    clientId: db.client_id || undefined,
+    name: db.name,
+    description: db.description || undefined,
+    status: (db.status as Project['status']) || 'planning',
+    startDate: db.start_date || undefined,
+    dueDate: db.due_date || undefined,
+    budget: db.budget ?? undefined,
+    createdAt: db.created_at,
+    updatedAt: db.updated_at,
+  };
+}
+
+function mapDbTaskToTask(db: DbTask): Task {
+  return {
+    id: db.id,
+    projectId: db.project_id,
+    title: db.title,
+    description: db.description || undefined,
+    status: (db.status as Task['status']) || 'todo',
+    priority: (db.priority as Task['priority']) || 'medium',
+    assignee: db.assignee || undefined,
+    dueDate: db.due_date || undefined,
+    createdAt: db.created_at,
+    updatedAt: db.updated_at,
+  };
+}
+
 function mapStatusFromDb(status: string): InvoiceStatus {
   if (status === 'Paid') return 'paid';
   if (status === 'Partially Paid') return 'partially_paid';
@@ -139,6 +215,7 @@ function mapDbInvoiceToInvoice(db: DbInvoice, payments: Payment[] = []): Invoice
     id: db.id,
     invoiceNumber: db.invoice_number,
     clientId: db.client_id || '',
+    projectId: db.project_id || undefined,
     invoiceDate: db.date,
     dueDate: db.due_date || '',
     currency: 'LKR' as Currency,
@@ -161,6 +238,9 @@ export function useSupabaseStore() {
   const [company, setCompany] = useState<Company | null>(null);
   const [clients, setClients] = useState<Client[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [activities, setActivities] = useState<ClientActivity[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -215,6 +295,33 @@ export function useSupabaseStore() {
             const inv = i as DbInvoice;
             return mapDbInvoiceToInvoice(inv, paymentsMap.get(inv.id) || []);
           }));
+        }
+
+        const { data: activitiesData } = await supabase
+          .from('activities')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (activitiesData) {
+          setActivities(activitiesData.map((a) => mapDbActivityToActivity(a as DbActivity)));
+        }
+
+        const { data: projectsData } = await supabase
+          .from('projects')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (projectsData) {
+          setProjects(projectsData.map((p) => mapDbProjectToProject(p as DbProject)));
+        }
+
+        const { data: tasksData } = await supabase
+          .from('tasks')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (tasksData) {
+          setTasks(tasksData.map((t) => mapDbTaskToTask(t as DbTask)));
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -343,9 +450,193 @@ export function useSupabaseStore() {
     return clients.find(c => c.id === id);
   }, [clients]);
 
+  // Client activity log
+  const addActivity = useCallback(async (clientId: string, data: { type: ClientActivity['type']; note: string }) => {
+    if (!user) return null;
+
+    const { data: newActivity, error } = await supabase
+      .from('activities')
+      .insert({
+        client_id: clientId,
+        type: data.type,
+        note: data.note,
+        created_by: user.id,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      toast.error('Failed to log activity');
+      return null;
+    }
+
+    const mapped = mapDbActivityToActivity(newActivity as DbActivity);
+    setActivities(prev => [mapped, ...prev]);
+    setClients(prev => prev.map(c => c.id === clientId ? { ...c, lastContactedAt: mapped.createdAt } : c));
+    return mapped;
+  }, [user]);
+
+  const getActivitiesForClient = useCallback((clientId: string) => {
+    return activities.filter(a => a.clientId === clientId);
+  }, [activities]);
+
+  // Project operations
+  const addProject = useCallback(async (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'status'> & { status?: Project['status'] }) => {
+    if (!user) return null;
+
+    const { data: newProject, error } = await supabase
+      .from('projects')
+      .insert({
+        client_id: data.clientId || null,
+        name: data.name,
+        description: data.description || null,
+        status: data.status || 'planning',
+        start_date: data.startDate || null,
+        due_date: data.dueDate || null,
+        budget: data.budget ?? null,
+        created_by: user.id,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      toast.error('Failed to create project');
+      return null;
+    }
+
+    const mapped = mapDbProjectToProject(newProject as DbProject);
+    setProjects(prev => [mapped, ...prev]);
+    toast.success('Project created');
+    return mapped;
+  }, [user]);
+
+  const updateProject = useCallback(async (id: string, data: Partial<Project>) => {
+    if (!user) return;
+
+    const updateData: Record<string, unknown> = {};
+    if (data.clientId !== undefined) updateData.client_id = data.clientId || null;
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.status !== undefined) updateData.status = data.status;
+    if (data.startDate !== undefined) updateData.start_date = data.startDate;
+    if (data.dueDate !== undefined) updateData.due_date = data.dueDate;
+    if (data.budget !== undefined) updateData.budget = data.budget;
+
+    const { error } = await supabase
+      .from('projects')
+      .update(updateData)
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Failed to update project');
+      return;
+    }
+
+    setProjects(prev => prev.map(p => p.id === id ? { ...p, ...data, updatedAt: new Date().toISOString() } : p));
+    toast.success('Project updated');
+  }, [user]);
+
+  const deleteProject = useCallback(async (id: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('projects')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Failed to delete project');
+      return;
+    }
+
+    setProjects(prev => prev.filter(p => p.id !== id));
+    setTasks(prev => prev.filter(t => t.projectId !== id));
+    toast.success('Project deleted');
+  }, [user]);
+
+  const getProject = useCallback((id: string) => {
+    return projects.find(p => p.id === id);
+  }, [projects]);
+
+  // Task operations
+  const addTask = useCallback(async (projectId: string, data: Omit<Task, 'id' | 'projectId' | 'createdAt' | 'updatedAt' | 'status'> & { status?: Task['status'] }) => {
+    if (!user) return null;
+
+    const { data: newTask, error } = await supabase
+      .from('tasks')
+      .insert({
+        project_id: projectId,
+        title: data.title,
+        description: data.description || null,
+        status: data.status || 'todo',
+        priority: data.priority || 'medium',
+        assignee: data.assignee || null,
+        due_date: data.dueDate || null,
+        created_by: user.id,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      toast.error('Failed to add task');
+      return null;
+    }
+
+    const mapped = mapDbTaskToTask(newTask as DbTask);
+    setTasks(prev => [...prev, mapped]);
+    toast.success('Task added');
+    return mapped;
+  }, [user]);
+
+  const updateTask = useCallback(async (id: string, data: Partial<Task>) => {
+    if (!user) return;
+
+    const updateData: Record<string, unknown> = {};
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.status !== undefined) updateData.status = data.status;
+    if (data.priority !== undefined) updateData.priority = data.priority;
+    if (data.assignee !== undefined) updateData.assignee = data.assignee;
+    if (data.dueDate !== undefined) updateData.due_date = data.dueDate;
+
+    const { error } = await supabase
+      .from('tasks')
+      .update(updateData)
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Failed to update task');
+      return;
+    }
+
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, ...data, updatedAt: new Date().toISOString() } : t));
+  }, [user]);
+
+  const deleteTask = useCallback(async (id: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('tasks')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Failed to delete task');
+      return;
+    }
+
+    setTasks(prev => prev.filter(t => t.id !== id));
+    toast.success('Task deleted');
+  }, [user]);
+
+  const getTasksForProject = useCallback((projectId: string) => {
+    return tasks.filter(t => t.projectId === projectId);
+  }, [tasks]);
+
   // Invoice operations
   const createInvoice = useCallback(async (data: {
     clientId: string;
+    projectId?: string;
     invoiceDate: string;
     dueDate: string;
     currency: Currency;
@@ -376,6 +667,7 @@ export function useSupabaseStore() {
       .insert([{
         user_id: user.id,
         client_id: data.clientId,
+        project_id: data.projectId || null,
         invoice_number: invoiceNumber,
         date: data.invoiceDate,
         due_date: data.dueDate,
@@ -404,6 +696,7 @@ export function useSupabaseStore() {
 
     const updateData: Record<string, unknown> = {};
     if (data.clientId !== undefined) updateData.client_id = data.clientId;
+    if (data.projectId !== undefined) updateData.project_id = data.projectId || null;
     if (data.invoiceDate !== undefined) updateData.date = data.invoiceDate;
     if (data.dueDate !== undefined) updateData.due_date = data.dueDate;
     if (data.notes !== undefined) updateData.notes = data.notes;
@@ -543,12 +836,25 @@ export function useSupabaseStore() {
     },
     clients,
     invoices,
+    activities,
+    projects,
+    tasks,
     isLoading,
     updateCompany,
     addClient,
     updateClient,
     deleteClient,
     getClient,
+    addActivity,
+    getActivitiesForClient,
+    addProject,
+    updateProject,
+    deleteProject,
+    getProject,
+    addTask,
+    updateTask,
+    deleteTask,
+    getTasksForProject,
     createInvoice,
     updateInvoice,
     deleteInvoice,

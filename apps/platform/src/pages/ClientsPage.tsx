@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Plus, Search, Users, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, Users, Edit, Trash2, MessageSquareText } from 'lucide-react';
 import { useAppStore } from '@/contexts/StoreContext';
+import { ClientStatusBadge } from '@/components/client/ClientStatusBadge';
+import { ClientActivityLog } from '@/components/client/ClientActivityLog';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@company-web/shared/ui';
@@ -36,25 +38,40 @@ import {
 } from '@company-web/shared/ui';
 import { ClientForm } from '@/components/client/ClientForm';
 import { useToast } from '@company-web/shared/utils';
-import { Client } from '@/types/invoice';
+import { Client, ClientStatus } from '@/types/invoice';
+
+const STATUS_TABS: { value: ClientStatus | 'all'; label: string }[] = [
+  { value: 'all', label: 'All' },
+  { value: 'lead', label: 'Leads' },
+  { value: 'prospect', label: 'Prospects' },
+  { value: 'active', label: 'Active' },
+  { value: 'inactive', label: 'Inactive' },
+];
 
 export default function ClientsPage() {
   const { clients, addClient, updateClient, deleteClient, invoices } = useAppStore();
   const { toast } = useToast();
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<ClientStatus | 'all'>('all');
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [activityClient, setActivityClient] = useState<Client | null>(null);
 
   const filteredClients = useMemo(() => {
-    if (!search.trim()) return clients;
-    
-    const searchLower = search.toLowerCase();
-    return clients.filter(client => 
-      client.name.toLowerCase().includes(searchLower) ||
-      client.companyName?.toLowerCase().includes(searchLower) ||
-      client.email.toLowerCase().includes(searchLower)
-    );
-  }, [clients, search]);
+    let result = clients;
+    if (statusFilter !== 'all') {
+      result = result.filter(client => client.status === statusFilter);
+    }
+    if (search.trim()) {
+      const searchLower = search.toLowerCase();
+      result = result.filter(client =>
+        client.name.toLowerCase().includes(searchLower) ||
+        client.companyName?.toLowerCase().includes(searchLower) ||
+        client.email.toLowerCase().includes(searchLower)
+      );
+    }
+    return result;
+  }, [clients, search, statusFilter]);
 
   const getClientInvoiceCount = (clientId: string) => {
     return invoices.filter(inv => inv.clientId === clientId).length;
@@ -123,8 +140,8 @@ export default function ClientsPage() {
         }
       />
 
-      {/* Search */}
-      <div className="mb-6">
+      {/* Search + pipeline filter */}
+      <div className="mb-6 space-y-4">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -133,6 +150,21 @@ export default function ClientsPage() {
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
           />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {STATUS_TABS.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setStatusFilter(tab.value)}
+              className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                statusFilter === tab.value
+                  ? 'bg-accent text-accent-foreground'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/70'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -165,6 +197,7 @@ export default function ClientsPage() {
               <TableRow className="bg-muted/50">
                 <TableHead>Name</TableHead>
                 <TableHead>Company</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead>Invoices</TableHead>
@@ -178,6 +211,7 @@ export default function ClientsPage() {
                   <TableCell className="text-muted-foreground">
                     {client.companyName || '-'}
                   </TableCell>
+                  <TableCell><ClientStatusBadge status={client.status} /></TableCell>
                   <TableCell className="text-muted-foreground">{client.email}</TableCell>
                   <TableCell className="text-muted-foreground">{client.phone}</TableCell>
                   <TableCell>
@@ -187,6 +221,14 @@ export default function ClientsPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setActivityClient(client)}
+                        title="Activity"
+                      >
+                        <MessageSquareText className="h-4 w-4" />
+                      </Button>
                       <Dialog open={editingClient?.id === client.id} onOpenChange={(open) => !open && setEditingClient(null)}>
                         <DialogTrigger asChild>
                           <Button
@@ -244,6 +286,14 @@ export default function ClientsPage() {
           </Table>
         )}
       </motion.div>
+
+      {activityClient && (
+        <ClientActivityLog
+          client={activityClient}
+          open={!!activityClient}
+          onOpenChange={(open) => !open && setActivityClient(null)}
+        />
+      )}
     </AppLayout>
   );
 }
