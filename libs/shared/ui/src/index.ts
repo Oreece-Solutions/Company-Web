@@ -38,14 +38,17 @@ export * from './sidebar';
 export * from './skeleton';
 export * from './slider';
 export * from './sonner';
-// export { SonnerToaster } from './sonner'; // Commented out to avoid conflicts
 export * from './switch';
 export * from './table';
 export * from './tabs';
 export * from './textarea';
 export * from './toast';
-// export * from './toaster'; // Commented out to avoid conflict with sonner
+// Shadcn's own Toaster, renamed to avoid colliding with sonner's `Toaster`
+// above. Some pages use the shadcn useToast() hook (object-style
+// `toast({ title, description })`, from @company-web/shared/utils) rather
+// than sonner's `toast.success(...)`; that hook's state only renders if
+// this Toaster is mounted too, alongside sonner's.
+export { Toaster as ShadcnToaster } from './toaster';
 export * from './toggle-group';
 export * from './toggle';
 export * from './tooltip';
-// export * from './use-toast'; // Commented out to avoid conflicts with sonner

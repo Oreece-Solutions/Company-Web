@@ -4,6 +4,7 @@ export default {
   darkMode: ["class"],
   content: [
     "./apps/company-website/src/**/*.{ts,tsx}",
+    "./apps/platform/src/**/*.{ts,tsx}",
     "./libs/shared/ui/src/**/*.{ts,tsx}",
     "./libs/company-website/features/src/**/*.{ts,tsx}"
   ],

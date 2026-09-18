@@ -1,0 +1,309 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Brand palette - Red (#ea0027) and White */
+    --background: 0 0% 99%;
+    --foreground: 0 0% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    --primary: 351 100% 46%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 351 100% 46%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 351 100% 46%;
+
+    --radius: 0.5rem;
+
+    /* Sidebar - Dark professional */
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 351 100% 46%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 351 100% 46%;
+
+    /* Custom tokens */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(351 100% 46%) 0%, hsl(351 100% 38%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(351 100% 46%) 0%, hsl(351 100% 40%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.04);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.06), 0 2px 4px -2px hsl(0 0% 0% / 0.04);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.08), 0 4px 6px -4px hsl(0 0% 0% / 0.04);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.1), 0 8px 10px -6px hsl(0 0% 0% / 0.04);
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 351 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 351 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 351 100% 50%;
+
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 351 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 351 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-card-hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Invoice print styles */
+@media print {
+  /* Hide everything except the invoice */
+  body * {
+    visibility: hidden !important;
+  }
+
+  #invoice-print-area,
+  #invoice-print-area * {
+    visibility: visible !important;
+  }
+
+  /* Hide ALL external elements, badges, buttons, iframes, scripts */
+  [data-lovable],
+  [class*="lovable"],
+  [id*="lovable"],
+  [data-testid],
+  button[data-lovable],
+  iframe,
+  script,
+  noscript,
+  .fixed,
+  [role="dialog"],
+  [role="tooltip"],
+  [data-radix-popper-content-wrapper] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* Remove ALL hyperlinks - convert to plain text */
+  a,
+  a[href],
+  a[href*="lovable"],
+  a[href*="http"],
+  a[href*="mailto"],
+  a[href*="tel"] {
+    color: inherit !important;
+    text-decoration: none !important;
+    pointer-events: none !important;
+  }
+
+  /* Prevent link URLs from appearing after links */
+  a[href]::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  #invoice-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 210mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    background: white !important;
+    padding: 8mm 10mm !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-size: 11px !important;
+  }
+
+  /* Page settings for A4 */
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html, body {
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Compact spacing for print */
+  #invoice-print-area .mb-8 {
+    margin-bottom: 12px !important;
+  }
+
+  #invoice-print-area .mb-10 {
+    margin-bottom: 16px !important;
+  }
+
+  #invoice-print-area .p-5 {
+    padding: 10px !important;
+  }
+
+  #invoice-print-area .py-4 {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  #invoice-print-area .py-3 {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  #invoice-print-area .gap-8 {
+    gap: 12px !important;
+  }
+
+  #invoice-print-area h1 {
+    font-size: 28px !important;
+  }
+
+  #invoice-print-area h2 {
+    font-size: 18px !important;
+  }
+
+  #invoice-print-area .text-lg {
+    font-size: 13px !important;
+  }
+
+  #invoice-print-area .text-xl {
+    font-size: 15px !important;
+  }
+
+  #invoice-print-area .text-2xl {
+    font-size: 18px !important;
+  }
+
+  /* Preserve background colors */
+  .bg-gray-50,
+  .bg-gray-800,
+  .bg-\[\#ea0027\] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Prevent page break */
+  #invoice-print-area {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

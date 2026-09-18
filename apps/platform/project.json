@@ -1,0 +1,9 @@
+{
+  "name": "platform",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/platform/src",
+  "projectType": "application",
+  "tags": ["type:app", "scope:platform"],
+  "// targets": "to see all targets run: nx show project platform --web",
+  "targets": {}
+}

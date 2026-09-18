@@ -1,8 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { Toaster } from "@company-web/shared/ui";
-// import { SonnerToaster } from "@company-web/shared/ui"; // Commented out - not exported
-import { TooltipProvider } from "@company-web/shared/ui";
+import { Toaster, ShadcnToaster, TooltipProvider } from "@company-web/shared/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { initPerformanceOptimizations } from "@company-web/shared/utils";
 import Index from "./pages/Index";
@@ -42,7 +40,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        {/* <SonnerToaster /> */}
+        <ShadcnToaster />
         <Router
           future={{
             v7_startTransition: true,
