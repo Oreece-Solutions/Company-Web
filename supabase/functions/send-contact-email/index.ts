@@ -1,7 +1,15 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 import { Resend } from "npm:resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+
+// Service role client: bypasses RLS so this function can create a CRM lead
+// server-side (more reliable than a client-side insert from the browser).
+const supabase = createClient(
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,6 +36,39 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const formData: ContactFormData = await req.json();
     console.log("Received contact form data:", formData);
+
+    // Record this submission as a lead in the CRM. Best-effort: a failure
+    // here shouldn't block the email notification below.
+    const { data: lead, error: leadError } = await supabase
+      .from("clients")
+      .insert({
+        name: formData.name,
+        company_name: formData.company || null,
+        email: formData.email,
+        phone: formData.phone || null,
+        status: "lead",
+        source: "website",
+      })
+      .select("id")
+      .single();
+    if (leadError) {
+      console.error("Failed to create CRM lead from contact form:", leadError);
+    } else {
+      const details = [
+        formData.project && `Project type: ${formData.project}`,
+        formData.budget && `Budget: ${formData.budget}`,
+        `Message: ${formData.message}`,
+      ].filter(Boolean).join("\n");
+
+      const { error: activityError } = await supabase.from("activities").insert({
+        client_id: lead.id,
+        type: "note",
+        note: details,
+      });
+      if (activityError) {
+        console.error("Failed to log lead activity:", activityError);
+      }
+    }
 
     // Send notification email to info@oreece.com
     const emailResponse = await resend.emails.send({

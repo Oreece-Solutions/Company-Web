@@ -16,6 +16,9 @@ dist-ssr
 .nx/cache
 .nx/workspace-data
 
+# Supabase CLI
+supabase/.temp
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
