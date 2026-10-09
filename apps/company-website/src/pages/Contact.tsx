@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Mail, Clock, MapPin, Loader2, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, Clock, MapPin, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase } from "@company-web/shared/data-access";
-import { Layout, PageHero, usePageMeta } from "../site/Layout";
+import { Layout, PageHero, WhatsAppIcon, usePageMeta } from "../site/Layout";
 import { company, services } from "../site/content";
 
 const empty = { name: "", email: "", phone: "", company: "", project: "", budget: "", message: "" };
@@ -50,6 +50,20 @@ const Contact = () => {
             <Info icon={Mail} title="Email">
               <a href={`mailto:${company.email}`} className="font-semibold text-[hsl(var(--ink))] hover:underline">
                 {company.email}
+              </a>
+            </Info>
+            <Info icon={Phone} title="Phone & WhatsApp">
+              <a href={company.phoneHref} className="font-semibold text-[hsl(var(--ink))] hover:underline">
+                {company.phone}
+              </a>
+              <br />
+              <a
+                href={company.whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center gap-2 rounded-md bg-[#25D366] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1ebe5b]"
+              >
+                <WhatsAppIcon className="h-4 w-4" /> Message us on WhatsApp
               </a>
             </Info>
             <Info icon={Clock} title="Response time">

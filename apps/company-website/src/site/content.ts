@@ -6,8 +6,19 @@ export const company = {
   legalName: "Oreece Business Solutions",
   email: "hello@oreece.com",
   careersEmail: "careers@oreece.com",
+  phone: "+64 22 354 1659",
+  phoneHref: "tel:+64223541659",
+  whatsapp: "https://wa.me/64223541659?text=" + encodeURIComponent("Kia ora Oreece, I'd like to talk about a project."),
   regions: ["Aotearoa New Zealand", "Sri Lanka"],
 };
+
+// Add the profile URL to show an icon in the footer; empty entries are hidden.
+export const socials: { name: "Facebook" | "LinkedIn" | "TikTok" | "Instagram"; url: string }[] = [
+  { name: "LinkedIn", url: "" },
+  { name: "Facebook", url: "" },
+  { name: "TikTok", url: "" },
+  { name: "Instagram", url: "" },
+];
 
 export type ServiceSlug = "software" | "ai" | "marketing";
 
@@ -103,7 +114,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "jcp-car-parts",
     client: "JCP Car Parts",
     sector: "Automotive · Dismantling",
-    location: "New Zealand",
+    location: "Auckland",
     title: "A barcode-driven operations platform for a vehicle dismantler",
     summary:
       "From vehicle intake to sellable stock, every part is tracked through stripping, photography, QC and put-away — on phones on the floor and dashboards in the office.",
@@ -117,6 +128,8 @@ export const caseStudies: CaseStudy[] = [
     ],
     stack: ["Next.js", "Supabase", "PostgreSQL", "PWA"],
     services: ["software"],
+    url: "https://jcpcarparts.co.nz",
+    image: "/work/jcp.jpg",
     status: "Platform delivered · rollout in progress",
     tone: "ink",
   },
