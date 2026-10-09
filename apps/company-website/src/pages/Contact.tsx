@@ -1,363 +1,164 @@
 import { useState } from "react";
-import { Navigation, BackToTop, ScheduleCall } from "@company-web/features";
-import { Badge, Button, Input, Label, Textarea } from "@company-web/shared/ui";
-import { useToast } from "@company-web/shared/utils";
-import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
+import { Mail, Clock, MapPin, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase } from "@company-web/shared/data-access";
+import { Layout, PageHero, usePageMeta } from "../site/Layout";
+import { company, services } from "../site/content";
+
+const empty = { name: "", email: "", phone: "", company: "", project: "", budget: "", message: "" };
+
+const budgets = ["Under $10k", "$10k – $25k", "$25k – $50k", "$50k – $100k", "$100k+", "Not sure yet"];
+
+const field =
+  "mt-2 block w-full rounded-md border border-input bg-white px-3.5 py-3 text-[15px] outline-none transition focus:border-[hsl(var(--ink))] focus:ring-2 focus:ring-[hsl(var(--ink)/0.08)]";
 
 const Contact = () => {
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    company: "",
-    project: "",
-    message: "",
-    budget: ""
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  usePageMeta("Contact", "Talk to Oreece about custom software, AI automation or digital marketing for your New Zealand business.");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [form, setForm] = useState(empty);
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const set = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
+    setState("sending");
     try {
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
-        body: formData
+      const { error } = await supabase.functions.invoke("send-contact-email", {
+        body: { ...form, budget: form.budget && `${form.budget} NZD` },
       });
-
       if (error) throw error;
-
-      toast({
-        title: "Message sent successfully!",
-        description: "We'll get back to you within 24 hours.",
-      });
-
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        company: "",
-        project: "",
-        message: "",
-        budget: ""
-      });
-    } catch (error) {
-      console.error("Error sending message:", error);
-      toast({
-        title: "Error sending message",
-        description: "Please try again or contact us directly.",
-        // variant: "destructive", // Commented out - not supported
-      });
-    } finally {
-      setIsSubmitting(false);
+      setState("sent");
+      setForm(empty);
+    } catch (err) {
+      console.error("Error sending message:", err);
+      setState("error");
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
-
   return (
-    <div className="min-h-screen animate-page-enter">
-      <Navigation />
+    <Layout>
+      <PageHero
+        eyebrow="Contact"
+        title="Let’s talk about what you are building."
+        lede="Tell us a little about your business and what you want to achieve. A senior member of our team will reply within one business day."
+      />
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 bg-gradient-to-br from-background via-surface to-surface/50 overflow-hidden">
-        {/* Enhanced Background Blur Layer */}
-        <div className="absolute inset-0 backdrop-blur-3xl bg-gradient-to-r from-primary/5 via-transparent to-accent/5 opacity-60" />
-
-        {/* Animated Background Pattern */}
-        <div className="absolute inset-0 grid-pattern opacity-20 animate-pulse" />
-
-        {/* Enhanced Floating Elements with Blur */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/3 left-1/5 w-60 h-60 bg-primary/8 rounded-full animate-float-slow backdrop-blur-sm" />
-          <div className="absolute bottom-1/4 right-1/3 w-44 h-44 bg-accent/12 rounded-full animate-float-medium backdrop-blur-md" />
-          <div className="absolute top-1/5 right-1/6 w-36 h-36 bg-gradient-primary opacity-10 rounded-full animate-float-fast backdrop-blur-lg" />
-          <div className="absolute bottom-1/3 left-1/4 w-52 h-52 bg-primary/4 rounded-full animate-pulse backdrop-blur-xl opacity-40" />
-          <div className="absolute top-2/3 right-1/4 w-32 h-32 bg-accent/6 rounded-full animate-spin-slow backdrop-blur-sm" />
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-4 animate-slide-up">Get In Touch</Badge>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-slide-up animate-stagger-1">
-              Let's Build Something
-              <span className="block bg-gradient-primary bg-clip-text text-transparent animate-float">
-                Amazing Together
-              </span>
-            </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed mb-8 animate-slide-up animate-stagger-2">
-              Ready to transform your digital presence? We'd love to hear about
-              your project and discuss how we can help you achieve your goals.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-3 gap-12">
-
-            {/* Contact Info */}
-            <div className="lg:col-span-1 animate-slide-in-left">
-              <h2 className="text-2xl font-bold mb-8">Get in Touch</h2>
-
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4 hover-lift">
-                  <div className="p-3 bg-primary/10 rounded-lg animate-pulse-slow">
-                    <Mail className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Email</h3>
-                    <a href="mailto:nishan.sandeepagamage@gmail.com" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">hello@oreece.com</a>
-                    <a href="mailto:info@oreece.com" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">info@oreece.com</a>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4 hover-lift animate-stagger-1">
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <Phone className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Phone</h3>
-                    <a href="tel:+94714043333" className="text-muted-foreground hover:text-primary transition-colors duration-300 block">+94712345678</a>
-                    <p className="text-muted-foreground">Mon-Fri 9AM-6PM EST</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4 hover-lift animate-stagger-2">
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <MapPin className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Office</h3>
-                    <p className="text-muted-foreground">No.45,Angunakolapelessa</p>
-                    <p className="text-muted-foreground">Hambanthota</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4 hover-lift animate-stagger-3">
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <Clock className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Response Time</h3>
-                    <p className="text-muted-foreground">Within 24 hours</p>
-                    <p className="text-muted-foreground">Usually much faster!</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Booking */}
-              <div className="mt-12 p-6 bg-gradient-primary rounded-2xl text-white animate-scale-in animate-stagger-4 hover-glow">
-                <h3 className="text-xl font-bold mb-3 animate-bounce">Book a Discovery Call</h3>
-                <p className="mb-4 opacity-90">
-                  Prefer to talk directly? Schedule a 30-minute discovery call
-                  to discuss your project.
-                </p>
-                <ScheduleCall
-                  variant="outline"
-                  className="bg-white text-primary hover:bg-white/90 w-full border-white"
-                >
-                  Schedule Call
-                </ScheduleCall>
-              </div>
+      <section className="py-20 sm:py-24">
+        <div className="wrap grid gap-14 lg:grid-cols-12">
+          <aside className="space-y-10 lg:col-span-4">
+            <Info icon={Mail} title="Email">
+              <a href={`mailto:${company.email}`} className="font-semibold text-[hsl(var(--ink))] hover:underline">
+                {company.email}
+              </a>
+            </Info>
+            <Info icon={Clock} title="Response time">
+              Within one business day, Monday to Friday, NZ time.
+            </Info>
+            <Info icon={MapPin} title="Where we work">
+              {company.regions.join(" · ")}
+              <br />
+              Meetings in person or on video, whichever suits you.
+            </Info>
+            <div className="rounded-xl bg-surface p-6">
+              <p className="font-semibold">What happens next?</p>
+              <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
+                <li>We read your message and reply with questions or ideas.</li>
+                <li>A free 30-minute call to understand your goals.</li>
+                <li>A written proposal with scope, timeline and fixed NZD price.</li>
+              </ol>
             </div>
+          </aside>
 
-            {/* Contact Form */}
-            <div className="lg:col-span-2 animate-slide-in-right">
-              <div className="card-elevated p-8 hover-lift">
-                <h2 className="text-2xl font-bold mb-6 animate-slide-up">Tell Us About Your Project</h2>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <Label htmlFor="name">Full Name *</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email">Email Address *</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="mt-2"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="company">Company</Label>
-                      <Input
-                        id="company"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        className="mt-2"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <Label htmlFor="project">Project Type</Label>
-                      <select
-                        id="project"
-                        name="project"
-                        value={formData.project}
-                        onChange={handleChange}
-                        className="mt-2 w-full p-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      >
-                        <option value="">Select a project type</option>
-                        <option value="web-development">Web Development</option>
-                        <option value="mobile-app">Mobile App</option>
-                        <option value="ecommerce">E-commerce</option>
-                        <option value="custom-software">Custom Software</option>
-                        <option value="consulting">Consulting</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                    <div>
-                      <Label htmlFor="budget">Budget Range</Label>
-                      <select
-                        id="budget"
-                        name="budget"
-                        value={formData.budget}
-                        onChange={handleChange}
-                        className="mt-2 w-full p-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      >
-                        <option value="">Select budget range</option>
-                        <option value="under-25k">Under $25K</option>
-                        <option value="25k-50k">$25K - $50K</option>
-                        <option value="50k-100k">$50K - $100K</option>
-                        <option value="100k-plus">$100K+</option>
-                        <option value="discuss">Let's Discuss</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message">Project Details *</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={6}
-                      className="mt-2"
-                      placeholder="Tell us about your project goals, timeline, and any specific requirements..."
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="btn-hero w-full md:w-auto px-8 py-4 animate-scale-in"
-                  >
-                    {isSubmitting ? (
-                      <span className="animate-pulse">Sending...</span>
-                    ) : (
-                      <>
-                        Send Message
-                        <Send className="ml-2 h-5 w-5 animate-bounce" />
-                      </>
-                    )}
-                  </Button>
-                </form>
+          <div className="lg:col-span-7 lg:col-start-6">
+            {state === "sent" ? (
+              <div className="rounded-xl border border-border p-10 text-center" role="status">
+                <CheckCircle2 className="mx-auto h-12 w-12 text-[hsl(var(--pounamu))]" />
+                <h2 className="mt-5 text-2xl font-semibold">Thanks — message received.</h2>
+                <p className="mt-3 text-muted-foreground">We will be in touch within one business day.</p>
+                <button className="btn-outline mt-8" onClick={() => setState("idle")}>
+                  Send another message
+                </button>
               </div>
-            </div>
+            ) : (
+              <form onSubmit={submit} className="grid gap-6 sm:grid-cols-2">
+                <Field label="Your name" required>
+                  <input name="name" value={form.name} onChange={set} required autoComplete="name" className={field} />
+                </Field>
+                <Field label="Work email" required>
+                  <input type="email" name="email" value={form.email} onChange={set} required autoComplete="email" className={field} />
+                </Field>
+                <Field label="Company">
+                  <input name="company" value={form.company} onChange={set} autoComplete="organization" className={field} />
+                </Field>
+                <Field label="Phone">
+                  <input type="tel" name="phone" value={form.phone} onChange={set} autoComplete="tel" placeholder="+64" className={field} />
+                </Field>
+                <Field label="What can we help with?">
+                  <select name="project" value={form.project} onChange={set} className={field}>
+                    <option value="">Select…</option>
+                    {services.map((s) => (
+                      <option key={s.slug}>{s.title}</option>
+                    ))}
+                    <option>Something else</option>
+                  </select>
+                </Field>
+                <Field label="Indicative budget (NZD)">
+                  <select name="budget" value={form.budget} onChange={set} className={field}>
+                    <option value="">Select…</option>
+                    {budgets.map((b) => (
+                      <option key={b}>{b}</option>
+                    ))}
+                  </select>
+                </Field>
+                <div className="sm:col-span-2">
+                  <Field label="Tell us about your project" required>
+                    <textarea name="message" value={form.message} onChange={set} required rows={6} className={field} />
+                  </Field>
+                </div>
+                {state === "error" && (
+                  <p className="text-sm font-medium text-destructive sm:col-span-2" role="alert">
+                    Something went wrong sending your message. Please try again, or email us at {company.email}.
+                  </p>
+                )}
+                <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-xs text-muted-foreground">
+                    We only use your details to respond to your enquiry, in line with the NZ Privacy Act 2020.
+                  </p>
+                  <button type="submit" disabled={state === "sending"} className="btn-primary shrink-0 disabled:opacity-60">
+                    {state === "sending" && <Loader2 className="h-4 w-4 animate-spin" />}
+                    Send message
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-surface/50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Common Questions</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Quick answers to questions we get asked most often.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {[
-              {
-                question: "How long does a typical project take?",
-                answer: "Project timelines vary based on scope and complexity. Simple websites take 4-6 weeks, while complex applications can take 3-6 months. We'll provide a detailed timeline during our discovery phase."
-              },
-              {
-                question: "Do you work with startups?",
-                answer: "Absolutely! We love working with startups and have flexible engagement models to fit different budgets and stages. We can help with everything from MVP development to scaling your platform."
-              },
-              {
-                question: "What's your development process?",
-                answer: "We follow an agile methodology with regular check-ins, demos, and feedback loops. You'll be involved throughout the process and can see progress in real-time."
-              },
-              {
-                question: "Do you provide ongoing support?",
-                answer: "Yes! We offer various maintenance and support packages to keep your application running smoothly. We also provide training to help your team manage content and basic updates."
-              }
-            ].map((faq, index) => (
-              <div key={index} className={`card-elevated p-6 animate-card-stack animate-card-stack-${index + 1}`}>
-                <h3 className="font-bold mb-3">{faq.question}</h3>
-                <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-16 bg-foreground text-background">
-        <div className="container mx-auto px-6">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold mb-4">Oreece</h3>
-            <p className="text-background/80 max-w-md mx-auto">
-              Building exceptional digital experiences that drive growth
-              and deliver measurable results.
-            </p>
-          </div>
-          <div className="border-t border-background/20 mt-8 pt-8 text-center text-background/60">
-            <p>&copy; 2024 Oreece. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-
-      {/* Back to Top Button */}
-      <BackToTop />
-    </div>
+    </Layout>
   );
 };
+
+function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+  return (
+    <label className="block text-sm font-semibold">
+      {label}
+      {required && <span className="text-[hsl(var(--brand-red))]"> *</span>}
+      {children}
+    </label>
+  );
+}
+
+function Info({ icon: Icon, title, children }: { icon: typeof Mail; title: string; children: React.ReactNode }) {
+  return (
+    <div className="flex gap-4">
+      <Icon className="mt-0.5 h-5 w-5 shrink-0 text-[hsl(var(--brand-red))]" strokeWidth={1.8} />
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{title}</p>
+        <p className="mt-1.5 leading-relaxed">{children}</p>
+      </div>
+    </div>
+  );
+}
 
 export default Contact;

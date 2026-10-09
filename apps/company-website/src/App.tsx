@@ -1,10 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Toaster, ShadcnToaster, TooltipProvider } from "@company-web/shared/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { initPerformanceOptimizations } from "@company-web/shared/utils";
 import Index from "./pages/Index";
-import Showcase from "./pages/Showcase";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Work from "./pages/Work";
@@ -13,11 +12,15 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    if (hash) {
+      const el = document.getElementById(decodeURIComponent(hash.slice(1)));
+      if (el) return el.scrollIntoView();
+    }
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, [pathname, hash]);
 
   return null;
 }
@@ -50,7 +53,7 @@ const App = () => {
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/showcase" element={<Showcase />} />
+            <Route path="/showcase" element={<Navigate to="/work" replace />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/work" element={<Work />} />

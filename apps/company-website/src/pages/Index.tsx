@@ -1,332 +1,197 @@
-import { Navigation, Hero, ProjectCard, TechGrid, BackToTop } from "@company-web/features";
-import { Badge, Button } from "@company-web/shared/ui";
 import { Link } from "react-router-dom";
-import { ArrowRight, Star, Users, Award } from "lucide-react";
+import { ArrowRight, Bot, Code2, LineChart, ShieldCheck, MapPin, FileCheck2, KeyRound } from "lucide-react";
+import { Layout, Reveal, CtaBand, usePageMeta } from "../site/Layout";
+import { CaseCard } from "../site/CaseCard";
+import { caseStudies, industries, principles, process, services } from "../site/content";
 
-// Mock data for projects
-const featuredProjects = [
-  {
-    id: "1",
-    title: "EcoCommerce Platform",
-    description: "A sustainable e-commerce platform that increased conversion rates by 45% through innovative UX and performance optimization.",
-    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=600&fit=crop",
-    tags: ["React", "Node.js", "AWS"],
-    category: "E-commerce",
-    slug: "ecocommerce-platform",
-    metrics: [
-      { label: "Conversion Rate", value: "+45%" },
-      { label: "Page Speed", value: "0.8s" }
-    ]
-  },
-  {
-    id: "2",
-    title: "HealthTech Dashboard",
-    description: "Real-time patient monitoring dashboard that streamlined clinical workflows and improved patient outcomes.",
-    image: "/placeholder.svg",
-    tags: ["Next.js", "TypeScript", "PostgreSQL"],
-    category: "Healthcare",
-    slug: "healthtech-dashboard",
-    metrics: [
-      { label: "Time Saved", value: "30%" },
-      { label: "Users", value: "2.5K+" }
-    ]
-  },
-  {
-    id: "3",
-    title: "FinTech Mobile App",
-    description: "Secure banking application with biometric authentication and real-time transaction processing.",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop",
-    tags: ["React Native", "Python", "Blockchain"],
-    category: "Finance",
-    slug: "fintech-mobile-app",
-    metrics: [
-      { label: "Security Score", value: "99.9%" },
-      { label: "Downloads", value: "100K+" }
-    ]
-  },
-  {
-    id: "4",
-    title: "AI Content Platform",
-    description: "Machine learning-powered content creation platform that generates high-quality content at scale.",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
-    tags: ["Python", "TensorFlow", "React"],
-    category: "AI/ML",
-    slug: "ai-content-platform",
-    metrics: [
-      { label: "Content Quality", value: "94%" },
-      { label: "Speed Increase", value: "10x" }
-    ]
-  },
-  {
-    id: "5",
-    title: "Smart City Dashboard",
-    description: "IoT-powered city management system that optimizes traffic flow and reduces energy consumption.",
-    image: "/placeholder.svg",
-    tags: ["IoT", "React", "MongoDB"],
-    category: "Smart City",
-    slug: "smart-city-dashboard",
-    metrics: [
-      { label: "Energy Saved", value: "25%" },
-      { label: "Traffic Flow", value: "+40%" }
-    ]
-  },
-  {
-    id: "6",
-    title: "EdTech Learning Platform",
-    description: "Interactive learning platform with personalized curricula and real-time progress tracking.",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop",
-    tags: ["Vue.js", "Node.js", "MySQL"],
-    category: "Education",
-    slug: "edtech-learning-platform",
-    metrics: [
-      { label: "Student Engagement", value: "+65%" },
-      { label: "Completion Rate", value: "89%" }
-    ]
-  }
-];
-
-const services = [
-  {
-    icon: "💻",
-    title: "Web Development",
-    description: "Full-stack web applications built with modern frameworks and best practices."
-  },
-  {
-    icon: "📱",
-    title: "Mobile Development", 
-    description: "Native and cross-platform mobile apps that deliver exceptional user experiences."
-  },
-  {
-    icon: "☁️",
-    title: "Cloud Solutions",
-    description: "Scalable cloud infrastructure and DevOps solutions for modern businesses."
-  }
-];
+const serviceIcons = { software: Code2, ai: Bot, marketing: LineChart };
+const principleIcons = [MapPin, FileCheck2, KeyRound, ShieldCheck];
 
 const Index = () => {
+  usePageMeta(
+    "Oreece",
+    "Oreece builds custom software, AI automation and digital marketing for New Zealand businesses. Local accountability, fixed-scope proposals and code you own.",
+  );
+
   return (
-    <div className="min-h-screen">
-      <Navigation />
-      
-      {/* Hero Section */}
-      <Hero />
-
-      {/* Clients Section */}
-      <section className="py-16 bg-surface/30">
-        <div className="container mx-auto px-6">
-          <p className="text-center text-muted-foreground mb-8">
-            Trusted by innovative companies worldwide
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 opacity-60">
-            {["TechCorp", "InnovateAI", "GreenEnergy", "HealthPlus", "EduTech", "CloudScale"].map((client) => (
-              <div key={client} className="text-lg font-semibold">
-                {client}
-              </div>
-            ))}
+    <Layout>
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-[hsl(var(--ink))] text-white">
+        <div className="grid-lines absolute inset-0" aria-hidden />
+        <div className="absolute -right-32 top-10 h-[520px] w-[520px] rounded-full bg-[hsl(var(--brand-red)/0.22)] blur-3xl" aria-hidden />
+        <div className="absolute -bottom-40 -left-24 h-[420px] w-[420px] rounded-full bg-[hsl(var(--pounamu)/0.35)] blur-3xl" aria-hidden />
+        <div className="wrap relative grid gap-14 py-20 sm:py-28 lg:grid-cols-12 lg:py-32">
+          <div className="lg:col-span-8">
+            <span className="eyebrow eyebrow-light">Kia ora — technology partner for NZ business</span>
+            <h1 className="h-display mt-6">
+              Software, AI and growth,{" "}
+              <span className="text-[hsl(var(--brand-red-light))]">built for how New Zealand works.</span>
+            </h1>
+            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-white/70 sm:text-xl">
+              We design and build the systems, automations and websites that help Kiwi businesses run leaner and
+              grow faster — with local accountability, fixed-scope pricing and code you own.
+            </p>
+            <div className="mt-10 flex flex-wrap gap-3">
+              <Link to="/contact" className="btn-primary">
+                Book a free consultation <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link to="/work" className="btn-outline-light">
+                See our work
+              </Link>
+            </div>
+          </div>
+          <div className="self-end lg:col-span-4">
+            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 text-sm">
+              {[
+                ["NZ", "based contact & hours"],
+                ["NZD", "fixed-scope proposals"],
+                ["100%", "code & data ownership"],
+                ["1 day", "response to enquiries"],
+              ].map(([k, v]) => (
+                <div key={v} className="bg-[hsl(var(--ink))] p-5">
+                  <dt className="font-display text-2xl font-semibold text-white">{k}</dt>
+                  <dd className="mt-1 text-white/55">{v}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <Badge className="mb-4">Our Services</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              What We Do Best
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              From concept to deployment, we deliver end-to-end digital solutions 
-              that drive business growth and user satisfaction.
+      {/* Services */}
+      <section className="py-20 sm:py-28">
+        <div className="wrap">
+          <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-7">
+              <span className="eyebrow">What we do</span>
+              <h2 className="h-section mt-4">Three capabilities. One accountable team.</h2>
+            </div>
+            <p className="lede lg:col-span-5">
+              Most businesses do not need ten vendors. They need one partner who can build the system, automate
+              the busywork and bring in the customers.
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <div
-                key={service.title}
-                className="card-elevated p-8 text-center group"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="text-4xl mb-4 transform group-hover:scale-110 transition-transform duration-200">
-                  {service.icon}
-                </div>
-                <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {service.description}
-                </p>
-              </div>
-            ))}
+          <div className="mt-14 grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-3">
+            {services.map((s, i) => {
+              const Icon = serviceIcons[s.slug];
+              return (
+                <Reveal key={s.slug} delay={i * 80} className="bg-white">
+                  <Link to={`/services#${s.slug}`} className="group flex h-full flex-col p-8 transition-colors hover:bg-surface sm:p-10">
+                    <div className="flex items-center justify-between">
+                      <Icon className="h-7 w-7 text-[hsl(var(--brand-red))]" strokeWidth={1.6} />
+                      <span className="font-display text-sm font-semibold text-muted-foreground">{s.eyebrow}</span>
+                    </div>
+                    <h3 className="mt-8 text-2xl font-semibold">{s.title}</h3>
+                    <p className="mt-3 flex-1 leading-relaxed text-muted-foreground">{s.summary}</p>
+                    <ul className="mt-6 space-y-2 border-t border-border pt-6 text-sm">
+                      {s.capabilities.slice(0, 4).map((c) => (
+                        <li key={c} className="flex gap-2.5">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[hsl(var(--brand-red))]" />
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                    <span className="link-arrow mt-8">
+                      Explore <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    </span>
+                  </Link>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section className="py-20 bg-surface/50">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between mb-16">
+      {/* Selected work */}
+      <section className="bg-surface py-20 sm:py-28">
+        <div className="wrap">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <Badge className="mb-4">Featured Work</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Projects We're Proud Of
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                Explore our latest work and see how we've helped businesses 
-                transform their digital presence.
-              </p>
+              <span className="eyebrow">Selected work</span>
+              <h2 className="h-section mt-4 max-w-2xl">Real systems, running real businesses.</h2>
             </div>
-            <Link to="/work" className="hidden md:block">
-              <Button variant="ghost" className="btn-ghost">
-                View All Projects
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+            <Link to="/work" className="link-arrow">
+              All case studies <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProjects.map((project, index) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                className={`card-elevated group overflow-hidden`}
-              />
+          <div className="mt-14 grid gap-x-8 gap-y-16 md:grid-cols-2">
+            {caseStudies.map((study, i) => (
+              <Reveal key={study.slug} delay={(i % 2) * 100}>
+                <CaseCard study={study} />
+              </Reveal>
             ))}
-          </div>
-
-          <div className="text-center mt-12 md:hidden">
-            <Link to="/work">
-              <Button className="btn-hero">
-                View All Projects
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* Technology Section */}
-      <TechGrid />
-
-      {/* Testimonials Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <Badge className="mb-4">Client Success</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              What Our Clients Say
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Don't just take our word for it. Here's what our clients 
-              have to say about working with us.
+      {/* Why Oreece */}
+      <section className="py-20 sm:py-28">
+        <div className="wrap grid gap-14 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <span className="eyebrow">Why Oreece</span>
+            <h2 className="h-section mt-4">Enterprise discipline, without the enterprise overhead.</h2>
+            <p className="lede mt-6">
+              You get the engineering standards large organisations expect — security, documentation, audit trails
+              — delivered by a team small enough to know your name.
             </p>
           </div>
+          <div className="grid gap-8 sm:grid-cols-2 lg:col-span-7">
+            {principles.map((p, i) => {
+              const Icon = principleIcons[i];
+              return (
+                <Reveal key={p.title} delay={i * 60} className="border-t-2 border-[hsl(var(--ink))] pt-6">
+                  <Icon className="h-6 w-6 text-[hsl(var(--brand-red))]" strokeWidth={1.6} />
+                  <h3 className="mt-4 text-lg font-semibold">{p.title}</h3>
+                  <p className="mt-2 leading-relaxed text-muted-foreground">{p.body}</p>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                quote: "Oreece transformed our digital presence completely. The results exceeded our expectations.",
-                author: "Sarah Johnson",
-                role: "CEO, TechCorp",
-                rating: 5
-              },
-              {
-                quote: "Professional, innovative, and delivered on time. Couldn't ask for a better partner.",
-                author: "Michael Chen",
-                role: "CTO, InnovateAI", 
-                rating: 5
-              },
-              {
-                quote: "The team's attention to detail and technical expertise is unmatched.",
-                author: "Emily Rodriguez",
-                role: "Product Manager, HealthPlus",
-                rating: 5
-              }
-            ].map((testimonial, index) => (
-              <div key={index} className="card-elevated p-8">
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-primary text-primary" />
-                  ))}
-                </div>
-                <blockquote className="text-lg mb-6 leading-relaxed">
-                  "{testimonial.quote}"
-                </blockquote>
-                <div className="flex items-center">
-                  <div>
-                    <div className="font-semibold">{testimonial.author}</div>
-                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                  </div>
-                </div>
-              </div>
+      {/* Process */}
+      <section className="bg-[hsl(var(--ink))] py-20 text-white sm:py-28">
+        <div className="wrap">
+          <span className="eyebrow eyebrow-light">How we work</span>
+          <h2 className="h-section mt-4 max-w-3xl">A predictable path from idea to impact.</h2>
+          <ol className="mt-14 grid gap-px overflow-hidden rounded-xl bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+            {process.map((p, i) => (
+              <li key={p.step} className="bg-[hsl(var(--ink))] p-8">
+                <span className="font-display text-sm font-semibold text-[hsl(var(--brand-red-light))]">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="mt-6 text-xl font-semibold">{p.step}</h3>
+                <p className="mt-3 leading-relaxed text-white/60">{p.body}</p>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-primary text-white">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to Start Your Next Project?
-          </h2>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Let's discuss how we can help you achieve your digital goals 
-            and transform your business.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/contact">
-              <Button className="bg-white text-primary hover:bg-white/90 px-8 py-4 text-lg font-semibold">
-                Get Started Today
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link to="/work">
-              <Button variant="ghost" className="text-white border-white hover:bg-white/10 px-8 py-4 text-lg">
-                View Our Work
-              </Button>
-            </Link>
+      {/* Industries */}
+      <section className="py-20 sm:py-24">
+        <div className="wrap grid gap-10 lg:grid-cols-12 lg:items-center">
+          <div className="lg:col-span-5">
+            <span className="eyebrow">Who we work with</span>
+            <h2 className="h-section mt-4">Built for the backbone of the NZ economy.</h2>
+            <p className="lede mt-5">
+              Small and medium enterprises that have outgrown off-the-shelf tools — and organisations ready to put AI
+              to work responsibly.
+            </p>
           </div>
+          <ul className="flex flex-wrap gap-3 lg:col-span-7 lg:justify-end">
+            {industries.map((i) => (
+              <li key={i} className="rounded-full border border-border px-5 py-2.5 text-sm font-medium">
+                {i}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-16 bg-foreground text-background">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8 mb-12">
-            <div className="md:col-span-2">
-              <h3 className="text-2xl font-bold mb-4">Oreece</h3>
-              <p className="text-background/80 max-w-md">
-                Building exceptional digital experiences that drive growth 
-                and deliver measurable results for forward-thinking businesses.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Services</h4>
-              <ul className="space-y-2 text-background/80">
-                <li><Link to="/services" className="hover:text-background transition-colors">Web Development</Link></li>
-                <li><Link to="/services" className="hover:text-background transition-colors">Mobile Apps</Link></li>
-                <li><Link to="/services" className="hover:text-background transition-colors">Cloud Solutions</Link></li>
-                <li><Link to="/services" className="hover:text-background transition-colors">Consulting</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-background/80">
-                <li><Link to="/about" className="hover:text-background transition-colors">About</Link></li>
-                <li><Link to="/work" className="hover:text-background transition-colors">Work</Link></li>
-                <li><Link to="/contact" className="hover:text-background transition-colors">Contact</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-background/20 pt-8 text-center text-background/60">
-            <p>&copy; 2024 Oreece. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-      
-      {/* Back to Top Button */}
-      <BackToTop />
-    </div>
+      <CtaBand />
+    </Layout>
   );
 };
 
