@@ -58,6 +58,10 @@ const Work = () => {
                 ))}
               </ul>
 
+              <p className="mt-8 text-sm text-muted-foreground">
+                <span className="font-semibold text-[hsl(var(--ink))]">Built with:</span> {c.stack.join(" · ")}
+              </p>
+
               {c.url && (
                 <a href={c.url} target="_blank" rel="noreferrer" className="btn-outline mt-10">
                   Visit {c.url.replace(/^https?:\/\//, "")} <ArrowUpRight className="h-4 w-4" />

@@ -93,6 +93,7 @@ export type CaseStudy = {
   stack: string[];
   services: ServiceSlug[];
   url?: string;
+  image?: string;
   status: string;
   tone: "ink" | "red" | "pounamu" | "sand";
 };
@@ -137,7 +138,9 @@ export const caseStudies: CaseStudy[] = [
     ],
     stack: ["React", "TanStack Start", "Supabase", "Tailwind CSS"],
     services: ["software", "marketing"],
-    status: "Delivered",
+    url: "https://rustezeautospa.co.nz",
+    image: "/work/rusteze.jpg",
+    status: "Live",
     tone: "red",
   },
   {
@@ -159,6 +162,7 @@ export const caseStudies: CaseStudy[] = [
     stack: ["Next.js", "React"],
     services: ["software", "marketing"],
     url: "https://luckyceylontour.com",
+    image: "/work/lucky-ceylon.jpg",
     status: "Live",
     tone: "sand",
   },

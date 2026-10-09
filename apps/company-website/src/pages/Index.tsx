@@ -20,7 +20,7 @@ const Index = () => {
         <div className="grid-lines absolute inset-0" aria-hidden />
         <div className="absolute -right-32 top-10 h-[520px] w-[520px] rounded-full bg-[hsl(var(--brand-red)/0.22)] blur-3xl" aria-hidden />
         <div className="absolute -bottom-40 -left-24 h-[420px] w-[420px] rounded-full bg-[hsl(var(--pounamu)/0.35)] blur-3xl" aria-hidden />
-        <div className="wrap relative grid gap-14 py-20 sm:py-28 lg:grid-cols-12 lg:py-32">
+        <div className="wrap relative grid gap-14 pb-16 pt-20 sm:pt-28 lg:grid-cols-12 lg:pt-32">
           <div className="lg:col-span-8">
             <span className="eyebrow eyebrow-light">Kia ora — technology partner for NZ business</span>
             <h1 className="h-display mt-6">
@@ -40,21 +40,29 @@ const Index = () => {
               </Link>
             </div>
           </div>
-          <div className="self-end lg:col-span-4">
-            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 text-sm">
-              {[
-                ["NZ", "based contact & hours"],
-                ["NZD", "fixed-scope proposals"],
-                ["100%", "code & data ownership"],
-                ["1 day", "response to enquiries"],
-              ].map(([k, v]) => (
-                <div key={v} className="bg-[hsl(var(--ink))] p-5">
-                  <dt className="font-display text-2xl font-semibold text-white">{k}</dt>
-                  <dd className="mt-1 text-white/55">{v}</dd>
-                </div>
-              ))}
-            </dl>
+          <div className="relative hidden lg:col-span-4 lg:block" aria-hidden>
+            <div className="absolute -left-10 top-6 w-[130%] rotate-[-4deg] overflow-hidden rounded-lg shadow-2xl ring-1 ring-white/10">
+              <img src="/work/lucky-ceylon.jpg" alt="" className="block w-full" />
+            </div>
+            <div className="absolute left-4 top-48 w-[130%] rotate-[3deg] overflow-hidden rounded-lg shadow-2xl ring-1 ring-white/10">
+              <img src="/work/rusteze.jpg" alt="" className="block w-full" />
+            </div>
           </div>
+        </div>
+        <div className="wrap relative pb-16">
+          <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 text-sm md:grid-cols-4">
+            {[
+              ["NZ", "based contact & hours"],
+              ["NZD", "fixed-scope proposals"],
+              ["100%", "code & data ownership"],
+              ["1 day", "response to enquiries"],
+            ].map(([k, v]) => (
+              <div key={v} className="bg-[hsl(var(--ink)/0.85)] p-5 backdrop-blur">
+                <dt className="font-display text-2xl font-semibold text-white">{k}</dt>
+                <dd className="mt-1 text-white/55">{v}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
