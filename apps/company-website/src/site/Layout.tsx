@@ -35,60 +35,59 @@ function Header() {
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 border-b bg-white/90 backdrop-blur transition-shadow ${
-        scrolled ? "border-border shadow-[0_1px_12px_hsl(222_47%_7%/0.06)]" : "border-transparent"
-      }`}
-    >
-      <div className="wrap flex h-[72px] items-center justify-between">
-        <Logo />
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
-          {nav.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `text-sm font-medium transition-colors ${
-                  isActive ? "text-[hsl(var(--ink))]" : "text-muted-foreground hover:text-[hsl(var(--ink))]"
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="hidden md:block">
-          <Link to="/contact" className="btn-dark py-2.5">
-            Talk to us <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <button
-          className="-mr-2 p-2 md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-label={open ? "Close menu" : "Open menu"}
-        >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
-      </div>
-      {open && (
-        <div className="border-t border-border bg-white md:hidden">
-          <nav className="wrap flex flex-col py-4" aria-label="Mobile">
-            {[...nav, { to: "/contact", label: "Contact" }].map((item) => (
-              <Link key={item.to} to={item.to} className="py-3 text-lg font-medium text-[hsl(var(--ink))]">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:pt-5">
+      <div
+        className={`nav-pill pointer-events-auto w-full max-w-[880px] rounded-xl bg-white transition-all duration-500 ${
+          scrolled ? "shadow-[0_12px_40px_-12px_hsl(222_47%_7%/0.28)]" : "shadow-[0_4px_24px_-12px_hsl(222_47%_7%/0.2)]"
+        }`}
+      >
+        <div className="flex h-14 items-center justify-between pl-4 pr-1.5 sm:h-[60px] sm:pl-5">
+          <Logo />
+          <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+            {nav.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) => `nav-link ${isActive ? "is-active" : ""}`}
+              >
                 {item.label}
-              </Link>
+              </NavLink>
             ))}
           </nav>
+          <Link to="/contact" className="btn-primary hidden rounded-lg px-5 py-2.5 md:inline-flex">
+            Contact us
+          </Link>
+          <button
+            className="mr-1 rounded-lg p-2.5 md:hidden"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
-      )}
+        <div className={`grid transition-[grid-template-rows] duration-300 md:hidden ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+          <nav className="overflow-hidden" aria-label="Mobile">
+            <div className="flex flex-col border-t border-border px-4 pb-4 pt-2">
+              {nav.map((item) => (
+                <Link key={item.to} to={item.to} className="py-3 text-lg font-medium text-[hsl(var(--ink))]">
+                  {item.label}
+                </Link>
+              ))}
+              <Link to="/contact" className="btn-primary mt-2">
+                Contact us
+              </Link>
+            </div>
+          </nav>
+        </div>
+      </div>
     </header>
   );
 }
@@ -156,7 +155,7 @@ export function Layout({ children }: { children: ReactNode }) {
         Skip to content
       </a>
       <Header />
-      <main id="main" className="flex-1 pt-[72px]">
+      <main id="main" className="flex-1">
         {children}
       </main>
       <Footer />
@@ -200,16 +199,42 @@ export function Reveal({ children, className = "", delay = 0 }: { children: Reac
 
 export function PageHero({ eyebrow, title, lede, children }: { eyebrow: string; title: ReactNode; lede: string; children?: ReactNode }) {
   return (
-    <section className="relative overflow-hidden bg-[hsl(var(--ink))] text-white">
-      <div className="grid-lines absolute inset-0" aria-hidden />
-      <div className="absolute -right-40 -top-40 h-[480px] w-[480px] rounded-full bg-[hsl(var(--brand-red)/0.18)] blur-3xl" aria-hidden />
-      <div className="wrap relative py-20 sm:py-28">
-        <span className="eyebrow eyebrow-light">{eyebrow}</span>
-        <h1 className="h-display mt-6 max-w-4xl">{title}</h1>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70 sm:text-xl">{lede}</p>
-        {children}
-      </div>
-    </section>
+    <div className="p-2">
+      <section className="hero-frame relative overflow-hidden rounded-2xl bg-[hsl(var(--ink))] text-white">
+        <div className="hero-aurora" aria-hidden />
+        <div className="grid-lines absolute inset-0" aria-hidden />
+        <div className="wrap relative pb-20 pt-36 sm:pb-24 sm:pt-44">
+          <span className="eyebrow eyebrow-light anim-fade-up">{eyebrow}</span>
+          <h1 className="h-display mt-6 max-w-4xl">
+            <SplitWords text={typeof title === "string" ? title : ""} fallback={title} />
+          </h1>
+          <p className="anim-fade-up mt-6 max-w-2xl text-lg leading-relaxed text-white/70 sm:text-xl" style={{ animationDelay: "450ms" }}>
+            {lede}
+          </p>
+          {children && (
+            <div className="anim-fade-up" style={{ animationDelay: "600ms" }}>
+              {children}
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/** Headline that rises in word by word on load. */
+export function SplitWords({ text, fallback, delay = 0 }: { text: string; fallback?: ReactNode; delay?: number }) {
+  if (!text) return <>{fallback}</>;
+  return (
+    <span aria-label={text}>
+      {text.split(" ").map((w, i) => (
+        <span key={i} className="inline-block overflow-hidden pb-[0.08em] align-bottom" aria-hidden>
+          <span className="word-rise inline-block" style={{ animationDelay: `${delay + i * 70}ms` }}>
+            {w}&nbsp;
+          </span>
+        </span>
+      ))}
+    </span>
   );
 }
 
