@@ -19,11 +19,14 @@ export function usePageMeta(title: string, description: string) {
 
 function Logo({ light = false }: { light?: boolean }) {
   return (
-    <Link to="/" className="flex items-center gap-2.5" aria-label="Oreece home">
-      <img src="/Oreece%20Icon.png" alt="" className="h-8 w-8" />
-      <span className={`font-display text-xl font-semibold tracking-tight ${light ? "text-white" : "text-[hsl(var(--ink))]"}`}>
-        Oreece
-      </span>
+    <Link to="/" className="flex items-center" aria-label="Oreece home">
+      <img
+        src={light ? "/oreece-wordmark-white.png" : "/oreece-wordmark-red.png"}
+        alt="Oreece"
+        width={546}
+        height={128}
+        className={light ? "h-8 w-auto" : "h-6 w-auto sm:h-7"}
+      />
     </Link>
   );
 }

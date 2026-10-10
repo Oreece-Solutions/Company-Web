@@ -9,9 +9,9 @@
 @layer base {
   :root {
     /* Brand */
-    --brand-red: 357 74% 50%;
-    --brand-red-dark: 357 74% 42%;
-    --brand-red-light: 357 80% 62%;
+    --brand-red: 350 100% 46%;
+    --brand-red-dark: 350 100% 38%;
+    --brand-red-light: 350 100% 64%;
     --ink: 222 47% 7%;
     --ink-soft: 222 30% 14%;
     --pounamu: 165 42% 28%;
