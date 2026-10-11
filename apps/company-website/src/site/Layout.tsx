@@ -41,6 +41,20 @@ function Header() {
   const { pathname } = useLocation();
 
   useEffect(() => setOpen(false), [pathname]);
+  // Full-screen menu: lock page scroll, hide the WhatsApp bubble and close on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.body.dataset.menuOpen = "";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      delete document.body.dataset.menuOpen;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
   // Hide while scrolling down, slide back in on any scroll up.
   useEffect(() => {
     let last = window.scrollY;
@@ -58,55 +72,86 @@ function Header() {
   }, []);
 
   return (
-    <header
-      className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 transition-transform duration-500 ease-[cubic-bezier(0.22,0.9,0.35,1)] sm:pt-5 ${
-        hidden && !open ? "-translate-y-[130%]" : ""
-      }`}
-    >
-      <div
-        className={`nav-pill pointer-events-auto w-full max-w-[960px] rounded-xl bg-white transition-all duration-500 ${
-          scrolled ? "shadow-[0_12px_40px_-12px_hsl(222_47%_7%/0.28)]" : "shadow-[0_4px_24px_-12px_hsl(222_47%_7%/0.2)]"
+    <>
+      <MobileMenu open={open} />
+      <header
+        className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 transition-transform duration-500 ease-[cubic-bezier(0.22,0.9,0.35,1)] sm:pt-5 ${
+          hidden && !open ? "-translate-y-[130%]" : ""
         }`}
       >
-        <div className="flex h-14 items-center justify-between pl-4 pr-1.5 sm:h-[60px] sm:pl-5">
-          <Logo />
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
-            {nav.map((item) => (
-              <NavLink key={item.to} to={item.to} className={({ isActive }) => `nav-link ${isActive ? "is-active" : ""}`}>
-                {tr(item.label)}
-              </NavLink>
-            ))}
-          </nav>
-          <LangToggle className="ml-auto mr-2 hidden md:ml-0 md:inline-flex" />
-          <Link to="/contact" className="btn-primary hidden rounded-lg px-5 py-2.5 md:inline-flex">
-            {tr("Let’s talk")}
-          </Link>
-          <button
-            className="mr-1 rounded-lg p-2.5 md:hidden"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-label={open ? tr("Close menu") : tr("Open menu")}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-        <div className={`grid transition-[grid-template-rows] duration-300 md:hidden ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-          <nav className="overflow-hidden" aria-label="Mobile">
-            <div className="flex flex-col border-t border-border px-4 pb-4 pt-2">
+        <div
+          className={`nav-pill pointer-events-auto w-full max-w-[960px] rounded-xl bg-white transition-all duration-500 ${
+            scrolled ? "shadow-[0_12px_40px_-12px_hsl(222_47%_7%/0.28)]" : "shadow-[0_4px_24px_-12px_hsl(222_47%_7%/0.2)]"
+          }`}
+        >
+          <div className="flex h-14 items-center justify-between pl-4 pr-1.5 sm:h-[60px] sm:pl-5">
+            <Logo />
+            <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
               {nav.map((item) => (
-                <Link key={item.to} to={item.to} className="py-3 text-lg font-medium text-[hsl(var(--ink))]">
+                <NavLink key={item.to} to={item.to} className={({ isActive }) => `nav-link ${isActive ? "is-active" : ""}`}>
                   {tr(item.label)}
-                </Link>
+                </NavLink>
               ))}
-              <LangToggle className="mt-2 self-start" />
-              <Link to="/contact" className="btn-primary mt-3">
-                {tr("Let’s talk")}
-              </Link>
-            </div>
-          </nav>
+            </nav>
+            <LangToggle className="ml-auto mr-2 hidden md:ml-0 md:inline-flex" />
+            <Link to="/contact" className="btn-primary hidden rounded-lg px-5 py-2.5 md:inline-flex">
+              {tr("Let’s talk")}
+            </Link>
+            <Burger open={open} onClick={() => setOpen((v) => !v)} label={open ? tr("Close menu") : tr("Open menu")} />
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
+  );
+}
+
+function Burger({ open, onClick, label }: { open: boolean; onClick: () => void; label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-expanded={open}
+      aria-controls="mobile-menu"
+      aria-label={label}
+      className={`burger mr-0.5 md:hidden ${open ? "is-open" : ""}`}
+    >
+      <span className="burger-line burger-top" />
+      <span className="burger-line burger-bottom" />
+    </button>
+  );
+}
+
+function MobileMenu({ open }: { open: boolean }) {
+  const tr = useT();
+  const tab = open ? 0 : -1;
+  return (
+    <div id="mobile-menu" className={`m-menu md:hidden ${open ? "is-open" : ""}`} aria-hidden={!open}>
+      <nav aria-label="Mobile" className="wrap flex min-h-full flex-col pb-6 pt-24">
+        <ul className="border-t border-border">
+          {nav.map((item, i) => (
+            <li key={item.to} className="m-menu-item border-b border-border" style={{ transitionDelay: open ? `${140 + i * 55}ms` : "0ms" }}>
+              <NavLink to={item.to} tabIndex={tab} className={({ isActive }) => `m-menu-link group ${isActive ? "is-active" : ""}`}>
+                <span className="w-7 text-xs font-semibold tabular-nums text-[hsl(var(--ink)/0.35)]">0{i + 1}</span>
+                <span className="m-menu-text">{tr(item.label)}</span>
+                <ArrowRight className="ml-auto h-5 w-5 -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 group-[.is-active]:translate-x-0 group-[.is-active]:opacity-100" />
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+        <div className="m-menu-item mt-auto pt-10" style={{ transitionDelay: open ? "380ms" : "0ms" }}>
+          <a href={`mailto:${company.email}`} tabIndex={tab} className="mb-4 block text-sm font-semibold text-[hsl(var(--ink)/0.6)] hover:text-[hsl(var(--brand-red))]">
+            {company.email}
+          </a>
+          <Link to="/contact" tabIndex={tab} className="btn-primary w-full justify-center rounded-xl py-4 text-base">
+            {tr("Let’s talk")} <ArrowRight className="h-4 w-4" />
+          </Link>
+          <div className="mt-5 flex items-center justify-between">
+            <LangToggle />
+            <SocialLinks light />
+          </div>
+        </div>
+      </nav>
+    </div>
   );
 }
 
@@ -199,7 +244,7 @@ export function Layout({ children }: { children: ReactNode }) {
         target="_blank"
         rel="noreferrer"
         aria-label="Chat with Oreece on WhatsApp"
-        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_-8px_rgba(37,211,102,0.7)] transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
+        className="wa-float fixed bottom-5 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_-8px_rgba(37,211,102,0.7)] transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
       >
         <WhatsAppIcon className="h-7 w-7" />
       </a>
@@ -372,11 +417,11 @@ const socialPaths: Record<string, string> = {
     "M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z",
 };
 
-function SocialLinks() {
+function SocialLinks({ light = false }: { light?: boolean }) {
   const live = socials.filter((s) => s.url);
   if (!live.length) return null;
   return (
-    <div className="mt-6 flex gap-3">
+    <div className={light ? "flex gap-2" : "mt-6 flex gap-3"}>
       {live.map((s) => (
         <a
           key={s.name}
@@ -384,7 +429,11 @@ function SocialLinks() {
           target="_blank"
           rel="noreferrer"
           aria-label={`Oreece on ${s.name}`}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-white hover:text-white"
+          className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${
+            light
+              ? "border-border text-[hsl(var(--ink)/0.6)] hover:border-[hsl(var(--brand-red))] hover:text-[hsl(var(--brand-red))]"
+              : "border-white/15 text-white/70 hover:border-white hover:text-white"
+          }`}
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden>
             <path d={socialPaths[s.name]} />
