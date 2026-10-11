@@ -1,13 +1,15 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { ArrowRight, Menu, X } from "lucide-react";
-import { company, services, socials } from "./content";
+import { ArrowRight, ArrowUp, ChevronRight, Menu, X } from "lucide-react";
+import { company, industries, services, socials } from "./content";
+import { Silk } from "./Silk";
+import { LangToggle, useT } from "./i18n";
 
 const nav = [
   { to: "/services", label: "Services" },
   { to: "/work", label: "Work" },
+  { to: "/industries", label: "Industries" },
   { to: "/about", label: "About" },
-  { to: "/careers", label: "Careers" },
 ];
 
 export function usePageMeta(title: string, description: string) {
@@ -32,22 +34,37 @@ function Logo({ light = false }: { light?: boolean }) {
 }
 
 function Header() {
+  const tr = useT();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const { pathname } = useLocation();
 
   useEffect(() => setOpen(false), [pathname]);
+  // Hide while scrolling down, slide back in on any scroll up.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      if (Math.abs(y - last) > 6) {
+        setHidden(y > last && y > 120);
+        last = y;
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:pt-5">
+    <header
+      className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 transition-transform duration-500 ease-[cubic-bezier(0.22,0.9,0.35,1)] sm:pt-5 ${
+        hidden && !open ? "-translate-y-[130%]" : ""
+      }`}
+    >
       <div
-        className={`nav-pill pointer-events-auto w-full max-w-[880px] rounded-xl bg-white transition-all duration-500 ${
+        className={`nav-pill pointer-events-auto w-full max-w-[960px] rounded-xl bg-white transition-all duration-500 ${
           scrolled ? "shadow-[0_12px_40px_-12px_hsl(222_47%_7%/0.28)]" : "shadow-[0_4px_24px_-12px_hsl(222_47%_7%/0.2)]"
         }`}
       >
@@ -55,23 +72,20 @@ function Header() {
           <Logo />
           <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
             {nav.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => `nav-link ${isActive ? "is-active" : ""}`}
-              >
-                {item.label}
+              <NavLink key={item.to} to={item.to} className={({ isActive }) => `nav-link ${isActive ? "is-active" : ""}`}>
+                {tr(item.label)}
               </NavLink>
             ))}
           </nav>
+          <LangToggle className="ml-auto mr-2 hidden md:ml-0 md:inline-flex" />
           <Link to="/contact" className="btn-primary hidden rounded-lg px-5 py-2.5 md:inline-flex">
-            Contact us
+            {tr("Let’s talk")}
           </Link>
           <button
             className="mr-1 rounded-lg p-2.5 md:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? tr("Close menu") : tr("Open menu")}
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -81,11 +95,12 @@ function Header() {
             <div className="flex flex-col border-t border-border px-4 pb-4 pt-2">
               {nav.map((item) => (
                 <Link key={item.to} to={item.to} className="py-3 text-lg font-medium text-[hsl(var(--ink))]">
-                  {item.label}
+                  {tr(item.label)}
                 </Link>
               ))}
-              <Link to="/contact" className="btn-primary mt-2">
-                Contact us
+              <LangToggle className="mt-2 self-start" />
+              <Link to="/contact" className="btn-primary mt-3">
+                {tr("Let’s talk")}
               </Link>
             </div>
           </nav>
@@ -96,6 +111,7 @@ function Header() {
 }
 
 function Footer() {
+  const tr = useT();
   const year = new Date().getFullYear();
   return (
     <footer className="bg-[hsl(var(--ink))] text-white">
@@ -103,39 +119,55 @@ function Footer() {
         <div className="md:col-span-4">
           <Logo light />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/60">
-            Software, AI and growth for New Zealand businesses. Local accountability, backed by a dedicated
-            delivery team.
+            {tr("Software, AI and growth for New Zealand businesses. Local accountability, backed by a dedicated delivery team.")}
           </p>
           <div className="mt-6 flex flex-col gap-2 text-sm font-semibold">
             <a href={`mailto:${company.email}`} className="hover:underline">{company.email}</a>
             <a href={company.phoneHref} className="hover:underline">{company.phone}</a>
             <a href={company.whatsapp} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-[#4ade80] hover:underline">
-              <WhatsAppIcon className="h-4 w-4" /> Chat on WhatsApp
+              <WhatsAppIcon className="h-4 w-4" /> {tr("Chat on WhatsApp")}
             </a>
           </div>
           <SocialLinks />
+          <LangToggle dark className="mt-6" />
         </div>
-        <FooterCol title="Services">
+        <FooterCol title={tr("Services")}>
           {services.map((s) => (
-            <Link key={s.slug} to={`/services#${s.slug}`}>{s.title}</Link>
+            <Link key={s.slug} to={`/services#${s.slug}`}>{tr(s.title)}</Link>
           ))}
         </FooterCol>
-        <FooterCol title="Company">
-          <Link to="/work">Our work</Link>
-          <Link to="/about">About</Link>
-          <Link to="/careers">Careers</Link>
-          <Link to="/contact">Contact</Link>
-        </FooterCol>
-        <FooterCol title="Where we work">
-          {company.regions.map((r) => (
-            <span key={r}>{r}</span>
+        <FooterCol title={tr("Industries")}>
+          {industries.map((i) => (
+            <Link key={i.slug} to={`/industries#${i.slug}`}>{tr(i.name)}</Link>
           ))}
         </FooterCol>
+        <FooterCol title={tr("Company")}>
+          <Link to="/work">{tr("Our work")}</Link>
+          <Link to="/about">{tr("About")}</Link>
+          <Link to="/trust">{tr("Trust & security")}</Link>
+          <Link to="/careers">{tr("Careers")}</Link>
+          <Link to="/contact">{tr("Contact")}</Link>
+          <Link to="/contact?type=rfp">{tr("Submit an RFP")}</Link>
+        </FooterCol>
+      </div>
+      <div className="wrap border-t border-white/10 py-6 text-sm text-white/60">
+        <span className="font-semibold text-white/80">{tr("Where we work:")}</span> {company.regions.join(" · ")} · {tr("Meetings in person or on video")}
       </div>
       <div className="border-t border-white/10">
         <div className="wrap flex flex-col gap-2 py-6 text-xs text-white/50 sm:flex-row sm:justify-between">
-          <span>© {year} {company.legalName}. All rights reserved.</span>
-          <span>Prices quoted in NZD, excluding GST.</span>
+          <span>© {year} {company.legalName}. {tr("All rights reserved.")}</span>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link to="/privacy" className="hover:text-white">{tr("Privacy")}</Link>
+            <Link to="/trust" className="hover:text-white">{tr("Security")}</Link>
+            <span>{tr("Prices quoted in NZD, excluding GST.")}</span>
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="inline-flex items-center gap-1 font-semibold text-white/70 hover:text-white"
+            >
+              {tr("Back to top")} <ArrowUp className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </footer>
@@ -144,7 +176,7 @@ function Footer() {
 
 function FooterCol({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="md:col-span-2 lg:col-span-2 [&:nth-child(2)]:md:col-span-3 [&:nth-child(4)]:md:col-span-3">
+    <div className="md:col-span-3 [&:nth-child(4)]:md:col-span-2">
       <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-white/40">{title}</h3>
       <div className="mt-4 flex flex-col gap-3 text-sm text-white/75 [&_a:hover]:text-white">{children}</div>
     </div>
@@ -200,13 +232,28 @@ export function Reveal({ children, className = "", delay = 0 }: { children: Reac
   );
 }
 
-export function PageHero({ eyebrow, title, lede, children }: { eyebrow: string; title: ReactNode; lede: string; children?: ReactNode }) {
+export type Crumb = { to?: string; label: string };
+
+export function PageHero({
+  eyebrow,
+  title,
+  lede,
+  crumbs,
+  children,
+}: {
+  eyebrow: string;
+  title: ReactNode;
+  lede: string;
+  crumbs?: Crumb[];
+  children?: ReactNode;
+}) {
   return (
     <div className="p-2">
       <section className="hero-frame relative overflow-hidden rounded-2xl bg-[hsl(var(--ink))] text-white">
         <div className="hero-aurora" aria-hidden />
         <div className="grid-lines absolute inset-0" aria-hidden />
         <div className="wrap relative pb-20 pt-36 sm:pb-24 sm:pt-44">
+          {crumbs && <Breadcrumbs items={crumbs} />}
           <span className="eyebrow eyebrow-light anim-fade-up">{eyebrow}</span>
           <h1 className="h-display mt-6 max-w-4xl">
             <SplitWords text={typeof title === "string" ? title : ""} fallback={title} />
@@ -222,6 +269,29 @@ export function PageHero({ eyebrow, title, lede, children }: { eyebrow: string; 
         </div>
       </section>
     </div>
+  );
+}
+
+function Breadcrumbs({ items }: { items: Crumb[] }) {
+  const tr = useT();
+  return (
+    <nav aria-label="Breadcrumb" className="anim-fade-up mb-6">
+      <ol className="flex flex-wrap items-center gap-1.5 text-sm text-white/55">
+        <li>
+          <Link to="/" className="hover:text-white">{tr("Home")}</Link>
+        </li>
+        {items.map((c) => (
+          <li key={c.label} className="flex items-center gap-1.5">
+            <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+            {c.to ? (
+              <Link to={c.to} className="hover:text-white">{tr(c.label)}</Link>
+            ) : (
+              <span aria-current="page" className="text-white/85">{tr(c.label)}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
   );
 }
 
@@ -242,29 +312,42 @@ export function SplitWords({ text, fallback, delay = 0 }: { text: string; fallba
 }
 
 export function CtaBand() {
+  const tr = useT();
   return (
-    <section className="bg-surface">
-      <div className="wrap py-20 sm:py-24">
-        <div className="relative overflow-hidden rounded-2xl bg-[hsl(var(--brand-red))] px-6 py-14 text-white sm:px-14">
-          <div className="grid-lines absolute inset-0 opacity-60" aria-hidden />
-          <div className="relative flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl">
-              <h2 className="h-section">Have a project in mind?</h2>
-              <p className="mt-4 text-lg text-white/85">
-                Tell us what you are trying to achieve. We will come back within one business day with honest
-                advice and next steps — no obligation.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/contact" className="btn bg-white text-[hsl(var(--ink))] hover:bg-white/90">
-                Start a conversation <ArrowRight className="h-4 w-4" />
-              </Link>
-              <a href={`mailto:${company.email}`} className="btn-outline-light">
-                {company.email}
-              </a>
-            </div>
+    <section className="py-16 sm:py-24">
+      <div className="mx-auto grid max-w-[1400px] gap-5 px-3 sm:px-5 lg:grid-cols-[1fr_2fr]">
+        <Link
+          to="/careers"
+          className="group relative flex min-h-[340px] flex-col overflow-hidden rounded-2xl bg-[hsl(var(--ink))] p-8 text-white sm:p-10"
+        >
+          <div className="grid-lines absolute inset-0" aria-hidden />
+          <span className="pill-label relative border-white/20">{tr("Careers")}</span>
+          <h2 className="relative mt-auto text-3xl font-semibold leading-tight sm:text-4xl">{tr("Want to build with us?")}</h2>
+          <span className="relative mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white/70 transition-colors group-hover:text-white">
+            {tr("Explore opportunities")} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </span>
+        </Link>
+
+        <Link
+          to="/contact"
+          className="group relative flex min-h-[340px] flex-col overflow-hidden rounded-2xl p-8 text-white sm:min-h-[420px] sm:p-12"
+        >
+          <Silk className="transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" aria-hidden />
+          <span className="pill-label relative border-white/25 bg-black/15 backdrop-blur-sm">{tr("Get in touch")}</span>
+          <div className="relative mt-auto">
+            <p className="text-xl font-light text-white/90 sm:text-3xl">{tr("Have a project in mind?")}</p>
+            <p className="mt-2 flex items-center gap-4 font-display text-5xl font-semibold tracking-tight sm:text-7xl">
+              {tr("Let’s talk")}
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[hsl(var(--brand-red))] transition-transform duration-300 group-hover:translate-x-2 group-hover:-rotate-45 sm:h-16 sm:w-16">
+                <ArrowRight className="h-6 w-6 sm:h-7 sm:w-7" />
+              </span>
+            </p>
+            <p className="mt-5 max-w-xl text-white/80">
+              {tr("Honest advice and next steps within one business day — no obligation.")}
+            </p>
           </div>
-        </div>
+        </Link>
       </div>
     </section>
   );

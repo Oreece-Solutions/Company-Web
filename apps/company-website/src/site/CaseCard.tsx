@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import type { CaseStudy } from "./content";
+import { useT } from "./i18n";
 
 const tones: Record<CaseStudy["tone"], { bg: string; fg: string; sub: string }> = {
   ink: { bg: "bg-[hsl(var(--ink))]", fg: "text-white", sub: "text-white/55" },
@@ -118,8 +119,9 @@ export function CaseCover({ study, large = false }: { study: CaseStudy; large?: 
 }
 
 export function CaseCard({ study }: { study: CaseStudy }) {
+  const tr = useT();
   return (
-    <Link to={`/work#${study.slug}`} className="group block">
+    <Link to={`/work/${study.slug}`} className="group block">
       <div className="transition-transform duration-300 group-hover:-translate-y-1">
         <CaseCover study={study} />
       </div>
@@ -135,7 +137,7 @@ export function CaseCard({ study }: { study: CaseStudy }) {
       </h3>
       <p className="mt-2 text-muted-foreground">{study.summary}</p>
       <span className="link-arrow mt-4">
-        Read the case study <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        {tr("Read the case study")} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </span>
     </Link>
   );

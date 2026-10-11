@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Layout, PageHero, usePageMeta } from "../site/Layout";
 import { company } from "../site/content";
+import { useT } from "../site/i18n";
 
 const roles = [
   {
@@ -18,20 +19,22 @@ const perks = [
 ];
 
 const Careers = () => {
+  const tr = useT();
   usePageMeta("Careers", "Join Oreece and build software, automation and AI for New Zealand businesses.");
 
   return (
     <Layout>
       <PageHero
-        eyebrow="Careers"
-        title="Do the best work of your career, on work that matters."
-        lede="We are a small team building systems that real businesses run on every day. If you care about craft, clarity and the people who use what you build, we would like to hear from you."
+        crumbs={[{ label: "Careers" }]}
+        eyebrow={tr("Careers")}
+        title={tr("Do the best work of your career, on work that matters.")}
+        lede={tr("We are a small team building systems that real businesses run on every day. If you care about craft, clarity and the people who use what you build, we would like to hear from you.")}
       />
 
       <section className="py-20 sm:py-28">
         <div className="wrap grid gap-14 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            <span className="eyebrow">Why join us</span>
+            <span className="eyebrow">{tr("Why join us")}</span>
             <ul className="mt-6 space-y-4">
               {perks.map((p) => (
                 <li key={p} className="border-b border-border pb-4 text-lg font-medium">
@@ -41,7 +44,7 @@ const Careers = () => {
             </ul>
           </div>
           <div className="lg:col-span-6 lg:col-start-7">
-            <span className="eyebrow">Open roles</span>
+            <span className="eyebrow">{tr("Open roles")}</span>
             <div className="mt-6 space-y-4">
               {roles.map((r) => (
                 <a

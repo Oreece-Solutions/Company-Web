@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Layout, PageHero, Reveal, CtaBand, usePageMeta } from "../site/Layout";
 import { company, principles } from "../site/content";
+import { useT } from "../site/i18n";
 
 const values = [
   { word: "Manaakitanga", meaning: "Looking after people", body: "We treat your team, your customers and your data with care and respect." },
@@ -10,6 +11,7 @@ const values = [
 ];
 
 const About = () => {
+  const tr = useT();
   usePageMeta(
     "About",
     "Oreece is a technology partner for New Zealand businesses, combining local accountability with a dedicated delivery team.",
@@ -18,16 +20,17 @@ const About = () => {
   return (
     <Layout>
       <PageHero
-        eyebrow="About Oreece"
-        title="A technology partner that stays accountable."
-        lede="Oreece helps New Zealand businesses design, build and run the software, automation and marketing they need to compete — with the standards of a large consultancy and the attention of a small one."
+        crumbs={[{ label: "About" }]}
+        eyebrow={tr("About Oreece")}
+        title={tr("A technology partner that stays accountable.")}
+        lede={tr("Oreece helps New Zealand businesses design, build and run the software, automation and marketing they need to compete — with the standards of a large consultancy and the attention of a small one.")}
       />
 
       <section className="py-20 sm:py-28">
         <div className="wrap grid gap-14 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            <span className="eyebrow">Our story</span>
-            <h2 className="h-section mt-4">Built to close the gap between ambition and capability.</h2>
+            <span className="eyebrow">{tr("Our story")}</span>
+            <h2 className="h-section mt-4">{tr("Built to close the gap between ambition and capability.")}</h2>
           </div>
           <div className="space-y-6 text-lg leading-relaxed text-muted-foreground lg:col-span-7">
             <p>
@@ -49,8 +52,8 @@ const About = () => {
 
       <section className="bg-surface py-20 sm:py-28">
         <div className="wrap">
-          <span className="eyebrow">What guides us</span>
-          <h2 className="h-section mt-4 max-w-3xl">Values we can be held to.</h2>
+          <span className="eyebrow">{tr("What guides us")}</span>
+          <h2 className="h-section mt-4 max-w-3xl">{tr("Values we can be held to.")}</h2>
           <div className="mt-14 grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-3">
             {values.map((v, i) => (
               <Reveal key={v.word} delay={i * 80} className="bg-white p-8 sm:p-10">
@@ -63,7 +66,7 @@ const About = () => {
           <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {principles.map((p) => (
               <div key={p.title} className="border-t-2 border-[hsl(var(--ink))] pt-5">
-                <h3 className="font-semibold">{p.title}</h3>
+                <h3 className="font-semibold">{tr(p.title)}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
               </div>
             ))}
@@ -82,9 +85,9 @@ const About = () => {
             />
           </div>
           <div className="lg:col-span-7 lg:col-start-6">
-            <span className="eyebrow">Leadership</span>
+            <span className="eyebrow">{tr("Leadership")}</span>
             <h2 className="h-section mt-4">Nishan Gamage</h2>
-            <p className="mt-2 font-semibold text-muted-foreground">Founder & CEO</p>
+            <p className="mt-2 font-semibold text-muted-foreground">{tr("Founder & CEO")}</p>
             <p className="lede mt-6">
               Nishan founded Oreece to help businesses scale and grow in the digital world. He leads client
               relationships and solution design, and personally oversees every engagement from first conversation to

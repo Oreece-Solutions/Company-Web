@@ -3,7 +3,9 @@ import { ArrowRight, ShieldCheck, MapPin, FileCheck2, KeyRound } from "lucide-re
 import { Layout, Reveal, CtaBand, SplitWords, usePageMeta } from "../site/Layout";
 import { CaseCard } from "../site/CaseCard";
 import { HorizontalScroller, ScrollWords, ServiceArt } from "../site/Motion";
-import { caseStudies, industries, principles, process, services } from "../site/content";
+import { FaqList } from "../site/Faq";
+import { caseStudies, faqs, industries, principles, process, services, technologies } from "../site/content";
+import { useT } from "../site/i18n";
 
 const principleIcons = [MapPin, FileCheck2, KeyRound, ShieldCheck];
 
@@ -14,6 +16,7 @@ const cardStyle = {
 };
 
 const Index = () => {
+  const tr = useT();
   usePageMeta(
     "Oreece",
     "Oreece builds custom software, AI automation and digital marketing for New Zealand businesses. Local accountability, fixed-scope proposals and code you own.",
@@ -40,20 +43,19 @@ const Index = () => {
           </div>
 
           <div className="wrap relative mt-auto pb-10 pt-40 sm:pb-14">
-            <span className="eyebrow eyebrow-light anim-fade-up">Kia ora — technology partner for NZ business</span>
+            <span className="eyebrow eyebrow-light anim-fade-up">{tr("Kia ora — technology partner for NZ business")}</span>
             <h1 className="mt-6 max-w-[50rem] text-[2.6rem] font-semibold leading-[1.02] sm:text-6xl lg:text-[4.75rem] xl:text-[5.25rem]">
-              <SplitWords text="Software, AI and growth built for how New Zealand works." delay={150} />
+              <SplitWords text={tr("Software, AI and growth built for how New Zealand works.")} delay={150} />
             </h1>
             <p className="anim-fade-up mt-7 max-w-xl text-lg leading-relaxed text-white/70 sm:text-xl" style={{ animationDelay: "700ms" }}>
-              We design and build the systems, automations and websites that help Kiwi businesses run leaner and grow
-              faster.
+              {tr("We design and build the systems, automations and websites that help Kiwi businesses run leaner and grow faster.")}
             </p>
             <div className="anim-fade-up mt-9 flex flex-wrap gap-3" style={{ animationDelay: "850ms" }}>
               <Link to="/contact" className="btn-primary">
-                Book a free consultation <ArrowRight className="h-4 w-4" />
+                {tr("Book a free consultation")} <ArrowRight className="h-4 w-4" />
               </Link>
               <Link to="/work" className="btn-outline-light">
-                See our work
+                {tr("See our work")}
               </Link>
             </div>
           </div>
@@ -66,7 +68,7 @@ const Index = () => {
           {caseStudies.slice(0, 3).map((c, i) => (
             <Link
               key={c.slug}
-              to={`/work#${c.slug}`}
+              to={`/work/${c.slug}`}
               className={`group flex h-28 items-center justify-center border-border px-4 text-center sm:h-36 ${i % 2 === 0 ? "border-r" : ""} ${i < 2 ? "border-b lg:border-b-0" : ""} lg:border-r`}
             >
               <span className="font-display text-lg font-semibold tracking-tight text-[hsl(var(--ink)/0.55)] transition-colors group-hover:text-[hsl(var(--ink))] sm:text-2xl">
@@ -75,18 +77,18 @@ const Index = () => {
             </Link>
           ))}
           <Link to="/contact" className="group flex h-28 items-center justify-center gap-2 px-4 text-center sm:h-36">
-            <span className="font-display text-lg font-semibold tracking-tight text-[hsl(var(--brand-red))] sm:text-2xl">Your business next</span>
+            <span className="font-display text-lg font-semibold tracking-tight text-[hsl(var(--brand-red))] sm:text-2xl">{tr("Your business next")}</span>
             <ArrowRight className="h-5 w-5 text-[hsl(var(--brand-red))] transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
       </section>
 
       {/* Statement */}
-      <section className="py-24 sm:py-36">
+      <section className="glow-soft py-24 sm:py-36">
         <div className="wrap">
           <ScrollWords
             className="mx-auto max-w-5xl text-center font-display text-3xl font-semibold leading-[1.15] tracking-tight sm:text-5xl lg:text-[3.6rem]"
-            text="Ambitious New Zealand businesses use Oreece to replace busywork with software, put AI to work responsibly and turn attention into customers."
+            text={tr("Ambitious New Zealand businesses use Oreece to replace busywork with software, put AI to work responsibly and turn attention into customers.")}
           />
         </div>
       </section>
@@ -102,7 +104,7 @@ const Index = () => {
                 <div className={`relative grid h-full overflow-hidden rounded-2xl p-8 sm:p-10 ${st.box} ${wide ? "lg:grid-cols-2 lg:gap-12" : ""}`}>
                   <div className="flex flex-col">
                     <div className="flex items-baseline justify-between gap-4">
-                      <h2 className="text-3xl font-semibold sm:text-4xl">{s.title}</h2>
+                      <h2 className="text-3xl font-semibold sm:text-4xl">{tr(s.title)}</h2>
                       <span className="font-display text-sm font-semibold opacity-50">{s.eyebrow}</span>
                     </div>
                     <p className="mt-4 max-w-lg leading-relaxed opacity-70">{s.summary}</p>
@@ -133,11 +135,11 @@ const Index = () => {
           header={
             <div className="wrap flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <span className="eyebrow">Selected work</span>
-                <h2 className="h-section mt-4 max-w-2xl">Real systems, running real businesses.</h2>
+                <span className="eyebrow">{tr("Selected work")}</span>
+                <h2 className="h-section mt-4 max-w-2xl">{tr("Real systems, running real businesses.")}</h2>
               </div>
               <Link to="/work" className="link-arrow">
-                All case studies <ArrowRight className="h-4 w-4" />
+                {tr("All case studies")} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           }
@@ -154,12 +156,15 @@ const Index = () => {
       <section className="py-20 sm:py-28">
         <div className="wrap grid gap-14 lg:grid-cols-12">
           <Reveal className="lg:col-span-5">
-            <span className="eyebrow">Why Oreece</span>
-            <h2 className="h-section mt-4">Enterprise discipline, without the enterprise overhead.</h2>
+            <span className="eyebrow">{tr("Why Oreece")}</span>
+            <h2 className="h-section mt-4">{tr("Enterprise discipline, without the enterprise overhead.")}</h2>
             <p className="lede mt-6">
               The engineering standards large organisations expect — security, documentation, audit trails — delivered
               by a team small enough to know your name.
             </p>
+            <Link to="/trust" className="link-arrow mt-8">
+              {tr("Our security practices")} <ArrowRight className="h-4 w-4" />
+            </Link>
           </Reveal>
           <div className="grid gap-8 sm:grid-cols-2 lg:col-span-7">
             {principles.map((p, i) => {
@@ -167,7 +172,7 @@ const Index = () => {
               return (
                 <Reveal key={p.title} delay={i * 90} className="border-t-2 border-[hsl(var(--ink))] pt-6">
                   <Icon className="h-6 w-6 text-[hsl(var(--brand-red))]" strokeWidth={1.6} />
-                  <h3 className="mt-4 text-lg font-semibold">{p.title}</h3>
+                  <h3 className="mt-4 text-lg font-semibold">{tr(p.title)}</h3>
                   <p className="mt-2 leading-relaxed text-muted-foreground">{p.body}</p>
                 </Reveal>
               );
@@ -182,15 +187,15 @@ const Index = () => {
           <div className="grid-lines absolute inset-0" aria-hidden />
           <div className="wrap relative">
             <Reveal>
-              <span className="eyebrow eyebrow-light">How we work</span>
-              <h2 className="h-section mt-4 max-w-3xl">A predictable path from idea to impact.</h2>
+              <span className="eyebrow eyebrow-light">{tr("How we work")}</span>
+              <h2 className="h-section mt-4 max-w-3xl">{tr("A predictable path from idea to impact.")}</h2>
             </Reveal>
             <ol className="mt-14 grid gap-px overflow-hidden rounded-xl bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
               {process.map((p, i) => (
                 <Reveal key={p.step} delay={i * 120} className="bg-[hsl(var(--ink))]">
                   <li className="h-full p-8">
                     <span className="font-display text-sm font-semibold text-[hsl(var(--brand-red-light))]">{String(i + 1).padStart(2, "0")}</span>
-                    <h3 className="mt-6 text-xl font-semibold">{p.step}</h3>
+                    <h3 className="mt-6 text-xl font-semibold">{tr(p.step)}</h3>
                     <p className="mt-3 leading-relaxed text-white/60">{p.body}</p>
                   </li>
                 </Reveal>
@@ -201,16 +206,59 @@ const Index = () => {
       </div>
 
       {/* Industries marquee */}
-      <section className="overflow-hidden py-16 sm:py-20">
-        <div className="wrap mb-8">
-          <span className="eyebrow">Who we work with</span>
+      <section className="overflow-hidden pt-16 sm:pt-20">
+        <div className="wrap mb-8 flex items-end justify-between gap-6">
+          <span className="eyebrow">{tr("Who we work with")}</span>
+          <Link to="/industries" className="link-arrow">
+            {tr("Industries")} <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
         <div className="flex w-max marquee gap-4">
           {[...industries, ...industries].map((i, k) => (
-            <span key={k} className="whitespace-nowrap rounded-full border border-border px-7 py-3.5 font-display text-xl font-semibold text-[hsl(var(--ink)/0.75)] sm:text-2xl">
-              {i}
-            </span>
+            <Link
+              key={k}
+              to={`/industries#${i.slug}`}
+              tabIndex={k >= industries.length ? -1 : undefined}
+              className="whitespace-nowrap rounded-full border border-border px-7 py-3.5 font-display text-xl font-semibold text-[hsl(var(--ink)/0.75)] transition-colors hover:border-[hsl(var(--ink))] hover:text-[hsl(var(--ink))] sm:text-2xl"
+            >
+              {tr(i.name)}
+            </Link>
           ))}
+        </div>
+      </section>
+
+      {/* Technology */}
+      <section className="py-16 sm:py-20">
+        <div className="wrap border-y border-border py-10">
+          <div className="grid gap-6 lg:grid-cols-12 lg:items-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground lg:col-span-3">{tr("Technologies we build with")}</p>
+            <ul className="flex flex-wrap gap-x-8 gap-y-3 lg:col-span-9">
+              {technologies.map((t) => (
+                <li key={t} className="font-display text-lg font-semibold text-[hsl(var(--ink)/0.6)]">{t}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="pb-20 sm:pb-28">
+        <div className="wrap grid gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <span className="eyebrow">{tr("FAQ")}</span>
+            <h2 className="h-section mt-4">{tr("Straight answers.")}</h2>
+            <div className="mt-8 flex flex-col gap-3">
+              <Link to="/trust" className="link-arrow">
+                {tr("How we handle security")} <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link to="/services#engage" className="link-arrow">
+                {tr("Ways to engage")} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+          <div className="lg:col-span-7 lg:col-start-6">
+            <FaqList items={faqs.slice(0, 4)} />
+          </div>
         </div>
       </section>
 
@@ -220,6 +268,7 @@ const Index = () => {
 };
 
 function Chips({ slug, chip, items }: { slug: string; chip: string; items: string[] }) {
+  const tr = useT();
   return (
     <div className="flex flex-wrap gap-2.5">
       {items.map((c) => (
@@ -228,7 +277,7 @@ function Chips({ slug, chip, items }: { slug: string; chip: string; items: strin
         </Link>
       ))}
       <Link to={`/services#${slug}`} className={`chip ${chip}`}>
-        + More
+        {tr("+ More")}
       </Link>
     </div>
   );

@@ -14,10 +14,10 @@ export const company = {
 
 // Add the profile URL to show an icon in the footer; empty entries are hidden.
 export const socials: { name: "Facebook" | "LinkedIn" | "TikTok" | "Instagram"; url: string }[] = [
-  { name: "LinkedIn", url: "" },
-  { name: "Facebook", url: "" },
-  { name: "TikTok", url: "" },
-  { name: "Instagram", url: "" },
+  { name: "LinkedIn", url: "https://www.linkedin.com/company/oreece" },
+  { name: "Facebook", url: "https://www.facebook.com/oreecesolutions" },
+  { name: "TikTok", url: "https://www.tiktok.com/@oreece.limited" },
+  { name: "Instagram", url: "https://www.instagram.com/oreece.limited" },
 ];
 
 export type ServiceSlug = "software" | "ai" | "marketing";
@@ -103,6 +103,7 @@ export type CaseStudy = {
   solution: string[];
   stack: string[];
   services: ServiceSlug[];
+  industry: IndustrySlug;
   url?: string;
   image?: string;
   status: string;
@@ -128,6 +129,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     stack: ["Next.js", "Supabase", "PostgreSQL", "PWA"],
     services: ["software"],
+    industry: "automotive",
     url: "https://jcpcarparts.co.nz",
     image: "/work/jcp.jpg",
     status: "Platform delivered · rollout in progress",
@@ -151,6 +153,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     stack: ["React", "TanStack Start", "Supabase", "Tailwind CSS"],
     services: ["software", "marketing"],
+    industry: "automotive",
     url: "https://rustezeautospa.co.nz",
     image: "/work/rusteze.jpg",
     status: "Live",
@@ -174,6 +177,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     stack: ["Next.js", "React"],
     services: ["software", "marketing"],
+    industry: "tourism",
     url: "https://luckyceylontour.com",
     image: "/work/lucky-ceylon.jpg",
     status: "Live",
@@ -197,6 +201,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     stack: ["n8n", "Claude", "Supabase", "PostgreSQL"],
     services: ["ai", "marketing"],
+    industry: "professional",
     status: "Built and verified end to end · launching 2026",
     tone: "pounamu",
   },
@@ -240,11 +245,134 @@ export const process = [
   },
 ];
 
-export const industries = [
-  "Automotive",
-  "Tourism & hospitality",
-  "Trades & field services",
-  "Professional services",
-  "Retail & e-commerce",
-  "Not-for-profit",
+export type IndustrySlug = "automotive" | "tourism" | "trades" | "professional" | "retail" | "nfp";
+
+// Only automotive and tourism have delivered case studies; the rest describe what we build, not past clients.
+export const industries: { slug: IndustrySlug; name: string; summary: string; builds: string[] }[] = [
+  {
+    slug: "automotive",
+    name: "Automotive",
+    summary: "Dismantlers, workshops and detailers running stock, jobs and bookings across the floor and the office.",
+    builds: ["Barcode inventory & parts tracking", "Workshop job and booking systems", "Quote and enquiry websites that rank locally"],
+  },
+  {
+    slug: "tourism",
+    name: "Tourism & hospitality",
+    summary: "Operators who need international travellers to trust them and enquire before they have ever met.",
+    builds: ["Tour catalogues & itinerary builders", "Booking and enquiry flows", "Multilingual, SEO-ready websites"],
+  },
+  {
+    slug: "trades",
+    name: "Trades & field services",
+    summary: "Teams quoting, scheduling and invoicing from vans and job sites rather than desks.",
+    builds: ["Mobile job sheets & photo capture", "Scheduling and dispatch", "Quote-to-invoice workflows with Xero"],
+  },
+  {
+    slug: "professional",
+    name: "Professional services",
+    summary: "Firms where client intake, documents and follow-up eat into billable time.",
+    builds: ["Client portals & CRMs", "Document and email automation with AI", "Lead capture and follow-up workflows"],
+  },
+  {
+    slug: "retail",
+    name: "Retail & e-commerce",
+    summary: "Retailers joining up online stores, stock and marketing so every channel tells the same story.",
+    builds: ["Online stores & product catalogues", "Stock and order integrations", "Paid social and search campaigns"],
+  },
+  {
+    slug: "nfp",
+    name: "Not-for-profit",
+    summary: "Organisations doing more with small teams and accountable budgets.",
+    builds: ["Donor and volunteer management", "Reporting automation for funders", "Accessible, low-maintenance websites"],
+  },
+];
+
+export const engagements = [
+  {
+    title: "Discovery sprint",
+    fit: "Best when the problem is clear but the solution is not",
+    body: "Two weeks to map the problem, prototype the solution and price the build — with no commitment beyond it.",
+    includes: ["Stakeholder workshops", "Clickable prototype", "Fixed-price build proposal"],
+  },
+  {
+    title: "Fixed-scope project",
+    fit: "Best for new systems, websites and automations",
+    body: "A defined outcome, timeline and price in NZD, delivered in fortnightly increments you can see and test.",
+    includes: ["Agreed scope & milestones", "Fortnightly demos", "Launch support & handover docs"],
+  },
+  {
+    title: "Monthly partnership",
+    fit: "Best once a system is live and growing",
+    body: "A dedicated team on a retainer for continuous improvement, support and growth marketing.",
+    includes: ["Prioritised monthly roadmap", "Support & maintenance", "Plain-language monthly report"],
+  },
+];
+
+export const faqs = [
+  {
+    q: "How do you price projects?",
+    a: "After a discovery call we send a written proposal with scope, milestones and a fixed price in NZD, excluding GST. If the scope changes, we agree the change in writing before any extra work starts.",
+  },
+  {
+    q: "Who owns the code and data?",
+    a: "You do. Code lives in repositories and cloud accounts you own, and we hand over documentation at the end of every engagement. There is no lock-in.",
+  },
+  {
+    q: "Where is the team based?",
+    a: "Your lead is in New Zealand and works NZ hours. Delivery is shared with our team in Sri Lanka, which is how we keep enterprise-grade engineering affordable.",
+  },
+  {
+    q: "Where is our data stored?",
+    a: "We agree the hosting region with you up front, and can keep data in Australian or New Zealand regions where the platform supports it. Personal information is handled in line with the NZ Privacy Act 2020.",
+  },
+  {
+    q: "Can you work with our existing systems?",
+    a: "Yes. Most projects integrate with tools you already use, such as Xero, payment providers, booking systems or Microsoft 365, rather than replacing them.",
+  },
+  {
+    q: "What happens after launch?",
+    a: "Every launch includes a support period. After that you can move to a monthly partnership, take the system in-house with our documentation, or call on us as needed.",
+  },
+];
+
+// Tools we build with — not partner or reseller claims.
+export const technologies = [
+  "React",
+  "Next.js",
+  "TypeScript",
+  "Supabase",
+  "PostgreSQL",
+  "Vercel",
+  "AWS",
+  "n8n",
+  "Claude",
+  "Xero",
+  "Tailwind CSS",
+];
+
+export const trustPractices = [
+  {
+    title: "Least-privilege access",
+    body: "Staff and systems get only the access they need. Database rules enforce permissions, not just the user interface.",
+  },
+  {
+    title: "Audit trails",
+    body: "Business-critical actions are recorded with who, what and when, so you can answer questions long after the fact.",
+  },
+  {
+    title: "Privacy by design",
+    body: "We collect only what is needed and design around the information privacy principles of the NZ Privacy Act 2020.",
+  },
+  {
+    title: "Your accounts, your keys",
+    body: "Production systems run in cloud accounts you own. We are invited in, and access is removed when an engagement ends.",
+  },
+  {
+    title: "Human approval for AI",
+    body: "AI drafts and recommends; a person approves anything that reaches a customer or changes a record that matters.",
+  },
+  {
+    title: "Tested before it ships",
+    body: "Automated tests, code review and staging environments before production — and a rollback plan for every release.",
+  },
 ];
