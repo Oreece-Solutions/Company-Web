@@ -160,6 +160,30 @@ export const caseStudies: CaseStudy[] = [
     tone: "red",
   },
   {
+    slug: "pristine-pro-moving",
+    client: "Pristine Pro Moving",
+    sector: "Moving · Removals",
+    location: "Auckland",
+    title: "A quote-first website and operations platform for an Auckland moving company",
+    summary:
+      "A fast, local-SEO website that turns visitors into quote requests, backed by an admin platform for leads, quotes, bookings, jobs, staff and vehicles.",
+    challenge:
+      "A new moving business needed to earn trust online from day one and run quoting, bookings and jobs from one place as it grows from a single operator to a multi-vehicle team.",
+    solution: [
+      "Quote-first website with a quick-quote bar, service and service-area pages, and click-to-call and WhatsApp throughout",
+      "CRM with a lead pipeline, follow-ups, line-item quotes and quote-to-booking conversion",
+      "Booking calendar, job checklists, and staff and vehicle assignment with double-booking warnings",
+      "Review workflow, analytics dashboards, a lightweight CMS and spam-protected forms",
+    ],
+    stack: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS"],
+    services: ["software", "marketing"],
+    industry: "trades",
+    url: "https://www.pristinemovers.co.nz",
+    image: "/work/pristine.jpg",
+    status: "Website live · operations platform built",
+    tone: "pounamu",
+  },
+  {
     slug: "lucky-ceylon-tours",
     client: "Lucky Ceylon Tours",
     sector: "Tourism · Travel",
@@ -247,7 +271,7 @@ export const process = [
 
 export type IndustrySlug = "automotive" | "tourism" | "trades" | "professional" | "retail" | "nfp";
 
-// Only automotive and tourism have delivered case studies; the rest describe what we build, not past clients.
+// Only automotive, tourism and trades have delivered case studies; the rest describe what we build, not past clients.
 export const industries: { slug: IndustrySlug; name: string; summary: string; builds: string[] }[] = [
   {
     slug: "automotive",
