@@ -10,7 +10,7 @@ const Services = () => {
   const tr = useT();
   usePageMeta(
     "Services",
-    "Custom software and platforms, AI and automation, and digital marketing for New Zealand businesses — delivered by one accountable team.",
+    "Custom software and platforms, AI and automation, and digital marketing for businesses in New Zealand and worldwide — delivered by one accountable team.",
   );
 
   return (

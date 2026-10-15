@@ -14,7 +14,7 @@ const nav = [
 
 export function usePageMeta(title: string, description: string) {
   useEffect(() => {
-    document.title = title === "Oreece" ? "Oreece — Software, AI & Growth for New Zealand Business" : `${title} | Oreece`;
+    document.title = title === "Oreece" ? "Oreece — Software, AI & Growth, Built in New Zealand" : `${title} | Oreece`;
     document.querySelector('meta[name="description"]')?.setAttribute("content", description);
   }, [title, description]);
 }
@@ -164,7 +164,7 @@ function Footer() {
         <div className="md:col-span-4">
           <Logo light />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/60">
-            {tr("Software, AI and growth for New Zealand businesses. Local accountability, backed by a dedicated delivery team.")}
+            {tr("Software, AI and growth for businesses everywhere. Based in Aotearoa New Zealand, backed by a dedicated delivery team.")}
           </p>
           <div className="mt-6 flex flex-col gap-2 text-sm font-semibold">
             <a href={`mailto:${company.email}`} className="hover:underline">{company.email}</a>
@@ -196,7 +196,7 @@ function Footer() {
         </FooterCol>
       </div>
       <div className="wrap border-t border-white/10 py-6 text-sm text-white/60">
-        <span className="font-semibold text-white/80">{tr("Where we work:")}</span> {company.regions.join(" · ")} · {tr("Meetings in person or on video")}
+        <span className="font-semibold text-white/80">{tr("Where we work:")}</span> {company.regions.join(" · ")} · {tr("Clients worldwide, in person or on video")}
       </div>
       <div className="border-t border-white/10">
         <div className="wrap flex flex-col gap-2 py-6 text-xs text-white/50 sm:flex-row sm:justify-between">
@@ -204,7 +204,7 @@ function Footer() {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link to="/privacy" className="hover:text-white">{tr("Privacy")}</Link>
             <Link to="/trust" className="hover:text-white">{tr("Security")}</Link>
-            <span>{tr("Prices quoted in NZD, excluding GST.")}</span>
+            <span>{tr("Prices quoted in NZD, excluding GST where applicable.")}</span>
             <button
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

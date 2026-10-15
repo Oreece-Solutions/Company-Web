@@ -19,7 +19,7 @@ const Index = () => {
   const tr = useT();
   usePageMeta(
     "Oreece",
-    "Oreece builds custom software, AI automation and digital marketing for New Zealand businesses. Local accountability, fixed-scope proposals and code you own.",
+    "Oreece builds custom software, AI automation and digital marketing for businesses in New Zealand and around the world. One accountable team, fixed-scope proposals and code you own.",
   );
 
   return (
@@ -43,12 +43,12 @@ const Index = () => {
           </div>
 
           <div className="wrap relative mt-auto pb-10 pt-40 sm:pb-14">
-            <span className="eyebrow eyebrow-light anim-fade-up">{tr("Kia ora — technology partner for NZ business")}</span>
+            <span className="eyebrow eyebrow-light anim-fade-up">{tr("Kia ora — a technology partner from Aotearoa New Zealand")}</span>
             <h1 className="mt-6 max-w-[50rem] text-[2.6rem] font-semibold leading-[1.02] sm:text-6xl lg:text-[4.75rem] xl:text-[5.25rem]">
-              <SplitWords text={tr("Software, AI and growth built for how New Zealand works.")} delay={150} />
+              <SplitWords text={tr("Software, AI and growth for ambitious businesses.")} delay={150} />
             </h1>
             <p className="anim-fade-up mt-7 max-w-xl text-lg leading-relaxed text-white/70 sm:text-xl" style={{ animationDelay: "700ms" }}>
-              {tr("We design and build the systems, automations and websites that help Kiwi businesses run leaner and grow faster.")}
+              {tr("From New Zealand to the world, we design and build the systems, automations and websites that help businesses run leaner and grow faster.")}
             </p>
             <div className="anim-fade-up mt-9 flex flex-wrap gap-3" style={{ animationDelay: "850ms" }}>
               <Link to="/contact" className="btn-primary">
@@ -88,7 +88,7 @@ const Index = () => {
         <div className="wrap">
           <ScrollWords
             className="mx-auto max-w-5xl text-center font-display text-3xl font-semibold leading-[1.15] tracking-tight sm:text-5xl lg:text-[3.6rem]"
-            text={tr("Ambitious New Zealand businesses use Oreece to replace busywork with software, put AI to work responsibly and turn attention into customers.")}
+            text={tr("Ambitious businesses in New Zealand and around the world use Oreece to replace busywork with software, put AI to work responsibly and turn attention into customers.")}
           />
         </div>
       </section>

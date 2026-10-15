@@ -8,7 +8,7 @@ const Industries = () => {
   const tr = useT();
   usePageMeta(
     "Industries",
-    "Software, AI automation and digital marketing for New Zealand automotive, tourism, trades, professional services, retail and not-for-profit organisations.",
+    "Software, AI automation and digital marketing for automotive, tourism, trades, professional services, retail and not-for-profit organisations in New Zealand and worldwide.",
   );
 
   return (

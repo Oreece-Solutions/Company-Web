@@ -75,7 +75,7 @@ export const services: {
     eyebrow: "03",
     title: "Digital marketing & growth",
     summary:
-      "Websites and campaigns that turn local search and social attention into enquiries — measured, accountable and built to rank in New Zealand.",
+      "Websites and campaigns that turn local search and social attention into enquiries — measured, accountable and built to rank in the markets you sell to.",
     outcomes: [
       "Be found by customers searching in your region",
       "Turn website traffic into qualified enquiries",
@@ -211,12 +211,12 @@ export const caseStudies: CaseStudy[] = [
 
 export const principles = [
   {
-    title: "Local accountability",
-    body: "A New Zealand point of contact who knows your business, works your hours and answers the phone.",
+    title: "One accountable lead",
+    body: "A single point of contact who knows your business, works around your time zone and answers the phone.",
   },
   {
     title: "Fixed scope, clear pricing",
-    body: "Proposals in NZD with scope, milestones and price agreed up front. No surprise invoices.",
+    body: "Proposals with scope, milestones and price agreed up front. No surprise invoices.",
   },
   {
     title: "You own everything",
@@ -299,7 +299,7 @@ export const engagements = [
   {
     title: "Fixed-scope project",
     fit: "Best for new systems, websites and automations",
-    body: "A defined outcome, timeline and price in NZD, delivered in fortnightly increments you can see and test.",
+    body: "A defined outcome, timeline and price, delivered in fortnightly increments you can see and test.",
     includes: ["Agreed scope & milestones", "Fortnightly demos", "Launch support & handover docs"],
   },
   {
@@ -313,7 +313,7 @@ export const engagements = [
 export const faqs = [
   {
     q: "How do you price projects?",
-    a: "After a discovery call we send a written proposal with scope, milestones and a fixed price in NZD, excluding GST. If the scope changes, we agree the change in writing before any extra work starts.",
+    a: "After a discovery call we send a written proposal with scope, milestones and a fixed price in NZD (excluding GST where applicable). If the scope changes, we agree the change in writing before any extra work starts.",
   },
   {
     q: "Who owns the code and data?",
@@ -321,11 +321,11 @@ export const faqs = [
   },
   {
     q: "Where is the team based?",
-    a: "Your lead is in New Zealand and works NZ hours. Delivery is shared with our team in Sri Lanka, which is how we keep enterprise-grade engineering affordable.",
+    a: "We are based in New Zealand, with a delivery team in Sri Lanka, and work with clients around the world. Your lead agrees meeting times that suit your time zone, and sharing delivery is how we keep enterprise-grade engineering affordable.",
   },
   {
     q: "Where is our data stored?",
-    a: "We agree the hosting region with you up front, and can keep data in Australian or New Zealand regions where the platform supports it. Personal information is handled in line with the NZ Privacy Act 2020.",
+    a: "We agree the hosting region with you up front, for example Australia or New Zealand, the United States or Europe, wherever the platform supports it. Personal information is handled in line with the NZ Privacy Act 2020.",
   },
   {
     q: "Can you work with our existing systems?",

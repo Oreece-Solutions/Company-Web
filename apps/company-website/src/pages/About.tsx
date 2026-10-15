@@ -14,7 +14,7 @@ const About = () => {
   const tr = useT();
   usePageMeta(
     "About",
-    "Oreece is a technology partner for New Zealand businesses, combining local accountability with a dedicated delivery team.",
+    "Oreece is a New Zealand technology partner for businesses worldwide, combining one accountable lead with a dedicated delivery team.",
   );
 
   return (
@@ -23,7 +23,7 @@ const About = () => {
         crumbs={[{ label: "About" }]}
         eyebrow={tr("About Oreece")}
         title={tr("A technology partner that stays accountable.")}
-        lede={tr("Oreece helps New Zealand businesses design, build and run the software, automation and marketing they need to compete — with the standards of a large consultancy and the attention of a small one.")}
+        lede={tr("Oreece helps businesses in New Zealand and around the world design, build and run the software, automation and marketing they need to compete — with the standards of a large consultancy and the attention of a small one.")}
       />
 
       <section className="py-20 sm:py-28">
@@ -38,12 +38,12 @@ const About = () => {
               priced for corporates. Oreece exists to close that gap.
             </p>
             <p>
-              We pair a New Zealand-based lead — your single point of accountability — with a dedicated delivery team
+              We pair a dedicated lead — your single point of accountability — with a delivery team
               across {company.regions.join(" and ")}. That model lets us deliver enterprise-grade engineering at a
               price that makes sense for small and medium enterprises.
             </p>
             <p>
-              Every engagement is scoped in plain language, priced in NZD and handed over with full documentation. You
+              Every engagement is scoped in plain language, priced up front and handed over with full documentation. You
               own the code, the data and the accounts — always.
             </p>
           </div>

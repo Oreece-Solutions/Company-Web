@@ -26,7 +26,7 @@ const field =
 
 const Contact = () => {
   const tr = useT();
-  usePageMeta("Contact", "Talk to Oreece about custom software, AI automation or digital marketing for your New Zealand business.");
+  usePageMeta("Contact", "Talk to Oreece about custom software, AI automation or digital marketing for your business, wherever you are.");
 
   const [params] = useSearchParams();
   const initialType = enquiryTypes.find((t) => t.id === params.get("type"))?.id ?? "project";
@@ -101,7 +101,7 @@ const Contact = () => {
               <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
                 <li>We read your message and reply with questions or ideas.</li>
                 <li>A free 30-minute call to understand your goals.</li>
-                <li>A written proposal with scope, timeline and fixed NZD price.</li>
+                <li>A written proposal with scope, timeline and a fixed price.</li>
               </ol>
             </div>
           </aside>

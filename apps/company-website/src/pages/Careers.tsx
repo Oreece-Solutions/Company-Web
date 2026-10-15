@@ -20,7 +20,7 @@ const perks = [
 
 const Careers = () => {
   const tr = useT();
-  usePageMeta("Careers", "Join Oreece and build software, automation and AI for New Zealand businesses.");
+  usePageMeta("Careers", "Join Oreece and build software, automation and AI for businesses in New Zealand and around the world.");
 
   return (
     <Layout>

@@ -21,13 +21,13 @@ export const mi: Record<string, string> = {
   "Our work": "Ā mātou mahi",
   "Submit an RFP": "Tukuna he RFP",
   "Where we work:": "Ō mātou wāhi mahi:",
-  "Meetings in person or on video": "He hui kanohi ki te kanohi, he hui ataata rānei",
-  "Prices quoted in NZD, excluding GST.": "He NZD ngā utu, kāore i roto te GST.",
+  "Clients worldwide, in person or on video": "He kiritaki puta noa i te ao, kanohi ki te kanohi, mā te ataata rānei",
+  "Prices quoted in NZD, excluding GST where applicable.": "He NZD ngā utu, kāore i roto te GST ki te tika.",
   "Back to top": "Hoki ki runga",
   "All rights reserved.": "Kua rāhuitia ngā mana katoa.",
   "Chat on WhatsApp": "Kōrero mai mā WhatsApp",
-  "Software, AI and growth for New Zealand businesses. Local accountability, backed by a dedicated delivery team.":
-    "He pūmanawa, he AI, he whakatipu mō ngā pakihi o Aotearoa. He kawenga ā-rohe, e tautokohia ana e tētahi rōpū tuku mahi ngākau nui.",
+  "Software, AI and growth for businesses everywhere. Based in Aotearoa New Zealand, backed by a dedicated delivery team.":
+    "He pūmanawa, he AI, he whakatipu mō ngā pakihi o te ao. Kei Aotearoa tō mātou kāinga, e tautokohia ana e tētahi rōpū tuku mahi ngākau nui.",
 
   // Closing call to action
   "Want to build with us?": "Kei te hiahia mahi tahi ki a mātou?",
@@ -38,16 +38,16 @@ export const mi: Record<string, string> = {
     "He tohutohu pono me ngā hipanga e whai ake ana i roto i te rā pakihi kotahi — kāore he here.",
 
   // Home
-  "Kia ora — technology partner for NZ business": "Kia ora — he hoa hangarau mō ngā pakihi o Aotearoa",
-  "Software, AI and growth built for how New Zealand works.":
-    "He pūmanawa, he AI, he whakatipu i hangaia mō te āhua mahi o Aotearoa.",
-  "We design and build the systems, automations and websites that help Kiwi businesses run leaner and grow faster.":
-    "Ka hoahoa, ka hanga hoki mātou i ngā pūnaha, i ngā mahi aunoa me ngā paetukutuku e āwhina ana i ngā pakihi o Aotearoa kia ngāwari ake te whakahaere, kia tere ake te tipu.",
+  "Kia ora — a technology partner from Aotearoa New Zealand": "Kia ora — he hoa hangarau nō Aotearoa",
+  "Software, AI and growth for ambitious businesses.":
+    "He pūmanawa, he AI, he whakatipu mō ngā pakihi wawata.",
+  "From New Zealand to the world, we design and build the systems, automations and websites that help businesses run leaner and grow faster.":
+    "Mai i Aotearoa ki te ao, ka hoahoa, ka hanga hoki mātou i ngā pūnaha, i ngā mahi aunoa me ngā paetukutuku e āwhina ana i ngā pakihi kia ngāwari ake te whakahaere, kia tere ake te tipu.",
   "Book a free consultation": "Tonoa he hui utukore",
   "See our work": "Tirohia ā mātou mahi",
   "Your business next": "Ko tō pakihi e whai ake",
-  "Ambitious New Zealand businesses use Oreece to replace busywork with software, put AI to work responsibly and turn attention into customers.":
-    "Ka whakamahi ngā pakihi wawata o Aotearoa i a Oreece hei whakakapi i ngā mahi hōhā ki te pūmanawa, hei whakamahi tika i te AI, hei huri i te aro hei kiritaki.",
+  "Ambitious businesses in New Zealand and around the world use Oreece to replace busywork with software, put AI to work responsibly and turn attention into customers.":
+    "Ka whakamahi ngā pakihi wawata o Aotearoa, o te ao whānui hoki, i a Oreece hei whakakapi i ngā mahi hōhā ki te pūmanawa, hei whakamahi tika i te AI, hei huri i te aro hei kiritaki.",
   "Selected work": "Ētahi o ā mātou mahi",
   "Real systems, running real businesses.": "He pūnaha tūturu, e whakahaere ana i ngā pakihi tūturu.",
   "All case studies": "Ngā tauira mahi katoa",
@@ -69,7 +69,7 @@ export const mi: Record<string, string> = {
   "Custom software & platforms": "Pūmanawa ritenga me ngā tūāpapa",
   "AI & automation": "AI me te mahi aunoa",
   "Digital marketing & growth": "Hokohoko matihiko me te whakatipu",
-  "Local accountability": "Kawenga ā-rohe",
+  "One accountable lead": "Kotahi te kaihautū haepapa",
   "Fixed scope, clear pricing": "Hōkaitanga pūmau, utu mārama",
   "You own everything": "Nōu ngā mea katoa",
   "Secure by default": "Haumaru mai i te tīmatanga",
@@ -124,8 +124,8 @@ export const mi: Record<string, string> = {
   // About
   "About Oreece": "Mō Oreece",
   "A technology partner that stays accountable.": "He hoa hangarau e mau tonu ana ki tōna haepapa.",
-  "Oreece helps New Zealand businesses design, build and run the software, automation and marketing they need to compete — with the standards of a large consultancy and the attention of a small one.":
-    "Ka āwhina a Oreece i ngā pakihi o Aotearoa ki te hoahoa, ki te hanga, ki te whakahaere i te pūmanawa, i te mahi aunoa me te hokohoko e hiahiatia ana kia whakataetae ai — me ngā paerewa o tētahi umanga tohutohu nui, me te aro o tētahi umanga iti.",
+  "Oreece helps businesses in New Zealand and around the world design, build and run the software, automation and marketing they need to compete — with the standards of a large consultancy and the attention of a small one.":
+    "Ka āwhina a Oreece i ngā pakihi o Aotearoa, o te ao whānui hoki, ki te hoahoa, ki te hanga, ki te whakahaere i te pūmanawa, i te mahi aunoa me te hokohoko e hiahiatia ana kia whakataetae ai — me ngā paerewa o tētahi umanga tohutohu nui, me te aro o tētahi umanga iti.",
   "Our story": "Tō mātou kōrero",
   "Built to close the gap between ambition and capability.": "I hangaia hei kati i te āputa i waenga i te wawata me te āheinga.",
   "What guides us": "Ō mātou ārahitanga",
