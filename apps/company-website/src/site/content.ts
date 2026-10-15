@@ -207,28 +207,6 @@ export const caseStudies: CaseStudy[] = [
     status: "Live",
     tone: "sand",
   },
-  {
-    slug: "oreece-social-os",
-    client: "Oreece Social OS",
-    sector: "AI · Marketing automation",
-    location: "New Zealand",
-    title: "An AI social media operating system with human approval built in",
-    summary:
-      "Research, ideas, copy, quality checks, approval, scheduling, publishing and analytics — orchestrated by AI agents, with a person approving every post.",
-    challenge:
-      "Consistent, high-quality social content takes hours each week, and fully automated posting is too risky for a brand.",
-    solution: [
-      "AI pipeline from research and briefs to platform-specific copy",
-      "Automated quality control before anything reaches a human",
-      "One-tap approval via Telegram, then scheduled publishing",
-      "Analytics, comment and lead tracking feeding a learning loop",
-    ],
-    stack: ["n8n", "Claude", "Supabase", "PostgreSQL"],
-    services: ["ai", "marketing"],
-    industry: "professional",
-    status: "Built and verified end to end · launching 2026",
-    tone: "pounamu",
-  },
 ];
 
 export const principles = [

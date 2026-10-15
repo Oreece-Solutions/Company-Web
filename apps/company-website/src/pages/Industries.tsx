@@ -31,8 +31,7 @@ const Industries = () => {
       <section className="py-16 sm:py-24">
         <div className="wrap divide-y divide-border">
           {industries.map((ind, idx) => {
-            // Social OS is our own product, not client work in that sector.
-            const work = caseStudies.filter((c) => c.industry === ind.slug && c.slug !== "oreece-social-os");
+            const work = caseStudies.filter((c) => c.industry === ind.slug);
             return (
               <Reveal key={ind.slug}>
                 <article id={ind.slug} className="grid scroll-mt-28 gap-10 py-14 lg:grid-cols-12">

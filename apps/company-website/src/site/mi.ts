@@ -97,8 +97,8 @@ export const mi: Record<string, string> = {
 
   // Work
   "Proof, not promises.": "He taunaki, ehara i te kupu taurangi.",
-  "A selection of systems we have designed and built — from barcode-driven operations platforms to AI that runs our own marketing.":
-    "He kohinga pūnaha kua hoahoatia, kua hangaia e mātou — mai i ngā tūāpapa whakahaere tauwaehere pae ki te AI e whakahaere ana i tā mātou ake hokohoko.",
+  "A selection of systems we have designed and built — from barcode-driven operations platforms to quote-first websites for local businesses.":
+    "He kohinga pūnaha kua hoahoatia, kua hangaia e mātou — mai i ngā tūāpapa whakahaere tauwaehere pae ki ngā paetukutuku tono utu mō ngā pakihi ā-rohe.",
   Service: "Ratonga",
   Industry: "Ahumahi",
   All: "Katoa",

@@ -17,6 +17,7 @@ const Work = () => {
   const shown = caseStudies.filter(
     (c) => (!service || c.services.includes(service)) && (!industry || c.industry === industry),
   );
+  const usedServices = services.filter((s) => caseStudies.some((c) => c.services.includes(s.slug)));
   const usedIndustries = industries.filter((i) => caseStudies.some((c) => c.industry === i.slug));
 
   const pick = (key: "service" | "industry", value: string | null) => {
@@ -32,13 +33,13 @@ const Work = () => {
         crumbs={[{ label: "Work" }]}
         eyebrow={tr("Our work")}
         title={tr("Proof, not promises.")}
-        lede={tr("A selection of systems we have designed and built — from barcode-driven operations platforms to AI that runs our own marketing.")}
+        lede={tr("A selection of systems we have designed and built — from barcode-driven operations platforms to quote-first websites for local businesses.")}
       />
 
       <section className="py-16 sm:py-24">
         <div className="wrap">
           <div className="flex flex-col gap-5 border-b border-border pb-8 lg:flex-row lg:items-center lg:justify-between">
-            <FilterRow label={tr("Service")} value={service} onPick={(v) => pick("service", v)} options={services.map((s) => ({ value: s.slug, label: s.title }))} />
+            <FilterRow label={tr("Service")} value={service} onPick={(v) => pick("service", v)} options={usedServices.map((s) => ({ value: s.slug, label: s.title }))} />
             <FilterRow label={tr("Industry")} value={industry} onPick={(v) => pick("industry", v)} options={usedIndustries.map((i) => ({ value: i.slug, label: i.name }))} />
           </div>
           <p className="mt-6 text-sm text-muted-foreground" aria-live="polite">

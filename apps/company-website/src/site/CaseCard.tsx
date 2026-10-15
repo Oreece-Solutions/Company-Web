@@ -58,36 +58,8 @@ function JcpMock() {
   );
 }
 
-function SocialMock() {
-  return (
-    <div className="grid grid-cols-5 gap-2 bg-[hsl(220_20%_97%)] p-3">
-      <div className="col-span-3 rounded-md bg-white p-3 ring-1 ring-black/5">
-        <p className="text-[9px] font-semibold uppercase tracking-wide text-black/50">Awaiting approval</p>
-        <div className="mt-2 space-y-1">
-          <div className="h-1.5 w-full rounded bg-black/15" />
-          <div className="h-1.5 w-11/12 rounded bg-black/10" />
-          <div className="h-1.5 w-4/5 rounded bg-black/10" />
-        </div>
-        <div className="mt-3 flex gap-1.5">
-          <span className="rounded bg-emerald-600 px-2 py-0.5 text-[9px] font-semibold text-white">Approve</span>
-          <span className="rounded bg-black/5 px-2 py-0.5 text-[9px] font-semibold text-black/60">Revise</span>
-        </div>
-      </div>
-      <div className="col-span-2 space-y-2">
-        {["Research", "Copy", "QA", "Schedule"].map((s, i) => (
-          <div key={s} className="flex items-center gap-1.5 rounded-md bg-white px-2 py-1.5 ring-1 ring-black/5">
-            <span className={`h-1.5 w-1.5 rounded-full ${i < 3 ? "bg-emerald-500" : "bg-black/20"}`} />
-            <span className="text-[9px] font-medium text-black/60">{s}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 const mocks: Record<string, () => JSX.Element> = {
   "jcp-car-parts": JcpMock,
-  "oreece-social-os": SocialMock,
 };
 
 export function CaseCover({ study, large = false }: { study: CaseStudy; large?: boolean }) {
