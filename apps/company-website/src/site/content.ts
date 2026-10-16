@@ -209,6 +209,16 @@ export const caseStudies: CaseStudy[] = [
   },
 ];
 
+// Businesses we work with. `href` links to a case study where one exists.
+export const partners: { name: string; href?: string }[] = [
+  { name: "Fernfresh Limited" },
+  { name: "Pristine Pro Limited", href: "/work/pristine-pro-moving" },
+  { name: "Rusteze Auto Spa", href: "/work/rusteze-auto-spa" },
+  { name: "Talent Staff Recruitment" },
+  { name: "JCP Car Parts", href: "/work/jcp-car-parts" },
+  { name: "Lucky Ceylon Tours", href: "/work/lucky-ceylon-tours" },
+];
+
 export const principles = [
   {
     title: "One accountable lead",

@@ -24,6 +24,8 @@ export const mi: Record<string, string> = {
   "Clients worldwide, in person or on video": "He kiritaki puta noa i te ao, kanohi ki te kanohi, mā te ataata rānei",
   "Prices quoted in NZD, excluding GST where applicable.": "He NZD ngā utu, kāore i roto te GST ki te tika.",
   "Back to top": "Hoki ki runga",
+  "Our partners": "Ō mātou hoa",
+  "Businesses we are proud to work with.": "Ngā pakihi e whakahīhī ana mātou ki te mahi tahi.",
   "All rights reserved.": "Kua rāhuitia ngā mana katoa.",
   "Chat on WhatsApp": "Kōrero mai mā WhatsApp",
   "Software, AI and growth for businesses everywhere. Based in Aotearoa New Zealand, backed by a dedicated delivery team.":

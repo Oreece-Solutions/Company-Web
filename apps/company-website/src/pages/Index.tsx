@@ -6,6 +6,7 @@ import { HorizontalScroller, ScrollWords, ServiceArt } from "../site/Motion";
 import { FaqList } from "../site/Faq";
 import { caseStudies, faqs, industries, principles, process, services, technologies } from "../site/content";
 import { useT } from "../site/i18n";
+import { PartnerMarquee } from "../site/Partners";
 
 const principleIcons = [MapPin, FileCheck2, KeyRound, ShieldCheck];
 
@@ -62,25 +63,18 @@ const Index = () => {
         </section>
       </div>
 
-      {/* Client strip */}
-      <section className="border-b border-border">
-        <div className="grid grid-cols-2 lg:grid-cols-4">
-          {caseStudies.slice(0, 3).map((c, i) => (
-            <Link
-              key={c.slug}
-              to={`/work/${c.slug}`}
-              className={`group flex h-28 items-center justify-center border-border px-4 text-center sm:h-36 ${i % 2 === 0 ? "border-r" : ""} ${i < 2 ? "border-b lg:border-b-0" : ""} lg:border-r`}
-            >
-              <span className="font-display text-lg font-semibold tracking-tight text-[hsl(var(--ink)/0.55)] transition-colors group-hover:text-[hsl(var(--ink))] sm:text-2xl">
-                {c.client}
-              </span>
-            </Link>
-          ))}
-          <Link to="/contact" className="group flex h-28 items-center justify-center gap-2 px-4 text-center sm:h-36">
-            <span className="font-display text-lg font-semibold tracking-tight text-[hsl(var(--brand-red))] sm:text-2xl">{tr("Your business next")}</span>
-            <ArrowRight className="h-5 w-5 text-[hsl(var(--brand-red))] transition-transform group-hover:translate-x-1" />
+      {/* Partners */}
+      <section className="border-b border-border py-14 sm:py-16">
+        <div className="wrap mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <span className="eyebrow">{tr("Our partners")}</span>
+            <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl">{tr("Businesses we are proud to work with.")}</h2>
+          </div>
+          <Link to="/contact" className="link-arrow text-[hsl(var(--brand-red))]">
+            {tr("Your business next")} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
+        <PartnerMarquee />
       </section>
 
       {/* Statement */}

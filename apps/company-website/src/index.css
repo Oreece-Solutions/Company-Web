@@ -372,6 +372,9 @@
   .marquee {
     animation: marquee 40s linear infinite;
   }
+  .marquee-wrap:hover .marquee {
+    animation-play-state: paused;
+  }
 }
 
 @keyframes nav-drop {

@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Layout, PageHero, Reveal, CtaBand, usePageMeta } from "../site/Layout";
 import { company, principles } from "../site/content";
 import { useT } from "../site/i18n";
+import { PartnerGrid } from "../site/Partners";
 
 const values = [
   { word: "Manaakitanga", meaning: "Looking after people", body: "We treat your team, your customers and your data with care and respect." },
@@ -70,6 +71,16 @@ const About = () => {
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="pt-20 sm:pt-28">
+        <div className="wrap">
+          <span className="eyebrow">{tr("Our partners")}</span>
+          <h2 className="h-section mt-4 max-w-3xl">{tr("Businesses we are proud to work with.")}</h2>
+          <div className="mt-12">
+            <PartnerGrid />
           </div>
         </div>
       </section>
