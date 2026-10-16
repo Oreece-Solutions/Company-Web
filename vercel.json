@@ -5,25 +5,25 @@
     "framework": null,
     "redirects": [
         {
-            "source": "/:path*",
+            "source": "/(.*)",
             "has": [
                 {
                     "type": "host",
                     "value": "oreece.com"
                 }
             ],
-            "destination": "https://www.oreece.co.nz/:path*",
+            "destination": "https://www.oreece.co.nz/$1",
             "permanent": true
         },
         {
-            "source": "/:path*",
+            "source": "/(.*)",
             "has": [
                 {
                     "type": "host",
                     "value": "www.oreece.com"
                 }
             ],
-            "destination": "https://www.oreece.co.nz/:path*",
+            "destination": "https://www.oreece.co.nz/$1",
             "permanent": true
         }
     ],
