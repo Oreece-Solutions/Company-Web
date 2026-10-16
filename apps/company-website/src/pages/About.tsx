@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { Layout, PageHero, Reveal, CtaBand, usePageMeta } from "../site/Layout";
-import { company, principles } from "../site/content";
+import { Layout, PageHero, Reveal, CtaBand, SocialLinks, usePageMeta } from "../site/Layout";
+import { company, founderSocials, principles } from "../site/content";
 import { useT } from "../site/i18n";
 import { PartnerGrid } from "../site/Partners";
 
@@ -104,6 +104,9 @@ const About = () => {
               relationships and solution design, and personally oversees every engagement from first conversation to
               launch.
             </p>
+            <div className="mt-8">
+              <SocialLinks light items={founderSocials} owner="Nishan Gamage" />
+            </div>
             <Link to="/contact" className="link-arrow mt-8">
               Get in touch <ArrowRight className="h-4 w-4" />
             </Link>

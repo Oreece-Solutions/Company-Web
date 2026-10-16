@@ -20,6 +20,13 @@ export const socials: { name: "Facebook" | "LinkedIn" | "TikTok" | "Instagram"; 
   { name: "Instagram", url: "https://www.instagram.com/oreece.limited" },
 ];
 
+export const founderSocials: typeof socials = [
+  { name: "LinkedIn", url: "https://www.linkedin.com/in/nishangamage/" },
+  { name: "Facebook", url: "https://www.facebook.com/nishan.gamage.3998/" },
+  { name: "Instagram", url: "https://www.instagram.com/nishangamage_" },
+  { name: "TikTok", url: "https://www.tiktok.com/@nishan_gamage" },
+];
+
 export type ServiceSlug = "software" | "ai" | "marketing";
 
 export const services: {
