@@ -16,6 +16,14 @@ export function usePageMeta(title: string, description: string) {
   useEffect(() => {
     document.title = title === "Oreece" ? "Oreece — Software, AI & Growth, Built in New Zealand" : `${title} | Oreece`;
     document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+    // oreece.co.nz is the primary domain; oreece.com redirects here (vercel.json).
+    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = `https://www.oreece.co.nz${window.location.pathname === "/" ? "/" : window.location.pathname}`;
   }, [title, description]);
 }
 

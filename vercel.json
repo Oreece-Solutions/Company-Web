@@ -3,6 +3,30 @@
     "outputDirectory": "dist/apps/company-website",
     "installCommand": "yarn install",
     "framework": null,
+    "redirects": [
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "oreece.com"
+                }
+            ],
+            "destination": "https://www.oreece.co.nz/:path*",
+            "permanent": true
+        },
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "www.oreece.com"
+                }
+            ],
+            "destination": "https://www.oreece.co.nz/:path*",
+            "permanent": true
+        }
+    ],
     "rewrites": [
         {
             "source": "/(.*)",

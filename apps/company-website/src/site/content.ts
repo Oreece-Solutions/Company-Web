@@ -209,14 +209,15 @@ export const caseStudies: CaseStudy[] = [
   },
 ];
 
-// Businesses we work with. `href` links to a case study where one exists.
-export const partners: { name: string; href?: string }[] = [
+// Businesses we work with. `href` links to a case study where one exists; `logo` is the partner's own
+// logo (from their site or project files), shown on a dark tile when `dark` is set.
+export const partners: { name: string; href?: string; logo?: string; dark?: boolean }[] = [
   { name: "Fernfresh Limited" },
-  { name: "Pristine Pro Limited", href: "/work/pristine-pro-moving" },
-  { name: "Rusteze Auto Spa", href: "/work/rusteze-auto-spa" },
+  { name: "Pristine Pro Limited", href: "/work/pristine-pro-moving", logo: "/partners/pristine.png" },
+  { name: "Rusteze Auto Spa", href: "/work/rusteze-auto-spa", logo: "/partners/rusteze.png", dark: true },
   { name: "Talent Staff Recruitment" },
-  { name: "JCP Car Parts", href: "/work/jcp-car-parts" },
-  { name: "Lucky Ceylon Tours", href: "/work/lucky-ceylon-tours" },
+  { name: "JCP Car Parts", href: "/work/jcp-car-parts", logo: "/partners/jcp.png" },
+  { name: "Lucky Ceylon Tours", href: "/work/lucky-ceylon-tours", logo: "/partners/lucky-ceylon.png" },
 ];
 
 export const principles = [
