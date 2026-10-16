@@ -217,12 +217,13 @@ export const caseStudies: CaseStudy[] = [
 ];
 
 // Businesses we work with. `href` links to a case study where one exists; `logo` is the partner's own
-// logo (from their site or project files), shown on a dark tile when `dark` is set.
-export const partners: { name: string; href?: string; logo?: string; dark?: boolean }[] = [
-  { name: "Fernfresh Limited" },
+// logo (from their site, project files or supplied by them), shown on a dark tile when `dark` is set and
+// a little larger when `tall` (stacked logos).
+export const partners: { name: string; href?: string; logo?: string; dark?: boolean; tall?: boolean }[] = [
+  { name: "Fernfresh Limited", logo: "/partners/fernfresh.png", tall: true },
   { name: "Pristine Pro Limited", href: "/work/pristine-pro-moving", logo: "/partners/pristine.png" },
   { name: "Rusteze Auto Spa", href: "/work/rusteze-auto-spa", logo: "/partners/rusteze.png", dark: true },
-  { name: "Talent Staff Recruitment" },
+  { name: "Talent Staff Recruitment", logo: "/partners/talent-staff.png", tall: true },
   { name: "JCP Car Parts", href: "/work/jcp-car-parts", logo: "/partners/jcp.png" },
   { name: "Lucky Ceylon Tours", href: "/work/lucky-ceylon-tours", logo: "/partners/lucky-ceylon.png" },
 ];

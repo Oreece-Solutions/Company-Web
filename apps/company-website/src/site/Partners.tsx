@@ -21,7 +21,8 @@ const initials = (name: string) =>
     .toUpperCase();
 
 function Mark({ p, i }: { p: Partner; i: number }) {
-  if (p.logo) return <img src={p.logo} alt={p.name} loading="lazy" className="h-16 w-auto max-w-[190px] object-contain" />;
+  if (p.logo)
+    return <img src={p.logo} alt={p.name} loading="lazy" className={`${p.tall ? "h-[92px]" : "h-16"} w-auto max-w-[190px] object-contain`} />;
   return (
     <span className="flex items-center gap-3">
       <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-display text-sm font-bold ${badgeTones[i % badgeTones.length]}`}>
@@ -33,7 +34,7 @@ function Mark({ p, i }: { p: Partner; i: number }) {
 }
 
 const tile = (p: Partner) =>
-  `flex h-24 items-center justify-center rounded-2xl border px-8 transition-colors ${
+  `flex h-28 items-center justify-center rounded-2xl border px-8 transition-colors ${
     p.dark ? "border-[hsl(var(--ink))] bg-[hsl(var(--ink))]" : "border-border bg-white"
   } ${p.href ? (p.dark ? "hover:bg-[hsl(var(--ink)/0.9)]" : "hover:border-[hsl(var(--ink)/0.4)]") : ""}`;
 
