@@ -2,7 +2,8 @@ import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import { Plus, Search, FileText, Eye, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, FileText, Eye, Edit, Trash2, Download } from 'lucide-react';
+import { downloadCsv } from '@/lib/csv';
 import { useAppStore } from '@/contexts/StoreContext';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -70,10 +71,21 @@ export default function InvoicesPage() {
         title="Invoices"
         description="Create and manage your invoices"
         actions={
-          <Button onClick={() => navigate('/invoices/new')} className="gap-2 bg-accent hover:bg-accent/90">
-            <Plus className="h-4 w-4" />
-            New Invoice
-          </Button>
+          <>
+            <Button variant="outline" className="gap-2" onClick={() => downloadCsv(`oreece-invoices-${format(new Date(), 'yyyy-MM-dd')}.csv`, sortedInvoices.map((inv) => {
+              const client = getClient(inv.clientId);
+              return {
+                invoice_number: inv.invoiceNumber, client: client?.companyName || client?.name, invoice_date: inv.invoiceDate, due_date: inv.dueDate,
+                currency: inv.currency, total: inv.total, received: inv.amountReceived || 0, outstanding: inv.total - (inv.amountReceived || 0), status: inv.status,
+              };
+            }))}>
+              <Download className="h-4 w-4" />Export
+            </Button>
+            <Button onClick={() => navigate('/invoices/new')} className="gap-2 bg-accent hover:bg-accent/90">
+              <Plus className="h-4 w-4" />
+              New Invoice
+            </Button>
+          </>
         }
       />
 

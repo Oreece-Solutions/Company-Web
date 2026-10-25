@@ -36,7 +36,7 @@ export default function Dashboard() {
   const { invoices, clients, getClient, company } = useAppStore();
   const { deals, followUps, quotes } = useSales();
   const { user } = useAuth();
-  const fallback = company.defaultCurrency || 'LKR';
+  const fallback = company.defaultCurrency || 'NZD';
   const today = format(new Date(), 'yyyy-MM-dd');
 
   // Totals are kept per currency (an NZD and an LKR invoice are never added).

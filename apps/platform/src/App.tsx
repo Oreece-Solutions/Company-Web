@@ -1,4 +1,6 @@
+import { lazy, Suspense } from "react";
 import { Toaster, ShadcnToaster, TooltipProvider } from "@company-web/shared/ui";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -7,30 +9,33 @@ import { SalesProvider } from "@/contexts/SalesContext";
 import { HqProvider } from "@/contexts/HqContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AuthPage from "./pages/AuthPage";
-import Index from "./pages/Index";
-import InvoicesPage from "./pages/InvoicesPage";
-import InvoiceFormPage from "./pages/InvoiceFormPage";
-import InvoiceViewPage from "./pages/InvoiceViewPage";
-import ClientsPage from "./pages/ClientsPage";
-import ProjectsPage from "./pages/ProjectsPage";
-import ProjectDetailPage from "./pages/ProjectDetailPage";
-import SettingsPage from "./pages/SettingsPage";
-import ClientDetailPage from "./pages/ClientDetailPage";
-import PipelinePage from "./pages/PipelinePage";
-import DealsPage from "./pages/DealsPage";
-import DealDetailPage from "./pages/DealDetailPage";
-import QuotesPage from "./pages/QuotesPage";
-import QuoteFormPage from "./pages/QuoteFormPage";
-import QuoteViewPage from "./pages/QuoteViewPage";
-import FollowUpsPage from "./pages/FollowUpsPage";
 import NotFound from "./pages/NotFound";
 import TodayPage from "./pages/TodayPage";
-import LeadsPage from "./pages/LeadsPage";
-import ServicesPage from "./pages/ServicesPage";
-import WeeklyReviewPage from "./pages/WeeklyReviewPage";
-import ContractorsPage from "./pages/ContractorsPage";
-import SystemsPage from "./pages/SystemsPage";
-import SocialPage from "./pages/SocialPage";
+
+// Screens load when first opened, so the app starts fast.
+const Index = lazy(() => import("./pages/Index"));
+const InvoicesPage = lazy(() => import("./pages/InvoicesPage"));
+const InvoiceFormPage = lazy(() => import("./pages/InvoiceFormPage"));
+const InvoiceViewPage = lazy(() => import("./pages/InvoiceViewPage"));
+const ClientsPage = lazy(() => import("./pages/ClientsPage"));
+const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
+const ProjectDetailPage = lazy(() => import("./pages/ProjectDetailPage"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+const ClientDetailPage = lazy(() => import("./pages/ClientDetailPage"));
+const PipelinePage = lazy(() => import("./pages/PipelinePage"));
+const DealsPage = lazy(() => import("./pages/DealsPage"));
+const DealDetailPage = lazy(() => import("./pages/DealDetailPage"));
+const QuotesPage = lazy(() => import("./pages/QuotesPage"));
+const QuoteFormPage = lazy(() => import("./pages/QuoteFormPage"));
+const QuoteViewPage = lazy(() => import("./pages/QuoteViewPage"));
+const FollowUpsPage = lazy(() => import("./pages/FollowUpsPage"));
+const LeadsPage = lazy(() => import("./pages/LeadsPage"));
+const ServicesPage = lazy(() => import("./pages/ServicesPage"));
+const WeeklyReviewPage = lazy(() => import("./pages/WeeklyReviewPage"));
+const ContractorsPage = lazy(() => import("./pages/ContractorsPage"));
+const SystemsPage = lazy(() => import("./pages/SystemsPage"));
+const SocialPage = lazy(() => import("./pages/SocialPage"));
+const AuditPage = lazy(() => import("./pages/AuditPage"));
 
 const queryClient = new QueryClient();
 
@@ -44,6 +49,8 @@ const App = () => (
             <Toaster />
             <ShadcnToaster />
             <BrowserRouter>
+              <ErrorBoundary>
+              <Suspense fallback={<div className="min-h-screen bg-background" />}>
               <Routes>
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/" element={<ProtectedRoute><TodayPage /></ProtectedRoute>} />
@@ -54,6 +61,7 @@ const App = () => (
                 <Route path="/contractors" element={<ProtectedRoute><ContractorsPage /></ProtectedRoute>} />
                 <Route path="/systems" element={<ProtectedRoute><SystemsPage /></ProtectedRoute>} />
                 <Route path="/social" element={<ProtectedRoute><SocialPage /></ProtectedRoute>} />
+                <Route path="/audit" element={<ProtectedRoute><AuditPage /></ProtectedRoute>} />
                 <Route path="/invoices" element={<ProtectedRoute><InvoicesPage /></ProtectedRoute>} />
                 <Route path="/invoices/new" element={<ProtectedRoute><InvoiceFormPage /></ProtectedRoute>} />
                 <Route path="/invoices/:id" element={<ProtectedRoute><InvoiceViewPage /></ProtectedRoute>} />
@@ -73,6 +81,8 @@ const App = () => (
                 <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </Suspense>
+              </ErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>
           </HqProvider>

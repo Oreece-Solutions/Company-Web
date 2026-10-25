@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
-import { Search, Handshake, KanbanSquare } from 'lucide-react';
+import { Search, Handshake, KanbanSquare, Download } from 'lucide-react';
+import { downloadCsv } from '@/lib/csv';
 import { useAppStore } from '@/contexts/StoreContext';
 import { useSales } from '@/contexts/SalesContext';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -45,10 +46,21 @@ export default function DealsPage() {
         title="Deals"
         description="Every opportunity, open and closed"
         actions={
-          <Button variant="outline" className="gap-2" onClick={() => navigate('/pipeline')}>
-            <KanbanSquare className="h-4 w-4" />
-            Pipeline board
-          </Button>
+          <>
+            <Button variant="outline" className="gap-2" onClick={() => downloadCsv(`oreece-deals-${format(new Date(), 'yyyy-MM-dd')}.csv`, rows.map((d) => {
+              const client = getClient(d.clientId);
+              return {
+                title: d.title, client: client?.companyName || client?.name, stage: d.stage, value_estimate: d.value, currency: d.currency,
+                probability: d.probability, expected_close: d.expectedCloseDate, source: d.source, owner: getMemberName(d.ownerId), lost_reason: d.lostReason, closed_at: d.closedAt,
+              };
+            }))}>
+              <Download className="h-4 w-4" />Export
+            </Button>
+            <Button variant="outline" className="gap-2" onClick={() => navigate('/pipeline')}>
+              <KanbanSquare className="h-4 w-4" />
+              Pipeline board
+            </Button>
+          </>
         }
       />
 

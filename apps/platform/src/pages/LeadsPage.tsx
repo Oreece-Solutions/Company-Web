@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
-import { Search, Plus, Upload, Radar, MoreHorizontal, ExternalLink, Globe, PhoneOutgoing, ArrowRightCircle, Ban, Trash2, Pencil } from 'lucide-react';
+import { Search, Plus, Upload, Download, Radar, MoreHorizontal, ExternalLink, Globe, PhoneOutgoing, ArrowRightCircle, Ban, Trash2, Pencil } from 'lucide-react';
 import {
   Button,
   Input,
@@ -39,6 +39,7 @@ import { ProspectStageBadge, TierBadge } from '@/components/hq/Badges';
 import { CsvImportDialog } from '@/components/hq/CsvImportDialog';
 import { Prospect, ProspectInput, ProspectStage } from '@/types/hq';
 import { parseProspectCsvRow } from '@/lib/prospectCsv';
+import { downloadCsv } from '@/lib/csv';
 import { formatMoney } from '@/lib/money';
 
 type Filter = 'active' | 'due' | 'tierA' | 'converted' | 'disqualified' | 'all';
@@ -176,6 +177,9 @@ export default function LeadsPage() {
         description="Businesses you researched, each with a problem you saw yourself"
         actions={
           <>
+            <Button variant="outline" className="gap-2" onClick={() => downloadCsv(`oreece-leads-${format(new Date(), 'yyyy-MM-dd')}.csv`, rows.map((p) => ({ business_name: p.businessName, website: p.website, industry: p.industry, location: p.location, tier: p.tier, stage: p.stage, observed_problem: p.observedProblem, evidence: p.evidence, contact_channel: p.contactChannel, consent_basis: p.consentBasis, next_action: p.nextAction, next_action_date: p.nextActionDate, est_value_nzd_estimate: p.estimatedValue, notes: p.notes })))}>
+              <Download className="h-4 w-4" />Export
+            </Button>
             <Button variant="outline" className="gap-2" onClick={() => setImportOpen(true)}>
               <Upload className="h-4 w-4" />Import CSV
             </Button>

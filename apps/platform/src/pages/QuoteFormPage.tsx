@@ -114,7 +114,7 @@ function QuoteEditor({ existing }: { existing?: Quote }) {
           title: fromDeal?.title || '',
           issueDate: today,
           validUntil: format(addDays(new Date(), 30), 'yyyy-MM-dd'),
-          currency: fromDeal?.currency || company.defaultCurrency || 'LKR',
+          currency: fromDeal?.currency || company.defaultCurrency || 'NZD',
           items: [{ description: '', quantity: 1, unitPrice: 0 }],
           discount: 0,
           taxRate: 0,

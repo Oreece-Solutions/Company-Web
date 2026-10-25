@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,7 +11,6 @@ import { Button } from '@company-web/shared/ui';
 import { Input } from '@company-web/shared/ui';
 import { Label } from '@company-web/shared/ui';
 import { Textarea } from '@company-web/shared/ui';
-import { useToast } from '@company-web/shared/utils';
 import { SelectField } from '@/components/crm/SelectField';
 import { CURRENCIES, Currency } from '@/types/invoice';
 
@@ -35,69 +34,69 @@ type CompanyFormData = z.infer<typeof companySchema>;
 
 export default function SettingsPage() {
   const { company, updateCompany } = useAppStore();
-  const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | undefined>(company.logo);
   const [signaturePreview, setSignaturePreview] = useState<string | undefined>(company.signature);
+
+  // The company record arrives after the first render (and after a refresh),
+  // so the form is filled whenever it loads, unless the user is mid-edit.
+  const formValues = (): CompanyFormData => ({
+    name: company.name,
+    address: company.address,
+    email: company.email,
+    phone: company.phone,
+    website: company.website || '',
+    taxNumber: company.taxNumber || '',
+    bankName: company.bankDetails?.bankName || '',
+    accountName: company.bankDetails?.accountName || '',
+    accountType: company.bankDetails?.accountType || '',
+    accountNumber: company.bankDetails?.accountNumber || '',
+    branch: company.bankDetails?.branch || '',
+    defaultCurrency: company.defaultCurrency || 'NZD',
+    quoteTerms: company.quoteTerms || '',
+  });
 
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isDirty },
   } = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
-    defaultValues: {
-      name: company.name,
-      address: company.address,
-      email: company.email,
-      phone: company.phone,
-      website: company.website || '',
-      taxNumber: company.taxNumber || '',
-      bankName: company.bankDetails?.bankName || '',
-      accountName: company.bankDetails?.accountName || '',
-      accountType: company.bankDetails?.accountType || '',
-      accountNumber: company.bankDetails?.accountNumber || '',
-      branch: company.bankDetails?.branch || '',
-      defaultCurrency: company.defaultCurrency || 'LKR',
-      quoteTerms: company.quoteTerms || '',
-    },
+    defaultValues: formValues(),
   });
+
+  useEffect(() => {
+    if (!company.id || isDirty) return;
+    reset(formValues());
+    setLogoPreview(company.logo);
+    setSignaturePreview(company.signature);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [company]);
 
   const onSubmit = async (data: CompanyFormData) => {
     setIsSaving(true);
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const { bankName, accountName, accountType, accountNumber, branch, ...companyData } = data;
-      updateCompany({
-        ...companyData,
-        defaultCurrency: companyData.defaultCurrency as Currency,
-        quoteTerms: companyData.quoteTerms || '',
-        logo: logoPreview,
-        signature: signaturePreview,
-        bankDetails: {
-          bankName: bankName || '',
-          accountName: accountName || '',
-          accountType: accountType || '',
-          accountNumber: accountNumber || '',
-          branch: branch || '',
-        },
-      });
-      toast({
-        title: 'Settings saved',
-        description: 'Your company profile has been updated.',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to save settings. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSaving(false);
-    }
+    const { bankName, accountName, accountType, accountNumber, branch, ...companyData } = data;
+    // The store shows the success or error message; only mark the form saved if it worked.
+    const saved = await updateCompany({
+      ...companyData,
+      defaultCurrency: companyData.defaultCurrency as Currency,
+      quoteTerms: companyData.quoteTerms || '',
+      logo: logoPreview,
+      signature: signaturePreview,
+      bankDetails: {
+        bankName: bankName || '',
+        accountName: accountName || '',
+        accountType: accountType || '',
+        accountNumber: accountNumber || '',
+        branch: branch || '',
+      },
+    });
+    if (saved) reset(data);
+    setIsSaving(false);
   };
+
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -193,7 +192,7 @@ export default function SettingsPage() {
                   id="address"
                   {...register('address')}
                   className="mt-1.5"
-                  placeholder="123 Business Street&#10;City, State 12345"
+                  placeholder="Level 1, 10 Queen Street&#10;Auckland 1010"
                   rows={3}
                 />
                 {errors.address && (
@@ -222,7 +221,7 @@ export default function SettingsPage() {
                     id="phone"
                     {...register('phone')}
                     className="mt-1.5"
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="+64 21 123 4567"
                   />
                   {errors.phone && (
                     <p className="mt-1 text-sm text-destructive">{errors.phone.message}</p>
@@ -241,12 +240,12 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <Label htmlFor="taxNumber">BR No (Optional)</Label>
+                <Label htmlFor="taxNumber">GST number (optional)</Label>
                 <Input
                   id="taxNumber"
                   {...register('taxNumber')}
                   className="mt-1.5"
-                  placeholder="Business Registration Number"
+                  placeholder="123-456-789"
                 />
               </div>
             </div>

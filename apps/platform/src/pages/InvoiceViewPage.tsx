@@ -163,14 +163,14 @@ export default function InvoiceViewPage() {
                     <p className="text-sm text-gray-600">{company.website}</p>
                   )}
                   {company.taxNumber && (
-                    <p className="text-sm text-gray-500 mt-1">BR No: {company.taxNumber}</p>
+                    <p className="text-sm text-gray-500 mt-1">GST No: {company.taxNumber}</p>
                   )}
                 </div>
               </div>
 
               {/* Invoice Title */}
               <div className="text-right">
-                <h1 className="text-4xl font-bold text-[#ea0027] tracking-tight">INVOICE</h1>
+                <h1 className="text-4xl font-bold text-[#ea0027] tracking-tight">{company.taxNumber ? 'TAX INVOICE' : 'INVOICE'}</h1>
                 <p className="text-xl font-mono font-semibold text-gray-900 mt-2">
                   {invoice.invoiceNumber}
                 </p>
@@ -412,9 +412,9 @@ export default function InvoiceViewPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="paymentAmount">
-                Amount ({CURRENCY_SYMBOLS[invoice?.currency || 'LKR']})
+                Amount ({CURRENCY_SYMBOLS[invoice?.currency || 'NZD']})
                 <span className="text-muted-foreground font-normal ml-2">
-                  Balance: {CURRENCY_SYMBOLS[invoice?.currency || 'LKR']}{balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  Balance: {CURRENCY_SYMBOLS[invoice?.currency || 'NZD']}{balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </span>
               </Label>
               <Input
@@ -435,17 +435,7 @@ export default function InvoiceViewPage() {
                 type="text"
                 value={paymentReference}
                 onChange={(e) => setPaymentReference(e.target.value)}
-                placeholder="e.g., Bank transfer ref, check number"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="paymentReference">Reference Number (Optional)</Label>
-              <Input
-                id="paymentReference"
-                type="text"
-                value={paymentReference}
-                onChange={(e) => setPaymentReference(e.target.value)}
-                placeholder="e.g., Bank transfer ref, check number"
+                placeholder="e.g. bank transfer reference"
               />
             </div>
           </div>

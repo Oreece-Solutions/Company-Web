@@ -33,5 +33,19 @@ export default defineConfig(() => ({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
+    // Third-party code in its own long-cached files; app code stays small.
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          // Only libraries that do not import React get their own file; anything
+          // React-based stays with React so it never loads before React does.
+          if (/@supabase/.test(id)) return 'vendor-supabase';
+          if (/date-fns|\/zod\//.test(id)) return 'vendor-utils';
+          return 'vendor';
+        },
+      },
+    },
   },
 }));

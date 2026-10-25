@@ -1085,6 +1085,39 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_log: {
+        Row: {
+          id: number
+          table_name: string
+          record_id: string | null
+          action: string
+          changes: Json
+          label: string | null
+          changed_by: string | null
+          changed_at: string
+        }
+        Insert: {
+          id?: number
+          table_name: string
+          record_id?: string | null
+          action: string
+          changes?: Json
+          label?: string | null
+          changed_by?: string | null
+          changed_at?: string
+        }
+        Update: {
+          id?: number
+          table_name?: string
+          record_id?: string | null
+          action?: string
+          changes?: Json
+          label?: string | null
+          changed_by?: string | null
+          changed_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

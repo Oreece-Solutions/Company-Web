@@ -142,7 +142,7 @@ function mapDbCompanyToCompany(db: DbCompanySettings): Company {
       accountNumber: db.bank_account_number || '',
       branch: db.bank_branch || '',
     },
-    defaultCurrency: (db.default_currency as Currency) || 'LKR',
+    defaultCurrency: (db.default_currency as Currency) || 'NZD',
     quoteTerms: db.quote_terms || '',
   };
 }
@@ -376,7 +376,7 @@ export function useSupabaseStore() {
 
   // Company settings (single shared row)
   const updateCompany = useCallback(async (data: Partial<Company>) => {
-    if (!user || !company?.id) return;
+    if (!user || !company?.id) return false;
 
     const updateData: Record<string, unknown> = {};
     if (data.name !== undefined) updateData.name = data.name;
@@ -406,11 +406,12 @@ export function useSupabaseStore() {
 
     if (error) {
       toast.error('Failed to update company');
-      return;
+      return false;
     }
 
     setCompany(mapDbCompanyToCompany(updated as DbCompanySettings));
     toast.success('Company updated');
+    return true;
   }, [user, company?.id]);
 
   // Client operations

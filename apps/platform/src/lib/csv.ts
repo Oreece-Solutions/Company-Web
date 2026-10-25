@@ -43,3 +43,21 @@ export function parseCsv(text: string): Record<string, string>[] {
   const keys = header.map((h) => h.trim().toLowerCase());
   return body.map((r) => Object.fromEntries(keys.map((k, i) => [k, (r[i] ?? '').trim()])));
 }
+
+// Build a CSV (quoted where needed) and hand it to the browser as a download.
+export function downloadCsv(filename: string, rows: Record<string, unknown>[]) {
+  const headers = Array.from(new Set(rows.flatMap((r) => Object.keys(r))));
+  const cell = (v: unknown) => {
+    const s = v === null || v === undefined ? '' : Array.isArray(v) ? v.join('; ') : String(v);
+    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const csv = [headers.join(','), ...rows.map((r) => headers.map((h) => cell(r[h])).join(','))].join('\r\n');
+  const url = URL.createObjectURL(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}

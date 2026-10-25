@@ -69,7 +69,7 @@ export default function InvoiceFormPage() {
         clientId: '',
         invoiceDate: format(new Date(), 'yyyy-MM-dd'),
         dueDate: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
-        currency: company.defaultCurrency || ('LKR' as Currency),
+        currency: company.defaultCurrency || ('NZD' as Currency),
         lineItems: [{ description: '', amount: 0 }],
         notes: '',
       };
@@ -92,6 +92,9 @@ export default function InvoiceFormPage() {
   });
 
   const watchLineItems = watch('lineItems');
+  // GST is its own line so the printed invoice shows it; 15% of the non-GST lines.
+  const hasGstLine = watchLineItems.some((item) => /^gst\b|^tax \(/i.test(item.description || ''));
+  const gstBase = watchLineItems.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const watchCurrency = watch('currency');
 
   const calculateTotal = () => {
@@ -271,16 +274,30 @@ export default function InvoiceFormPage() {
         <div className="rounded-xl border border-border bg-card p-6 shadow-card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-foreground">Services</h2>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => append({ description: '', amount: 0 })}
-              className="gap-1"
-            >
-              <Plus className="h-4 w-4" />
-              Add Service
-            </Button>
+            <div className="flex gap-2">
+              {!hasGstLine && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={gstBase <= 0}
+                  title="Adds a 15% GST line on the amounts above"
+                  onClick={() => append({ description: 'GST (15%)', amount: Math.round(gstBase * 15) / 100 })}
+                >
+                  Add GST 15%
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => append({ description: '', amount: 0 })}
+                className="gap-1"
+              >
+                <Plus className="h-4 w-4" />
+                Add Service
+              </Button>
+            </div>
           </div>
 
           {errors.lineItems && !Array.isArray(errors.lineItems) && (

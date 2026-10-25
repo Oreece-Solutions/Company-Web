@@ -92,7 +92,7 @@ export default function ClientDetailPage() {
   }
 
   const contacts = getContactsForClient(id);
-  const fallback = company.defaultCurrency || 'LKR';
+  const fallback = company.defaultCurrency || 'NZD';
   const displayName = client.companyName || client.name;
 
   const handleUpdate = (data: Omit<Client, 'id' | 'createdAt'>) => {

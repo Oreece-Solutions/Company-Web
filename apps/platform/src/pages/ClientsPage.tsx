@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Plus, Search, Users, Edit, Trash2, MessageSquareText, Upload } from 'lucide-react';
+import { Plus, Search, Users, Edit, Trash2, MessageSquareText, Upload, Download } from 'lucide-react';
+import { downloadCsv } from '@/lib/csv';
 import { CsvImportDialog } from '@/components/hq/CsvImportDialog';
 import { useAppStore } from '@/contexts/StoreContext';
 import { useSales } from '@/contexts/SalesContext';
-import { formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { ClientStatusBadge } from '@/components/client/ClientStatusBadge';
 import { ClientActivityLog } from '@/components/client/ClientActivityLog';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -133,7 +134,10 @@ export default function ClientsPage() {
         description="Manage your client database"
         actions={
           <>
-          <Button variant="outline" className="gap-2" onClick={() => setIsImportOpen(true)}>
+          <Button variant="outline" className="gap-2" onClick={() => downloadCsv(`oreece-clients-${format(new Date(), 'yyyy-MM-dd')}.csv`, filteredClients.map((c) => ({ company_name: c.companyName, contact_name: c.name, email: c.email, phone: c.phone, website: c.website, industry: c.industry, status: c.status, source: c.source, country: c.country, notes: c.notes })))}>
+              <Download className="h-4 w-4" />Export
+            </Button>
+            <Button variant="outline" className="gap-2" onClick={() => setIsImportOpen(true)}>
             <Upload className="h-4 w-4" />
             Import CSV
           </Button>

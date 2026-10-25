@@ -18,7 +18,8 @@ interface SelectFieldProps {
 export function SelectField({ id, value, onChange, options, placeholder, noneLabel, className, disabled }: SelectFieldProps) {
   return (
     <Select
-      value={value ? value : noneLabel ? NONE : undefined}
+      // Always controlled: '' shows the placeholder (Radix Select v2).
+      value={value ? value : noneLabel ? NONE : ''}
       onValueChange={(v) => onChange(v === NONE ? '' : v)}
       disabled={disabled}
     >

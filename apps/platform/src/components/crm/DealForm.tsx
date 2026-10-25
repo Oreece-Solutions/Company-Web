@@ -57,7 +57,7 @@ export function DealForm({ initialData, clientId, onSubmit, onCancel }: DealForm
       contactId: initialData?.contactId || '',
       stage: initialData && !isClosed ? (initialData.stage as DealFormData['stage']) : 'lead',
       value: initialData?.value ?? 0,
-      currency: initialData?.currency || company.defaultCurrency || 'LKR',
+      currency: initialData?.currency || company.defaultCurrency || 'NZD',
       probability: initialData?.probability ?? DEAL_STAGE_PROBABILITY.lead,
       expectedCloseDate: initialData?.expectedCloseDate || '',
       serviceType: initialData?.serviceType || '',

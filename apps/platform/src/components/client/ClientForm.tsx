@@ -118,7 +118,7 @@ export function ClientForm({ initialData, onSubmit, onCancel }: ClientFormProps)
           id="address"
           {...register('address')}
           className="mt-1.5"
-          placeholder="123 Main Street&#10;City, State 12345"
+          placeholder="10 Queen Street&#10;Auckland 1010"
           rows={3}
         />
         {errors.address && (
@@ -147,7 +147,7 @@ export function ClientForm({ initialData, onSubmit, onCancel }: ClientFormProps)
             id="phone"
             {...register('phone')}
             className="mt-1.5"
-            placeholder="+1 (555) 123-4567"
+            placeholder="+64 21 123 4567"
           />
           {errors.phone && (
             <p className="mt-1 text-sm text-destructive">{errors.phone.message}</p>
