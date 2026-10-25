@@ -1,7 +1,7 @@
 // Oreece HQ: 20261025000001_hq_operations.sql
 import { test, describe, before } from 'node:test';
 import assert from 'node:assert/strict';
-import { createDb, one, all, createUser, asUser, expectError } from './db.mjs';
+import { createDb, applyMigration, one, all, createUser, asUser, expectError } from './db.mjs';
 
 async function insert(db, table, cols) {
   const keys = Object.keys(cols);
@@ -243,5 +243,24 @@ describe('Oreece HQ', () => {
       const visible = await asUser(db, admin, () => all(db, `SELECT * FROM prospects WHERE business_name = 'RLS Visible'`));
       assert.equal(visible.length, 1);
     });
+  });
+});
+
+describe('hardening (20261025000002)', () => {
+  test('signed-out callers cannot run actions; members can; NZD defaults', async () => {
+    const db = await createDb();
+    // The harness grants every function to every API role after migrating;
+    // Supabase does that at creation instead, so re-apply the revokes.
+    await applyMigration(db, '20261025000002_hq_hardening.sql');
+    const admin = await createUser(db, { role: 'admin' });
+    await db.exec(`SET ROLE anon`);
+    await expectError(db.query(`SELECT convert_prospect(gen_random_uuid())`), /permission denied/);
+    await expectError(db.query(`SELECT weekly_metrics('2026-10-30')`), /permission denied/);
+    await db.exec(`RESET ROLE`);
+    const m = await asUser(db, admin, async () => (await one(db, `SELECT weekly_metrics('2026-10-30') AS m`)).m);
+    assert.equal(m.week_ending, '2026-10-30');
+    const c = await one(db, `INSERT INTO clients (name) VALUES ('NZ Co') RETURNING id`);
+    const d = await one(db, `INSERT INTO deals (client_id, title) VALUES ($1, 'x') RETURNING currency`, [c.id]);
+    assert.equal(d.currency, 'NZD');
   });
 });
