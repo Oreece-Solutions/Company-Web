@@ -1,180 +1,107 @@
+// Website contact form → Oreece HQ.
+// 1. Always records the enquiry first: a lead (clients, status 'lead'), the
+//    message as an activity, and a "reply" follow-up due today (shows on Today).
+// 2. Then emails info@oreece.com, only if RESEND_API_KEY is set. Email problems
+//    never lose the enquiry.
+// Self-contained (one file) so it can be pasted into the Supabase dashboard editor.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
-import { Resend } from "npm:resend@2.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
-// Service role client: bypasses RLS so this function can create a CRM lead
-// server-side (more reliable than a client-side insert from the browser).
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...corsHeaders } });
 
-interface ContactFormData {
-  name: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  project?: string;
-  message: string;
-  budget?: string;
-}
+const esc = (s: unknown) =>
+  String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+const clip = (s: unknown, n: number) => (typeof s === "string" ? s.trim().slice(0, n) : "");
 
-const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method !== "POST") return json({ error: "POST only" }, 405);
+
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return json({ error: "Invalid request" }, 400);
+  }
+  const form = {
+    name: clip(body.name, 120),
+    email: clip(body.email, 200),
+    phone: clip(body.phone, 40),
+    company: clip(body.company, 160),
+    project: clip(body.project, 120),
+    budget: clip(body.budget, 80),
+    message: clip(body.message, 5000),
+  };
+  if (!form.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) || !form.message) {
+    return json({ error: "Name, a valid email and a message are required" }, 400);
   }
 
+  const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  let saved = false;
   try {
-    const formData: ContactFormData = await req.json();
-    console.log("Received contact form data:", formData);
-
-    // Record this submission as a lead in the CRM. Best-effort: a failure
-    // here shouldn't block the email notification below.
-    const { data: lead, error: leadError } = await supabase
+    const { data: lead, error } = await supabase
       .from("clients")
       .insert({
-        name: formData.name,
-        company_name: formData.company || null,
-        email: formData.email,
-        phone: formData.phone || null,
+        name: form.name,
+        company_name: form.company || null,
+        email: form.email,
+        phone: form.phone || null,
         status: "lead",
         source: "website",
       })
       .select("id")
       .single();
-    if (leadError) {
-      console.error("Failed to create CRM lead from contact form:", leadError);
-    } else {
-      const details = [
-        formData.project && `Project type: ${formData.project}`,
-        formData.budget && `Budget: ${formData.budget}`,
-        `Message: ${formData.message}`,
-      ].filter(Boolean).join("\n");
-
-      const { error: activityError } = await supabase.from("activities").insert({
-        client_id: lead.id,
-        type: "note",
-        note: details,
-      });
-      if (activityError) {
-        console.error("Failed to log lead activity:", activityError);
-      }
-    }
-
-    // Send notification email to info@oreece.com
-    const emailResponse = await resend.emails.send({
-      from: "Contact Form <onboarding@resend.dev>",
-      to: ["info@oreece.com"],
-      subject: `New Contact Form Submission from ${formData.name}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-          
-          <div style="margin-bottom: 20px;">
-            <h3 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">Contact Information</h3>
-            <p><strong>Name:</strong> ${formData.name}</p>
-            <p><strong>Email:</strong> ${formData.email}</p>
-            ${formData.phone ? `<p><strong>Phone:</strong> ${formData.phone}</p>` : ''}
-            ${formData.company ? `<p><strong>Company:</strong> ${formData.company}</p>` : ''}
-          </div>
-
-          <div style="margin-bottom: 20px;">
-            <h3 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">Project Details</h3>
-            ${formData.project ? `<p><strong>Project Type:</strong> ${formData.project}</p>` : ''}
-            ${formData.budget ? `<p><strong>Budget Range:</strong> ${formData.budget}</p>` : ''}
-          </div>
-
-          <div style="margin-bottom: 20px;">
-            <h3 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">Message</h3>
-            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff;">
-              ${formData.message.replace(/\n/g, '<br>')}
-            </div>
-          </div>
-
-          <div style="margin-top: 30px; padding: 15px; background-color: #e9ecef; border-radius: 5px; text-align: center;">
-            <p style="margin: 0; color: #666; font-size: 14px;">
-              This email was sent from the Oreece website contact form.
-            </p>
-          </div>
-        </div>
-      `,
+    if (error) throw error;
+    saved = true;
+    const details = [
+      form.project && `Project type: ${form.project}`,
+      form.budget && `Budget: ${form.budget}`,
+      `Message: ${form.message}`,
+    ].filter(Boolean).join("\n");
+    await supabase.from("activities").insert({ client_id: lead.id, type: "note", note: `Website enquiry\n${details}` });
+    await supabase.from("follow_ups").insert({
+      client_id: lead.id,
+      title: `Reply to website enquiry from ${form.name}`,
+      due_date: new Date().toISOString().slice(0, 10),
     });
-
-    console.log("Email sent successfully:", emailResponse);
-
-    // Send confirmation email to the user
-    const confirmationResponse = await resend.emails.send({
-      from: "Oreece <onboarding@resend.dev>",
-      to: [formData.email],
-      subject: "Thank you for contacting Oreece!",
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #007bff; text-align: center;">Thank you for reaching out!</h1>
-          
-          <p>Hi ${formData.name},</p>
-          
-          <p>Thank you for contacting Oreece. We have received your message and our team will get back to you within 24 hours.</p>
-          
-          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #333; margin-top: 0;">Your submission details:</h3>
-            <p><strong>Project Type:</strong> ${formData.project || 'Not specified'}</p>
-            <p><strong>Budget Range:</strong> ${formData.budget || 'Not specified'}</p>
-          </div>
-          
-          <p>In the meantime, feel free to explore our portfolio and learn more about our services on our website.</p>
-          
-          <p>Best regards,<br>The Oreece Team</p>
-          
-          <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-          <p style="color: #666; font-size: 14px; text-align: center;">
-            This is an automated confirmation email. Please do not reply to this email.
-          </p>
-        </div>
-      `,
-    });
-
-    console.log("Confirmation email sent:", confirmationResponse);
-
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: "Email sent successfully",
-        emailId: emailResponse.data?.id 
-      }), 
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          ...corsHeaders,
-        },
-      }
-    );
-  } catch (error: any) {
-    console.error("Error in send-contact-email function:", error);
-    return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error.message,
-        details: "Failed to send email. Please try again later."
-      }),
-      {
-        status: 500,
-        headers: { 
-          "Content-Type": "application/json", 
-          ...corsHeaders 
-        },
-      }
-    );
+  } catch (err) {
+    console.error("Could not record the enquiry:", err);
   }
-};
 
-serve(handler);
+  let emailed = false;
+  const key = Deno.env.get("RESEND_API_KEY");
+  if (key) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: Deno.env.get("CONTACT_FROM") || "Oreece Website <onboarding@resend.dev>",
+          to: [Deno.env.get("CONTACT_TO") || "info@oreece.com"],
+          reply_to: form.email,
+          subject: `Website enquiry from ${form.name}${form.company ? ` (${form.company})` : ""}`,
+          html: `<h2>New website enquiry</h2>
+            <p><strong>Name:</strong> ${esc(form.name)}<br><strong>Email:</strong> ${esc(form.email)}
+            ${form.phone ? `<br><strong>Phone:</strong> ${esc(form.phone)}` : ""}
+            ${form.company ? `<br><strong>Company:</strong> ${esc(form.company)}` : ""}
+            ${form.project ? `<br><strong>Project:</strong> ${esc(form.project)}` : ""}
+            ${form.budget ? `<br><strong>Budget:</strong> ${esc(form.budget)}` : ""}</p>
+            <p style="white-space:pre-wrap">${esc(form.message)}</p>
+            <p style="color:#666">${saved ? "Saved in Oreece HQ as a lead, with a follow-up due today." : "Could not be saved in HQ: add it by hand."}</p>`,
+        }),
+      });
+      emailed = res.ok;
+      if (!res.ok) console.error("Email failed:", res.status, await res.text());
+    } catch (err) {
+      console.error("Email failed:", err);
+    }
+  }
+
+  if (!saved && !emailed) return json({ error: "We could not send your message" }, 500);
+  return json({ ok: true, saved, emailed });
+});

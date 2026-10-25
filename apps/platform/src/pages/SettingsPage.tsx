@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { TeamSettings } from '@/components/settings/TeamSettings';
 import { Building2, Save, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/contexts/StoreContext';
@@ -392,6 +393,9 @@ export default function SettingsPage() {
             </Button>
           </div>
         </form>
+        <div className="mt-8">
+          <TeamSettings />
+        </div>
       </motion.div>
     </AppLayout>
   );

@@ -1176,6 +1176,14 @@ export type Database = {
         Args: { _approval_id: string; _decision: string; _feedback?: string | null }
         Returns: Json
       }
+      team_members: {
+        Args: Record<PropertyKey, never>
+        Returns: { user_id: string; full_name: string | null; email: string | null; roles: string[]; joined_at: string | null }[]
+      }
+      set_member_role: {
+        Args: { _user_id: string; _role: string | null }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "staff" | "accountant"

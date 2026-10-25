@@ -1,206 +1,105 @@
+// Website "schedule a call" → Oreece HQ.
+// 1. Always records the request first: a lead (clients, status 'lead'), the
+//    requested time as an activity, and a follow-up on the requested day.
+// 2. Then emails info@oreece.com, only if RESEND_API_KEY is set.
+// Self-contained (one file) so it can be pasted into the Supabase dashboard editor.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
-import { Resend } from "npm:resend@2.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
-// Service role client: bypasses RLS so this function can create a CRM lead
-// server-side (more reliable than a client-side insert from the browser).
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...corsHeaders } });
 
-interface ScheduleCallData {
-  name: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  preferredDate: string;
-  preferredTime: string;
-  timezone: string;
-  message?: string;
-}
+const esc = (s: unknown) =>
+  String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+const clip = (s: unknown, n: number) => (typeof s === "string" ? s.trim().slice(0, n) : "");
 
-const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method !== "POST") return json({ error: "POST only" }, 405);
 
+  let body: Record<string, unknown>;
   try {
-    const callData: ScheduleCallData = await req.json();
-    console.log("Received schedule call data:", callData);
+    body = await req.json();
+  } catch {
+    return json({ error: "Invalid request" }, 400);
+  }
+  const call = {
+    name: clip(body.name, 120),
+    email: clip(body.email, 200),
+    phone: clip(body.phone, 40),
+    company: clip(body.company, 160),
+    date: clip(body.preferredDate, 10),
+    time: clip(body.preferredTime, 20),
+    timezone: clip(body.timezone, 60),
+    message: clip(body.message, 3000),
+  };
+  if (!call.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(call.email) || !/^\d{4}-\d{2}-\d{2}$/.test(call.date)) {
+    return json({ error: "Name, a valid email and a date are required" }, 400);
+  }
+  const when = `${new Date(`${call.date}T00:00:00`).toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}, ${call.time} ${call.timezone}`.trim();
 
-    // Format the date and time for display
-    const formattedDate = new Date(callData.preferredDate).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-
-    // Record this submission as a lead in the CRM. Best-effort: a failure
-    // here shouldn't block the email notification below.
-    const { data: lead, error: leadError } = await supabase
+  const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  let saved = false;
+  try {
+    const { data: lead, error } = await supabase
       .from("clients")
       .insert({
-        name: callData.name,
-        company_name: callData.company || null,
-        email: callData.email,
-        phone: callData.phone || null,
+        name: call.name,
+        company_name: call.company || null,
+        email: call.email,
+        phone: call.phone || null,
         status: "lead",
         source: "website",
       })
       .select("id")
       .single();
-    if (leadError) {
-      console.error("Failed to create CRM lead from schedule request:", leadError);
-    } else {
-      const note = [
-        `Discovery call requested: ${formattedDate}, ${callData.preferredTime} ${callData.timezone}`,
-        callData.message && `Notes: ${callData.message}`,
-      ].filter(Boolean).join("\n");
-
-      const { error: activityError } = await supabase.from("activities").insert({
-        client_id: lead.id,
-        type: "meeting",
-        note,
-      });
-      if (activityError) {
-        console.error("Failed to log lead activity:", activityError);
-      }
-    }
-
-    // Send notification email to info@oreece.com
-    const emailResponse = await resend.emails.send({
-      from: "Schedule Call <onboarding@resend.dev>",
-      to: ["info@oreece.com"],
-      subject: `New Call Request from ${callData.name} - ${formattedDate}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-          <h2 style="color: #007bff; text-align: center;">New Discovery Call Request</h2>
-          
-          <div style="background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #1976d2;">📅 Requested Schedule</h3>
-            <p><strong>Date:</strong> ${formattedDate}</p>
-            <p><strong>Time:</strong> ${callData.preferredTime} ${callData.timezone}</p>
-          </div>
-
-          <div style="margin-bottom: 20px;">
-            <h3 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">Contact Information</h3>
-            <p><strong>Name:</strong> ${callData.name}</p>
-            <p><strong>Email:</strong> ${callData.email}</p>
-            ${callData.phone ? `<p><strong>Phone:</strong> ${callData.phone}</p>` : ''}
-            ${callData.company ? `<p><strong>Company:</strong> ${callData.company}</p>` : ''}
-          </div>
-
-          ${callData.message ? `
-            <div style="margin-bottom: 20px;">
-              <h3 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">Discussion Topics</h3>
-              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff;">
-                ${callData.message.replace(/\n/g, '<br>')}
-              </div>
-            </div>
-          ` : ''}
-
-          <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; border-left: 4px solid #ffc107; margin: 20px 0;">
-            <p style="margin: 0;"><strong>⏰ Action Required:</strong> Please send a calendar invite to ${callData.email} for the requested time slot.</p>
-          </div>
-
-          <div style="margin-top: 30px; padding: 15px; background-color: #e9ecef; border-radius: 5px; text-align: center;">
-            <p style="margin: 0; color: #666; font-size: 14px;">
-              This is a 30-minute discovery call request from the Oreece website.
-            </p>
-          </div>
-        </div>
-      `,
+    if (error) throw error;
+    saved = true;
+    await supabase.from("activities").insert({
+      client_id: lead.id,
+      type: "note",
+      note: [`Discovery call requested: ${when}`, call.message && `Notes: ${call.message}`].filter(Boolean).join("\n"),
     });
-
-    console.log("Schedule email sent successfully:", emailResponse);
-
-    // Send confirmation email to the user
-    const confirmationResponse = await resend.emails.send({
-      from: "Oreece <onboarding@resend.dev>",
-      to: [callData.email],
-      subject: "Call Scheduled - We'll send you a calendar invite soon!",
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #007bff; text-align: center;">🎉 Call Request Received!</h1>
-          
-          <p>Hi ${callData.name},</p>
-          
-          <p>Thank you for scheduling a discovery call with Oreece! We're excited to learn more about your project.</p>
-          
-          <div style="background-color: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2196f3;">
-            <h3 style="color: #1976d2; margin-top: 0;">📅 Your Requested Time Slot</h3>
-            <p style="font-size: 16px;"><strong>${formattedDate}</strong></p>
-            <p style="font-size: 16px;"><strong>${callData.preferredTime} ${callData.timezone}</strong></p>
-            <p style="color: #666; font-size: 14px; margin-bottom: 0;">30-minute discovery call</p>
-          </div>
-          
-          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <h4 style="margin-top: 0; color: #333;">⏰ What happens next?</h4>
-            <ul style="color: #666; padding-left: 20px;">
-              <li>Our team will review your request within 2 hours</li>
-              <li>You'll receive a calendar invite via email</li>
-              <li>We'll prepare for our discussion based on your project details</li>
-            </ul>
-          </div>
-          
-          <p>If you need to reschedule or have any questions before our call, please reply to this email or contact us directly.</p>
-          
-          <p>Looking forward to speaking with you!</p>
-          
-          <p>Best regards,<br>The Oreece Team</p>
-          
-          <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-          <p style="color: #666; font-size: 14px; text-align: center;">
-            If you didn't request this call, please ignore this email.
-          </p>
-        </div>
-      `,
+    await supabase.from("follow_ups").insert({
+      client_id: lead.id,
+      title: `Discovery call with ${call.name} (${call.time} ${call.timezone}): send calendar invite`,
+      due_date: new Date().toISOString().slice(0, 10),
     });
-
-    console.log("Confirmation email sent:", confirmationResponse);
-
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: "Call scheduled successfully",
-        emailId: emailResponse.data?.id 
-      }), 
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          ...corsHeaders,
-        },
-      }
-    );
-  } catch (error: any) {
-    console.error("Error in send-schedule-email function:", error);
-    return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error.message,
-        details: "Failed to schedule call. Please try again later."
-      }),
-      {
-        status: 500,
-        headers: { 
-          "Content-Type": "application/json", 
-          ...corsHeaders 
-        },
-      }
-    );
+  } catch (err) {
+    console.error("Could not record the call request:", err);
   }
-};
 
-serve(handler);
+  let emailed = false;
+  const key = Deno.env.get("RESEND_API_KEY");
+  if (key) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: Deno.env.get("CONTACT_FROM") || "Oreece Website <onboarding@resend.dev>",
+          to: [Deno.env.get("CONTACT_TO") || "info@oreece.com"],
+          reply_to: call.email,
+          subject: `Call request from ${call.name}: ${when}`,
+          html: `<h2>New discovery call request</h2>
+            <p><strong>When:</strong> ${esc(when)}<br><strong>Name:</strong> ${esc(call.name)}<br><strong>Email:</strong> ${esc(call.email)}
+            ${call.phone ? `<br><strong>Phone:</strong> ${esc(call.phone)}` : ""}
+            ${call.company ? `<br><strong>Company:</strong> ${esc(call.company)}` : ""}</p>
+            ${call.message ? `<p style="white-space:pre-wrap">${esc(call.message)}</p>` : ""}
+            <p style="color:#666">${saved ? "Saved in Oreece HQ with a follow-up due today." : "Could not be saved in HQ: add it by hand."}</p>`,
+        }),
+      });
+      emailed = res.ok;
+      if (!res.ok) console.error("Email failed:", res.status, await res.text());
+    } catch (err) {
+      console.error("Email failed:", err);
+    }
+  }
+
+  if (!saved && !emailed) return json({ error: "We could not book your call" }, 500);
+  return json({ ok: true, saved, emailed });
+});
