@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Building2, Save, Loader2 } from 'lucide-react';
@@ -12,6 +12,8 @@ import { Input } from '@company-web/shared/ui';
 import { Label } from '@company-web/shared/ui';
 import { Textarea } from '@company-web/shared/ui';
 import { useToast } from '@company-web/shared/utils';
+import { SelectField } from '@/components/crm/SelectField';
+import { CURRENCIES, Currency } from '@/types/invoice';
 
 const companySchema = z.object({
   name: z.string().min(1, 'Company name is required'),
@@ -25,6 +27,8 @@ const companySchema = z.object({
   accountType: z.string().optional(),
   accountNumber: z.string().optional(),
   branch: z.string().optional(),
+  defaultCurrency: z.enum(['LKR', 'NZD', 'AUD', 'USD', 'EUR', 'GBP']),
+  quoteTerms: z.string().optional(),
 });
 
 type CompanyFormData = z.infer<typeof companySchema>;
@@ -39,6 +43,7 @@ export default function SettingsPage() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isDirty },
   } = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
@@ -54,6 +59,8 @@ export default function SettingsPage() {
       accountType: company.bankDetails?.accountType || '',
       accountNumber: company.bankDetails?.accountNumber || '',
       branch: company.bankDetails?.branch || '',
+      defaultCurrency: company.defaultCurrency || 'LKR',
+      quoteTerms: company.quoteTerms || '',
     },
   });
 
@@ -65,6 +72,8 @@ export default function SettingsPage() {
       const { bankName, accountName, accountType, accountNumber, branch, ...companyData } = data;
       updateCompany({
         ...companyData,
+        defaultCurrency: companyData.defaultCurrency as Currency,
+        quoteTerms: companyData.quoteTerms || '',
         logo: logoPreview,
         signature: signaturePreview,
         bankDetails: {
@@ -238,6 +247,40 @@ export default function SettingsPage() {
                   {...register('taxNumber')}
                   className="mt-1.5"
                   placeholder="Business Registration Number"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Sales Defaults */}
+          <div className="rounded-xl border border-border bg-card p-6 shadow-card">
+            <h2 className="text-lg font-semibold text-foreground mb-4">Sales Defaults</h2>
+            <div className="space-y-4">
+              <div className="max-w-[200px]">
+                <Label htmlFor="defaultCurrency">Default currency</Label>
+                <Controller
+                  control={control}
+                  name="defaultCurrency"
+                  render={({ field }) => (
+                    <SelectField
+                      id="defaultCurrency"
+                      className="mt-1.5"
+                      value={field.value}
+                      onChange={field.onChange}
+                      options={CURRENCIES.map((c) => ({ value: c, label: c }))}
+                    />
+                  )}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">Used for new deals, quotes and invoices.</p>
+              </div>
+              <div>
+                <Label htmlFor="quoteTerms">Default quote terms</Label>
+                <Textarea
+                  id="quoteTerms"
+                  {...register('quoteTerms')}
+                  className="mt-1.5"
+                  rows={4}
+                  placeholder={'50% deposit to start, balance on delivery.\nPrices exclude GST unless stated.\nThis quote is valid for 30 days.'}
                 />
               </div>
             </div>

@@ -933,6 +933,11 @@
     "@babel/helper-string-parser" "^7.29.7"
     "@babel/helper-validator-identifier" "^7.29.7"
 
+"@electric-sql/pglite@^0.5.8":
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/@electric-sql/pglite/-/pglite-0.5.8.tgz#9b5b4a61a14d6cf96b3b4e2ea7f124f8d6fe68b3"
+  integrity sha512-n9tsbUOhwx2epK1V0ZG9Ar4SHWUju04dhmzZXiSBXwBoleOvIfals33NAaWgagQVAL4Rbvx/Ptsu3P+pA09f6Q==
+
 "@emnapi/core@1.4.5":
   version "1.4.5"
   resolved "https://registry.yarnpkg.com/@emnapi/core/-/core-1.4.5.tgz#bfbb0cbbbb9f96ec4e2c4fd917b7bbe5495ceccb"

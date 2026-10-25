@@ -25,6 +25,8 @@ interface DbCompanySettings {
   bank_account_number: string | null;
   bank_branch: string | null;
   signature_url: string | null;
+  default_currency: string | null;
+  quote_terms: string | null;
 }
 
 interface DbClient {
@@ -38,6 +40,11 @@ interface DbClient {
   source: string | null;
   estimated_value: number | null;
   last_contacted_at: string | null;
+  industry: string | null;
+  website: string | null;
+  country: string | null;
+  notes: string | null;
+  owner_id: string | null;
   created_at: string;
 }
 
@@ -57,6 +64,7 @@ interface DbInvoice {
   payment_date: string | null;
   payment_amount: number | null;
   payment_reference: string | null;
+  currency: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -74,8 +82,11 @@ interface DbPayment {
 interface DbActivity {
   id: string;
   client_id: string;
+  deal_id: string | null;
+  contact_id: string | null;
   type: string;
   note: string;
+  created_by: string | null;
   created_at: string;
 }
 
@@ -88,6 +99,9 @@ interface DbProject {
   start_date: string | null;
   due_date: string | null;
   budget: number | null;
+  health: Project['health'];
+  next_milestone: string | null;
+  waiting_on_client: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -101,6 +115,11 @@ interface DbTask {
   priority: string;
   assignee: string | null;
   due_date: string | null;
+  contractor_id: string | null;
+  brief: string | null;
+  definition_of_done: string | null;
+  access_notes: string | null;
+  completed_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -123,6 +142,8 @@ function mapDbCompanyToCompany(db: DbCompanySettings): Company {
       accountNumber: db.bank_account_number || '',
       branch: db.bank_branch || '',
     },
+    defaultCurrency: (db.default_currency as Currency) || 'LKR',
+    quoteTerms: db.quote_terms || '',
   };
 }
 
@@ -138,6 +159,11 @@ function mapDbClientToClient(db: DbClient): Client {
     source: db.source || undefined,
     estimatedValue: db.estimated_value ?? undefined,
     lastContactedAt: db.last_contacted_at || undefined,
+    industry: db.industry || undefined,
+    website: db.website || undefined,
+    country: db.country || undefined,
+    notes: db.notes || undefined,
+    ownerId: db.owner_id || undefined,
     createdAt: db.created_at,
   };
 }
@@ -168,8 +194,11 @@ function mapDbActivityToActivity(db: DbActivity): ClientActivity {
   return {
     id: db.id,
     clientId: db.client_id,
+    dealId: db.deal_id || undefined,
+    contactId: db.contact_id || undefined,
     type: (db.type as ClientActivity['type']) || 'note',
     note: db.note,
+    createdBy: db.created_by || undefined,
     createdAt: db.created_at,
   };
 }
@@ -184,6 +213,9 @@ function mapDbProjectToProject(db: DbProject): Project {
     startDate: db.start_date || undefined,
     dueDate: db.due_date || undefined,
     budget: db.budget ?? undefined,
+    health: db.health || 'on_track',
+    nextMilestone: db.next_milestone || undefined,
+    waitingOnClient: db.waiting_on_client || undefined,
     createdAt: db.created_at,
     updatedAt: db.updated_at,
   };
@@ -199,6 +231,11 @@ function mapDbTaskToTask(db: DbTask): Task {
     priority: (db.priority as Task['priority']) || 'medium',
     assignee: db.assignee || undefined,
     dueDate: db.due_date || undefined,
+    contractorId: db.contractor_id || undefined,
+    brief: db.brief || undefined,
+    definitionOfDone: db.definition_of_done || undefined,
+    accessNotes: db.access_notes || undefined,
+    completedAt: db.completed_at || undefined,
     createdAt: db.created_at,
     updatedAt: db.updated_at,
   };
@@ -218,7 +255,7 @@ function mapDbInvoiceToInvoice(db: DbInvoice, payments: Payment[] = []): Invoice
     projectId: db.project_id || undefined,
     invoiceDate: db.date,
     dueDate: db.due_date || '',
-    currency: 'LKR' as Currency,
+    currency: (db.currency as Currency) || 'LKR',
     lineItems: parseLineItems(db.items),
     subtotal: Number(db.subtotal),
     total: Number(db.total),
@@ -243,96 +280,99 @@ export function useSupabaseStore() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  // `silent` reloads in the background (after database-side changes such as
+  // a won deal creating a project) without showing the loading state.
+  const fetchData = useCallback(async (silent = false) => {
     if (!user) {
       setIsLoading(false);
       return;
     }
+    if (!silent) setIsLoading(true);
+    try {
+      const { data: companyData } = await supabase
+        .from('company_settings')
+        .select('*')
+        .maybeSingle();
 
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const { data: companyData } = await supabase
-          .from('company_settings')
-          .select('*')
-          .maybeSingle();
-
-        if (companyData) {
-          setCompany(mapDbCompanyToCompany(companyData as DbCompanySettings));
-        }
-
-        const { data: clientsData } = await supabase
-          .from('clients')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (clientsData) {
-          setClients(clientsData.map((c) => mapDbClientToClient(c as DbClient)));
-        }
-
-        const { data: invoicesData } = await supabase
-          .from('invoices')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        const { data: paymentsData } = await supabase
-          .from('payments')
-          .select('*')
-          .order('payment_date', { ascending: true });
-
-        const paymentsMap = new Map<string, Payment[]>();
-        if (paymentsData) {
-          for (const p of paymentsData) {
-            const payment = mapDbPaymentToPayment(p as DbPayment);
-            const existing = paymentsMap.get(payment.invoiceId) || [];
-            existing.push(payment);
-            paymentsMap.set(payment.invoiceId, existing);
-          }
-        }
-
-        if (invoicesData) {
-          setInvoices(invoicesData.map((i) => {
-            const inv = i as DbInvoice;
-            return mapDbInvoiceToInvoice(inv, paymentsMap.get(inv.id) || []);
-          }));
-        }
-
-        const { data: activitiesData } = await supabase
-          .from('activities')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (activitiesData) {
-          setActivities(activitiesData.map((a) => mapDbActivityToActivity(a as DbActivity)));
-        }
-
-        const { data: projectsData } = await supabase
-          .from('projects')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (projectsData) {
-          setProjects(projectsData.map((p) => mapDbProjectToProject(p as DbProject)));
-        }
-
-        const { data: tasksData } = await supabase
-          .from('tasks')
-          .select('*')
-          .order('created_at', { ascending: true });
-
-        if (tasksData) {
-          setTasks(tasksData.map((t) => mapDbTaskToTask(t as DbTask)));
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        toast.error('Failed to load data');
-      } finally {
-        setIsLoading(false);
+      if (companyData) {
+        setCompany(mapDbCompanyToCompany(companyData as DbCompanySettings));
       }
-    };
 
-    fetchData();
+      const { data: clientsData } = await supabase
+        .from('clients')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (clientsData) {
+        setClients(clientsData.map((c) => mapDbClientToClient(c as DbClient)));
+      }
+
+      const { data: invoicesData } = await supabase
+        .from('invoices')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      const { data: paymentsData } = await supabase
+        .from('payments')
+        .select('*')
+        .order('payment_date', { ascending: true });
+
+      const paymentsMap = new Map<string, Payment[]>();
+      if (paymentsData) {
+        for (const p of paymentsData) {
+          const payment = mapDbPaymentToPayment(p as DbPayment);
+          const existing = paymentsMap.get(payment.invoiceId) || [];
+          existing.push(payment);
+          paymentsMap.set(payment.invoiceId, existing);
+        }
+      }
+
+      if (invoicesData) {
+        setInvoices(invoicesData.map((i) => {
+          const inv = i as DbInvoice;
+          return mapDbInvoiceToInvoice(inv, paymentsMap.get(inv.id) || []);
+        }));
+      }
+
+      const { data: activitiesData } = await supabase
+        .from('activities')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (activitiesData) {
+        setActivities(activitiesData.map((a) => mapDbActivityToActivity(a as DbActivity)));
+      }
+
+      const { data: projectsData } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (projectsData) {
+        setProjects(projectsData.map((p) => mapDbProjectToProject(p as DbProject)));
+      }
+
+      const { data: tasksData } = await supabase
+        .from('tasks')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (tasksData) {
+        setTasks(tasksData.map((t) => mapDbTaskToTask(t as DbTask)));
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      toast.error('Failed to load data');
+    } finally {
+      setIsLoading(false);
+    }
   }, [user]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => fetchData(true), [fetchData]);
 
   // Company settings (single shared row)
   const updateCompany = useCallback(async (data: Partial<Company>) => {
@@ -347,6 +387,8 @@ export function useSupabaseStore() {
     if (data.taxNumber !== undefined) updateData.tax_number = data.taxNumber;
     if (data.logo !== undefined) updateData.logo_url = data.logo;
     if (data.signature !== undefined) updateData.signature_url = data.signature;
+    if (data.defaultCurrency !== undefined) updateData.default_currency = data.defaultCurrency;
+    if (data.quoteTerms !== undefined) updateData.quote_terms = data.quoteTerms;
     if (data.bankDetails) {
       updateData.bank_name = data.bankDetails.bankName;
       updateData.bank_account_name = data.bankDetails.accountName;
@@ -387,6 +429,11 @@ export function useSupabaseStore() {
         status: data.status || 'active',
         source: data.source || null,
         estimated_value: data.estimatedValue ?? null,
+        industry: data.industry || null,
+        website: data.website || null,
+        country: data.country || null,
+        notes: data.notes || null,
+        owner_id: data.ownerId || null,
       })
       .select()
       .single();
@@ -407,13 +454,18 @@ export function useSupabaseStore() {
 
     const updateData: Record<string, unknown> = {};
     if (data.name !== undefined) updateData.name = data.name;
-    if (data.companyName !== undefined) updateData.company_name = data.companyName;
+    if (data.companyName !== undefined) updateData.company_name = data.companyName || null;
     if (data.email !== undefined) updateData.email = data.email;
     if (data.phone !== undefined) updateData.phone = data.phone;
     if (data.address !== undefined) updateData.address = data.address;
     if (data.status !== undefined) updateData.status = data.status;
-    if (data.source !== undefined) updateData.source = data.source;
-    if (data.estimatedValue !== undefined) updateData.estimated_value = data.estimatedValue;
+    if (data.source !== undefined) updateData.source = data.source || null;
+    if ('estimatedValue' in data) updateData.estimated_value = data.estimatedValue ?? null;
+    if (data.industry !== undefined) updateData.industry = data.industry || null;
+    if (data.website !== undefined) updateData.website = data.website || null;
+    if (data.country !== undefined) updateData.country = data.country || null;
+    if (data.notes !== undefined) updateData.notes = data.notes || null;
+    if (data.ownerId !== undefined) updateData.owner_id = data.ownerId || null;
 
     const { error } = await supabase
       .from('clients')
@@ -451,13 +503,15 @@ export function useSupabaseStore() {
   }, [clients]);
 
   // Client activity log
-  const addActivity = useCallback(async (clientId: string, data: { type: ClientActivity['type']; note: string }) => {
+  const addActivity = useCallback(async (clientId: string, data: { type: ClientActivity['type']; note: string; dealId?: string; contactId?: string }) => {
     if (!user) return null;
 
     const { data: newActivity, error } = await supabase
       .from('activities')
       .insert({
         client_id: clientId,
+        deal_id: data.dealId || null,
+        contact_id: data.contactId || null,
         type: data.type,
         note: data.note,
         created_by: user.id,
@@ -472,7 +526,9 @@ export function useSupabaseStore() {
 
     const mapped = mapDbActivityToActivity(newActivity as DbActivity);
     setActivities(prev => [mapped, ...prev]);
-    setClients(prev => prev.map(c => c.id === clientId ? { ...c, lastContactedAt: mapped.createdAt } : c));
+    if (mapped.type !== 'note') {
+      setClients(prev => prev.map(c => c.id === clientId ? { ...c, lastContactedAt: mapped.createdAt } : c));
+    }
     return mapped;
   }, [user]);
 
@@ -481,7 +537,7 @@ export function useSupabaseStore() {
   }, [activities]);
 
   // Project operations
-  const addProject = useCallback(async (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'status'> & { status?: Project['status'] }) => {
+  const addProject = useCallback(async (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'status' | 'health'> & { status?: Project['status']; health?: Project['health'] }) => {
     if (!user) return null;
 
     const { data: newProject, error } = await supabase
@@ -494,6 +550,9 @@ export function useSupabaseStore() {
         start_date: data.startDate || null,
         due_date: data.dueDate || null,
         budget: data.budget ?? null,
+        health: data.health || 'on_track',
+        next_milestone: data.nextMilestone || null,
+        waiting_on_client: data.waitingOnClient || null,
         created_by: user.id,
       })
       .select()
@@ -518,9 +577,13 @@ export function useSupabaseStore() {
     if (data.name !== undefined) updateData.name = data.name;
     if (data.description !== undefined) updateData.description = data.description;
     if (data.status !== undefined) updateData.status = data.status;
-    if (data.startDate !== undefined) updateData.start_date = data.startDate;
-    if (data.dueDate !== undefined) updateData.due_date = data.dueDate;
+    // Empty form fields mean "no date"; Postgres rejects an empty string.
+    if (data.startDate !== undefined) updateData.start_date = data.startDate || null;
+    if (data.dueDate !== undefined) updateData.due_date = data.dueDate || null;
     if (data.budget !== undefined) updateData.budget = data.budget;
+    if (data.health !== undefined) updateData.health = data.health;
+    if (data.nextMilestone !== undefined) updateData.next_milestone = data.nextMilestone || null;
+    if (data.waitingOnClient !== undefined) updateData.waiting_on_client = data.waitingOnClient || null;
 
     const { error } = await supabase
       .from('projects')
@@ -572,6 +635,10 @@ export function useSupabaseStore() {
         priority: data.priority || 'medium',
         assignee: data.assignee || null,
         due_date: data.dueDate || null,
+        contractor_id: data.contractorId || null,
+        brief: data.brief || null,
+        definition_of_done: data.definitionOfDone || null,
+        access_notes: data.accessNotes || null,
         created_by: user.id,
       })
       .select()
@@ -596,8 +663,12 @@ export function useSupabaseStore() {
     if (data.description !== undefined) updateData.description = data.description;
     if (data.status !== undefined) updateData.status = data.status;
     if (data.priority !== undefined) updateData.priority = data.priority;
-    if (data.assignee !== undefined) updateData.assignee = data.assignee;
-    if (data.dueDate !== undefined) updateData.due_date = data.dueDate;
+    if (data.assignee !== undefined) updateData.assignee = data.assignee || null;
+    if (data.dueDate !== undefined) updateData.due_date = data.dueDate || null;
+    if (data.contractorId !== undefined) updateData.contractor_id = data.contractorId || null;
+    if (data.brief !== undefined) updateData.brief = data.brief || null;
+    if (data.definitionOfDone !== undefined) updateData.definition_of_done = data.definitionOfDone || null;
+    if (data.accessNotes !== undefined) updateData.access_notes = data.accessNotes || null;
 
     const { error } = await supabase
       .from('tasks')
@@ -609,7 +680,12 @@ export function useSupabaseStore() {
       return;
     }
 
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, ...data, updatedAt: new Date().toISOString() } : t));
+    setTasks(prev => prev.map(t => {
+      if (t.id !== id) return t;
+      const next = { ...t, ...data, updatedAt: new Date().toISOString() };
+      if (data.status !== undefined) next.completedAt = data.status === 'done' ? t.completedAt || new Date().toISOString() : undefined;
+      return next;
+    }));
   }, [user]);
 
   const deleteTask = useCallback(async (id: string) => {
@@ -676,6 +752,7 @@ export function useSupabaseStore() {
         total: subtotal,
         notes: data.notes || null,
         status: 'Unpaid',
+        currency: data.currency,
       }])
       .select()
       .single();
@@ -700,6 +777,7 @@ export function useSupabaseStore() {
     if (data.invoiceDate !== undefined) updateData.date = data.invoiceDate;
     if (data.dueDate !== undefined) updateData.due_date = data.dueDate;
     if (data.notes !== undefined) updateData.notes = data.notes;
+    if (data.currency !== undefined) updateData.currency = data.currency;
     if (data.status !== undefined) updateData.status = data.status === 'paid' ? 'Paid' : 'Unpaid';
     if (data.paymentDate !== undefined) updateData.payment_date = data.paymentDate;
     if (data.amountReceived !== undefined) updateData.payment_amount = data.amountReceived;
@@ -840,6 +918,7 @@ export function useSupabaseStore() {
     projects,
     tasks,
     isLoading,
+    refetch,
     updateCompany,
     addClient,
     updateClient,

@@ -28,6 +28,8 @@ import { ProjectForm } from '@/components/project/ProjectForm';
 import { ProjectStatusBadge } from '@/components/project/ProjectStatusBadge';
 import { TaskForm } from '@/components/project/TaskForm';
 import { Task, TASK_STATUSES, TASK_STATUS_LABELS } from '@/types/project';
+import { useHq } from '@/contexts/HqContext';
+import { HealthBadge } from '@/components/hq/Badges';
 
 const PRIORITY_STYLES: Record<Task['priority'], string> = {
   low: 'bg-muted text-muted-foreground',
@@ -49,6 +51,7 @@ export default function ProjectDetailPage() {
     deleteTask,
   } = useAppStore();
 
+  const { getContractor } = useHq();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -142,6 +145,7 @@ export default function ProjectDetailPage() {
       {/* Project summary */}
       <div className="mb-8 flex flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-4 shadow-card">
         <ProjectStatusBadge status={project.status} />
+        <HealthBadge health={project.health} />
         {project.dueDate && (
           <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" />
@@ -157,6 +161,8 @@ export default function ProjectDetailPage() {
         {project.description && (
           <p className="w-full text-sm text-muted-foreground">{project.description}</p>
         )}
+        {project.nextMilestone && <p className="w-full text-sm"><span className="text-muted-foreground">Next milestone: </span>{project.nextMilestone}</p>}
+        {project.waitingOnClient && <p className="w-full text-sm text-warning">Waiting on client: {project.waitingOnClient}</p>}
       </div>
 
       {/* Task board */}
@@ -217,6 +223,9 @@ export default function ProjectDetailPage() {
                           <span className="text-xs text-muted-foreground">
                             {format(new Date(task.dueDate), 'MMM d')}
                           </span>
+                        )}
+                        {task.contractorId && (
+                          <span className="text-xs text-muted-foreground">{getContractor(task.contractorId)?.name ?? 'Contractor'}</span>
                         )}
                       </div>
                       <div className="mt-2 flex gap-1">

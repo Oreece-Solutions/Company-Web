@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@company-web/shared/ui';
 import { useAppStore } from '@/contexts/StoreContext';
-import { Project } from '@/types/project';
+import { Project, PROJECT_HEALTH_LABELS } from '@/types/project';
 
 const PROJECT_STATUSES: { value: Project['status']; label: string }[] = [
   { value: 'planning', label: 'Planning' },
@@ -30,6 +30,9 @@ const projectSchema = z.object({
   startDate: z.string().optional(),
   dueDate: z.string().optional(),
   budget: z.coerce.number().optional(),
+  health: z.enum(['on_track', 'at_risk', 'blocked']),
+  nextMilestone: z.string().optional(),
+  waitingOnClient: z.string().optional(),
 });
 
 type ProjectFormData = z.infer<typeof projectSchema>;
@@ -57,6 +60,9 @@ export function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProp
       startDate: initialData?.startDate || '',
       dueDate: initialData?.dueDate || '',
       budget: initialData?.budget,
+      health: initialData?.health || 'on_track',
+      nextMilestone: initialData?.nextMilestone || '',
+      waitingOnClient: initialData?.waitingOnClient || '',
     },
   });
 
@@ -128,6 +134,37 @@ export function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProp
           <Label htmlFor="dueDate">Due Date</Label>
           <Input id="dueDate" type="date" {...register('dueDate')} className="mt-1.5" />
         </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="health">Health</Label>
+          <Controller
+            control={control}
+            name="health"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id="health" className="mt-1.5">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {(Object.keys(PROJECT_HEALTH_LABELS) as Project['health'][]).map((h) => (
+                    <SelectItem key={h} value={h}>{PROJECT_HEALTH_LABELS[h]}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+        <div>
+          <Label htmlFor="nextMilestone">Next milestone</Label>
+          <Input id="nextMilestone" {...register('nextMilestone')} className="mt-1.5" placeholder="Client review of homepage" />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="waitingOnClient">Waiting on client</Label>
+        <Input id="waitingOnClient" {...register('waitingOnClient')} className="mt-1.5" placeholder="Logo files, photos, domain access" />
       </div>
 
       <div className="flex justify-end gap-3 pt-4">

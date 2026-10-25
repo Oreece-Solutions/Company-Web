@@ -17,6 +17,8 @@ export interface Company {
   taxNumber?: string;
   signature?: string;
   bankDetails?: BankDetails;
+  defaultCurrency?: Currency;
+  quoteTerms?: string;
 }
 
 export type ClientStatus = 'lead' | 'prospect' | 'active' | 'inactive';
@@ -32,14 +34,22 @@ export interface Client {
   source?: string;
   estimatedValue?: number;
   lastContactedAt?: string;
+  industry?: string;
+  website?: string;
+  country?: string;
+  notes?: string;
+  ownerId?: string;
   createdAt: string;
 }
 
 export interface ClientActivity {
   id: string;
   clientId: string;
+  dealId?: string;
+  contactId?: string;
   type: 'call' | 'email' | 'meeting' | 'note';
   note: string;
+  createdBy?: string;
   createdAt: string;
 }
 
@@ -51,7 +61,7 @@ export interface LineItem {
 
 export type InvoiceStatus = 'unpaid' | 'partially_paid' | 'paid';
 
-export type Currency = 'LKR' | 'USD' | 'EUR' | 'GBP';
+export type Currency = 'LKR' | 'NZD' | 'AUD' | 'USD' | 'EUR' | 'GBP';
 
 export interface Payment {
   id: string;
@@ -87,9 +97,11 @@ export interface Invoice {
 
 export const CURRENCY_SYMBOLS: Record<Currency, string> = {
   LKR: 'Rs.',
+  NZD: 'NZ$',
+  AUD: 'A$',
   USD: '$',
   EUR: '€',
   GBP: '£',
 };
 
-export const CURRENCIES: Currency[] = ['LKR', 'USD', 'EUR', 'GBP'];
+export const CURRENCIES: Currency[] = ['LKR', 'NZD', 'AUD', 'USD', 'EUR', 'GBP'];

@@ -26,15 +26,18 @@ import { CurrencyDisplay } from '@/components/invoice/InvoiceHelpers';
 
 const lineItemSchema = z.object({
   description: z.string().min(1, 'Service description is required'),
-  amount: z.coerce.number().min(0, 'Amount must be positive'),
+  // Negative lines are allowed for discounts and credits (e.g. from a quote).
+  amount: z.coerce.number(),
 });
 
 const invoiceSchema = z.object({
   clientId: z.string().min(1, 'Please select a client'),
   invoiceDate: z.string().min(1, 'Invoice date is required'),
   dueDate: z.string().min(1, 'Due date is required'),
-  currency: z.enum(['LKR', 'USD', 'EUR', 'GBP']),
-  lineItems: z.array(lineItemSchema).min(1, 'Add at least one service'),
+  currency: z.enum(['LKR', 'NZD', 'AUD', 'USD', 'EUR', 'GBP']),
+  lineItems: z.array(lineItemSchema)
+    .min(1, 'Add at least one service')
+    .refine(items => items.reduce((sum, item) => sum + item.amount, 0) >= 0, 'The invoice total cannot be negative'),
   notes: z.string().optional(),
 });
 
@@ -44,7 +47,7 @@ export default function InvoiceFormPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditing = !!id;
-  const { clients, getInvoice, createInvoice, updateInvoice } = useAppStore();
+  const { clients, company, getInvoice, createInvoice, updateInvoice } = useAppStore();
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -66,7 +69,7 @@ export default function InvoiceFormPage() {
         clientId: '',
         invoiceDate: format(new Date(), 'yyyy-MM-dd'),
         dueDate: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
-        currency: 'LKR' as Currency,
+        currency: company.defaultCurrency || ('LKR' as Currency),
         lineItems: [{ description: '', amount: 0 }],
         notes: '',
       };

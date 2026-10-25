@@ -1,8 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Plus, Search, Users, Edit, Trash2, MessageSquareText } from 'lucide-react';
+import { Plus, Search, Users, Edit, Trash2, MessageSquareText, Upload } from 'lucide-react';
+import { CsvImportDialog } from '@/components/hq/CsvImportDialog';
 import { useAppStore } from '@/contexts/StoreContext';
+import { useSales } from '@/contexts/SalesContext';
+import { formatDistanceToNow } from 'date-fns';
 import { ClientStatusBadge } from '@/components/client/ClientStatusBadge';
 import { ClientActivityLog } from '@/components/client/ClientActivityLog';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -49,7 +52,10 @@ const STATUS_TABS: { value: ClientStatus | 'all'; label: string }[] = [
 ];
 
 export default function ClientsPage() {
+  const navigate = useNavigate();
   const { clients, addClient, updateClient, deleteClient, invoices } = useAppStore();
+  const [isImportOpen, setIsImportOpen] = useState(false);
+  const { refetchContacts, quotes, getMemberName } = useSales();
   const { toast } = useToast();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<ClientStatus | 'all'>('all');
@@ -77,9 +83,14 @@ export default function ClientsPage() {
     return invoices.filter(inv => inv.clientId === clientId).length;
   };
 
-  const handleAddClient = (data: Omit<Client, 'id' | 'createdAt'>) => {
-    addClient(data);
+  const handleAddClient = async (data: Omit<Client, 'id' | 'createdAt'>) => {
+    const created = await addClient(data);
     setIsAddOpen(false);
+    if (created) {
+      // The database adds the primary contact; load it, then open the account.
+      await refetchContacts();
+      navigate(`/clients/${created.id}`);
+    }
     toast({
       title: 'Client added',
       description: `${data.name} has been added to your clients.`,
@@ -99,10 +110,11 @@ export default function ClientsPage() {
 
   const handleDeleteClient = (client: Client) => {
     const invoiceCount = getClientInvoiceCount(client.id);
-    if (invoiceCount > 0) {
+    const quoteCount = quotes.filter(q => q.clientId === client.id).length;
+    if (invoiceCount > 0 || quoteCount > 0) {
       toast({
         title: 'Cannot delete client',
-        description: `This client has ${invoiceCount} invoice(s). Delete the invoices first.`,
+        description: `This client has ${invoiceCount} invoice(s) and ${quoteCount} quote(s). Set it to Inactive instead.`,
         variant: 'destructive',
       });
       return;
@@ -120,6 +132,11 @@ export default function ClientsPage() {
         title="Clients"
         description="Manage your client database"
         actions={
+          <>
+          <Button variant="outline" className="gap-2" onClick={() => setIsImportOpen(true)}>
+            <Upload className="h-4 w-4" />
+            Import CSV
+          </Button>
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2 bg-accent hover:bg-accent/90">
@@ -127,7 +144,7 @@ export default function ClientsPage() {
                 Add Client
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[560px]">
               <DialogHeader>
                 <DialogTitle>Add New Client</DialogTitle>
                 <DialogDescription>
@@ -137,6 +154,7 @@ export default function ClientsPage() {
               <ClientForm onSubmit={handleAddClient} onCancel={() => setIsAddOpen(false)} />
             </DialogContent>
           </Dialog>
+          </>
         }
       />
 
@@ -199,28 +217,32 @@ export default function ClientsPage() {
                 <TableHead>Company</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
+                <TableHead>Owner</TableHead>
+                <TableHead>Last contact</TableHead>
                 <TableHead>Invoices</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredClients.map((client) => (
-                <TableRow key={client.id} className="group">
+                <TableRow key={client.id} className="group cursor-pointer" onClick={() => navigate(`/clients/${client.id}`)}>
                   <TableCell className="font-medium">{client.name}</TableCell>
                   <TableCell className="text-muted-foreground">
                     {client.companyName || '-'}
                   </TableCell>
                   <TableCell><ClientStatusBadge status={client.status} /></TableCell>
                   <TableCell className="text-muted-foreground">{client.email}</TableCell>
-                  <TableCell className="text-muted-foreground">{client.phone}</TableCell>
+                  <TableCell className="text-muted-foreground">{getMemberName(client.ownerId)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {client.lastContactedAt ? formatDistanceToNow(new Date(client.lastContactedAt), { addSuffix: true }) : 'Never'}
+                  </TableCell>
                   <TableCell>
                     <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-muted text-sm font-medium">
                       {getClientInvoiceCount(client.id)}
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -240,7 +262,7 @@ export default function ClientsPage() {
                             <Edit className="h-4 w-4" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[500px]">
+                        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[560px]" onClick={(e) => e.stopPropagation()}>
                           <DialogHeader>
                             <DialogTitle>Edit Client</DialogTitle>
                             <DialogDescription>
@@ -294,6 +316,32 @@ export default function ClientsPage() {
           onOpenChange={(open) => !open && setActivityClient(null)}
         />
       )}
+      <CsvImportDialog<Parameters<typeof addClient>[0]>
+        open={isImportOpen}
+        onOpenChange={setIsImportOpen}
+        title="Import clients"
+        description="Columns: company_name, contact_name, email, phone, website, industry, status (lead/prospect/active/inactive), source, country, notes. Clients that already exist (same company name) are skipped."
+        parseRow={(r) => {
+          const company = r.company_name || r.company || '';
+          const contact = r.contact_name || r.name || company;
+          if (!contact) return { ok: false, label: '', error: 'No company or contact name' };
+          if (company && clients.some((c) => (c.companyName || c.name).toLowerCase() === company.toLowerCase())) {
+            return { ok: false, label: company, error: 'Already exists' };
+          }
+          const status = (r.status || 'active').toLowerCase() as ClientStatus;
+          if (!['lead', 'prospect', 'active', 'inactive'].includes(status)) return { ok: false, label: company || contact, error: `Unknown status "${r.status}"` };
+          return {
+            ok: true,
+            label: company || contact,
+            data: {
+              name: contact, companyName: company || undefined, email: r.email || '', phone: r.phone || '', address: r.address || '',
+              website: r.website || undefined, industry: r.industry || undefined, status, source: r.source || undefined,
+              country: r.country || undefined, notes: r.notes || undefined,
+            },
+          };
+        }}
+        saveRow={async (d) => ((await addClient(d)) ? null : 'Could not save')}
+      />
     </AppLayout>
   );
 }

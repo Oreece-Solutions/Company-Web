@@ -2,7 +2,13 @@ import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import { FileText, Users, DollarSign, Clock, Plus, ArrowRight, AlertCircle } from 'lucide-react';
+import { FileText, Users, DollarSign, Clock, Plus, ArrowRight, AlertCircle, Briefcase, TrendingUp, CalendarClock, FileSignature } from 'lucide-react';
+import { useSales } from '@/contexts/SalesContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { FollowUpRow } from '@/components/crm/FollowUpPanel';
+import { DealStageBadge } from '@/components/crm/Badges';
+import { OPEN_DEAL_STAGES } from '@/types/crm';
+import { formatMoney, formatTotals, sumByCurrency } from '@/lib/money';
 import { useAppStore } from '@/contexts/StoreContext';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -28,25 +34,45 @@ const item = {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { invoices, clients, getClient, company } = useAppStore();
+  const { deals, followUps, quotes } = useSales();
+  const { user } = useAuth();
+  const fallback = company.defaultCurrency || 'LKR';
+  const today = format(new Date(), 'yyyy-MM-dd');
 
+  // Totals are kept per currency (an NZD and an LKR invoice are never added).
   const stats = useMemo(() => {
     const totalInvoices = invoices.length;
     const totalClients = clients.length;
     const paidInvoices = invoices.filter(inv => inv.status === 'paid');
-    const unpaidInvoices = invoices.filter(inv => inv.status === 'unpaid');
-    
-    const totalRevenue = paidInvoices.reduce((sum, inv) => sum + inv.total, 0);
-    const pendingAmount = unpaidInvoices.reduce((sum, inv) => sum + inv.total, 0);
+    const unpaidInvoices = invoices.filter(inv => inv.status !== 'paid');
 
     return {
       totalInvoices,
       totalClients,
-      totalRevenue,
-      pendingAmount,
+      // Revenue = money received, including part-payments.
+      totalRevenue: sumByCurrency(invoices, inv => inv.amountReceived || 0, inv => inv.currency),
+      pendingAmount: sumByCurrency(unpaidInvoices, inv => inv.total - (inv.amountReceived || 0), inv => inv.currency),
       paidCount: paidInvoices.length,
       unpaidCount: unpaidInvoices.length,
     };
   }, [invoices, clients]);
+
+  const sales = useMemo(() => {
+    const open = deals.filter(d => OPEN_DEAL_STAGES.includes(d.stage));
+    const monthEnd = format(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0), 'yyyy-MM-dd');
+    return {
+      openCount: open.length,
+      pipeline: sumByCurrency(open, d => d.value, d => d.currency),
+      weighted: sumByCurrency(open, d => d.value * d.probability / 100, d => d.currency),
+      closingSoon: open
+        .filter(d => d.expectedCloseDate && d.expectedCloseDate <= monthEnd)
+        .sort((a, b) => (a.expectedCloseDate || '').localeCompare(b.expectedCloseDate || ''))
+        .slice(0, 5),
+      myDue: followUps.filter(f => !f.completedAt && f.assignedTo === user?.id && f.dueDate <= today),
+      awaitingReply: quotes.filter(q => q.status === 'sent' && !q.invoiceId && (!q.validUntil || q.validUntil >= today)),
+      newLeads: clients.filter(c => c.status === 'lead').length,
+    };
+  }, [deals, followUps, quotes, clients, user?.id, today]);
 
   const recentInvoices = useMemo(() => {
     return [...invoices]
@@ -62,10 +88,16 @@ export default function Dashboard() {
         title="Dashboard"
         description={`Welcome back${company.name ? `, ${company.name}` : ''}! Here's your business overview.`}
         actions={
-          <Button onClick={() => navigate('/invoices/new')} className="gap-2 bg-accent hover:bg-accent/90">
-            <Plus className="h-4 w-4" />
-            New Invoice
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate('/pipeline?new=1')} className="gap-2">
+              <Plus className="h-4 w-4" />
+              New Deal
+            </Button>
+            <Button onClick={() => navigate('/invoices/new')} className="gap-2 bg-accent hover:bg-accent/90">
+              <Plus className="h-4 w-4" />
+              New Invoice
+            </Button>
+          </div>
         }
       />
 
@@ -99,17 +131,17 @@ export default function Dashboard() {
         <motion.div variants={item}>
           <StatCard
             title="Total Revenue"
-            value={<CurrencyDisplay amount={stats.totalRevenue} currency="LKR" />}
+            value={<span className="text-2xl">{formatTotals(stats.totalRevenue, fallback)}</span>}
             icon={<DollarSign className="h-6 w-6" />}
-            description={`${stats.paidCount} paid invoices`}
+            description={`Received · ${stats.paidCount} paid invoices`}
           />
         </motion.div>
         <motion.div variants={item}>
           <StatCard
             title="Pending Amount"
-            value={<CurrencyDisplay amount={stats.pendingAmount} currency="LKR" />}
+            value={<span className="text-2xl">{formatTotals(stats.pendingAmount, fallback)}</span>}
             icon={<Clock className="h-6 w-6" />}
-            description={`${stats.unpaidCount} unpaid invoices`}
+            description={`Outstanding · ${stats.unpaidCount} invoices`}
           />
         </motion.div>
         <motion.div variants={item}>
@@ -127,6 +159,87 @@ export default function Dashboard() {
           />
         </motion.div>
       </motion.div>
+
+      {/* Sales */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <Link to="/pipeline">
+          <StatCard
+            title="Open pipeline"
+            value={<span className="text-2xl">{formatTotals(sales.pipeline, fallback)}</span>}
+            icon={<Briefcase className="h-6 w-6" />}
+            description={`${sales.openCount} open deals`}
+          />
+        </Link>
+        <Link to="/pipeline">
+          <StatCard
+            title="Weighted forecast"
+            value={<span className="text-2xl">{formatTotals(sales.weighted, fallback)}</span>}
+            icon={<TrendingUp className="h-6 w-6" />}
+            description="Value × win chance"
+          />
+        </Link>
+        <Link to="/quotes">
+          <StatCard
+            title="Quotes awaiting reply"
+            value={sales.awaitingReply.length}
+            icon={<FileSignature className="h-6 w-6" />}
+            description={formatTotals(sumByCurrency(sales.awaitingReply, q => q.total, q => q.currency), fallback)}
+          />
+        </Link>
+        <Link to="/clients">
+          <StatCard
+            title="New leads"
+            value={sales.newLeads}
+            icon={<Users className="h-6 w-6" />}
+            description="Accounts in Lead status"
+          />
+        </Link>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2 mb-8">
+        <div className="rounded-xl border border-border bg-card shadow-card">
+          <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <h2 className="flex items-center gap-2 font-semibold"><CalendarClock className="h-4 w-4 text-muted-foreground" />My follow-ups due</h2>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/follow-ups')} className="gap-1">All <ArrowRight className="h-4 w-4" /></Button>
+          </div>
+          <div className="space-y-2 p-4">
+            {sales.myDue.length === 0
+              ? <p className="py-6 text-center text-sm text-muted-foreground">Nothing due today.</p>
+              : sales.myDue.slice(0, 6).map(f => {
+                  const c = getClient(f.clientId);
+                  return <FollowUpRow key={f.id} followUp={f} context={<> · <Link to={`/clients/${f.clientId}`} className="hover:underline">{c?.companyName || c?.name}</Link></>} />;
+                })}
+          </div>
+        </div>
+        <div className="rounded-xl border border-border bg-card shadow-card">
+          <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <h2 className="flex items-center gap-2 font-semibold"><Briefcase className="h-4 w-4 text-muted-foreground" />Closing this month</h2>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/pipeline')} className="gap-1">Pipeline <ArrowRight className="h-4 w-4" /></Button>
+          </div>
+          <div className="divide-y divide-border">
+            {sales.closingSoon.length === 0
+              ? <p className="py-10 text-center text-sm text-muted-foreground">No open deals expected to close this month.</p>
+              : sales.closingSoon.map(d => {
+                  const c = getClient(d.clientId);
+                  const overdue = (d.expectedCloseDate || '') < today;
+                  return (
+                    <Link key={d.id} to={`/deals/${d.id}`} className="flex items-center justify-between gap-3 px-6 py-3 hover:bg-muted/50">
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-medium">{d.title}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {c?.companyName || c?.name} · <span className={overdue ? 'font-medium text-destructive' : ''}>{overdue ? 'Overdue ' : ''}{format(new Date(`${d.expectedCloseDate}T00:00:00`), 'MMM d')}</span>
+                        </span>
+                      </span>
+                      <span className="flex shrink-0 items-center gap-3">
+                        <span className="font-mono text-sm">{formatMoney(d.value, d.currency, { compact: true })}</span>
+                        <DealStageBadge stage={d.stage} />
+                      </span>
+                    </Link>
+                  );
+                })}
+          </div>
+        </div>
+      </div>
 
       {/* Recent Invoices */}
       <motion.div
