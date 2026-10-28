@@ -397,3 +397,102 @@ export const trustPractices = [
     body: "Automated tests, code review and staging environments before production — and a rollback plan for every release.",
   },
 ];
+
+// Open roles on /careers. Each gets its own page (/careers/<slug>) and Google
+// JobPosting data. Keep pay and hours exactly as offered; remove a role (or
+// set open: false) when it is filled.
+export type Job = {
+  slug: string;
+  open: boolean;
+  title: string;
+  type: string;
+  summary: string;
+  intro: string[];
+  duties: string[];
+  studies: string[];
+  gains: string[];
+  details: { label: string; value: string }[];
+  pay?: { min: number; max: number; unit: "HOUR" };
+  hoursPerWeek?: string;
+  employmentType: "PART_TIME" | "FULL_TIME" | "INTERN" | "CONTRACTOR";
+  datePosted: string;
+  validThrough: string;
+};
+
+export const jobs: Job[] = [
+  {
+    slug: "technical-business-development-representative",
+    open: true,
+    title: "Technical Business Development Representative",
+    type: "Part-time · Auckland · Entry level welcome",
+    summary:
+      "Help connect New Zealand businesses with websites, custom software, CRM and automation that make a real difference. Ideal if you study IT, software, business informatics or marketing.",
+    intro: [
+      "Oreece Limited is looking for a motivated person with an interest in technology and business development to help us connect businesses with digital solutions that make a difference.",
+      "We work across website development, custom software, CRM systems, AI and business automation, and digital marketing. This role lets you combine your technical interests with real-world business experience while helping a New Zealand technology company grow.",
+    ],
+    duties: [
+      "Research businesses and identify opportunities for digital transformation",
+      "Contact potential clients and introduce relevant technology solutions",
+      "Understand business challenges and spot where websites, software, CRM or automation would help",
+      "Support lead generation, client meetings, proposals and follow-ups",
+      "Work with our founder to understand client requirements",
+      "Keep prospect information and sales activity up to date in our CRM",
+      "Learn how technology projects move from first conversation to delivery",
+    ],
+    studies: [
+      "Information Technology or Computer Science",
+      "Software Engineering or Web Development",
+      "Business Informatics or Business Analytics",
+      "Information Systems or Digital Transformation",
+      "IT Project Management, Marketing or Business Development",
+    ],
+    gains: [
+      "Practical experience in technology consulting and business development",
+      "Exposure to real client requirements and digital projects",
+      "Experience explaining technical solutions in business-friendly language",
+      "Communication, sales, discovery and client-relationship skills",
+      "Guidance from a growing technology business",
+      "Room to grow into technical consulting, solutions consulting, account management or business development as the company grows",
+    ],
+    details: [
+      { label: "Company", value: "Oreece Limited" },
+      { label: "Location", value: "Auckland, New Zealand" },
+      { label: "Position", value: "Part-time" },
+      { label: "Hours", value: "About 8–10 hours per week to start, by agreement" },
+      { label: "Pay", value: "NZ$24–26 per hour depending on experience, plus clearly defined performance bonuses" },
+      { label: "Experience", value: "Entry level welcome; no sales experience needed" },
+    ],
+    pay: { min: 24, max: 26, unit: "HOUR" },
+    hoursPerWeek: "8–10",
+    employmentType: "PART_TIME",
+    datePosted: "2026-10-28",
+    validThrough: "2026-12-31",
+  },
+  {
+    slug: "software-engineering-intern",
+    open: true,
+    title: "Software Engineering Intern",
+    type: "Internship · Flexible",
+    summary:
+      "Work on real client projects across React, TypeScript and Supabase, with code review and mentoring from our founder.",
+    intro: [
+      "Work on real client projects across React, TypeScript and Supabase, with code review and mentoring from our founder.",
+    ],
+    duties: [
+      "Build features and fix bugs on live client websites and systems",
+      "Write clean, tested code and take part in code review",
+      "Learn how projects go from requirements to delivery",
+    ],
+    studies: ["Computer Science, Software Engineering, IT or a related field"],
+    gains: ["Real client work for your portfolio", "Mentoring and code review", "Flexible hours around study"],
+    details: [
+      { label: "Company", value: "Oreece Limited" },
+      { label: "Location", value: "Auckland, New Zealand (flexible)" },
+      { label: "Position", value: "Internship" },
+    ],
+    employmentType: "INTERN",
+    datePosted: "2026-10-28",
+    validThrough: "2026-12-31",
+  },
+];

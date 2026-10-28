@@ -22,6 +22,7 @@ import Industries from './pages/Industries';
 import Trust from './pages/Trust';
 import Privacy from './pages/Privacy';
 import Careers from './pages/Careers';
+import CareerDetail from './pages/CareerDetail';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import { LangProvider } from './site/i18n';
@@ -81,6 +82,7 @@ const App = () => {
               <Route path="/trust" element={<Trust />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/careers" element={<Careers />} />
+              <Route path="/careers/:slug" element={<CareerDetail />} />
               <Route path="/contact" element={<Contact />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

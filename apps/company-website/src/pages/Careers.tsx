@@ -1,26 +1,20 @@
+import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Layout, PageHero, usePageMeta } from "../site/Layout";
-import { company } from "../site/content";
+import { company, jobs } from "../site/content";
 import { useT } from "../site/i18n";
-
-const roles = [
-  {
-    title: "Software Engineering Intern",
-    type: "Internship · Flexible",
-    body: "Work on real client projects across React, TypeScript and Supabase, with mentorship from senior developers and the potential for a full-time offer.",
-  },
-];
 
 const perks = [
   "Real projects for real clients from week one",
-  "Mentorship and code review from senior engineers",
-  "Flexible working hours",
+  "Mentoring and feedback from our founder",
+  "Flexible hours that fit around study",
   "Modern stack: React, TypeScript, Supabase, AI tooling",
 ];
 
 const Careers = () => {
   const tr = useT();
-  usePageMeta("Careers", "Join Oreece and build software, automation and AI for businesses in New Zealand and around the world.");
+  usePageMeta("Careers", "Join Oreece and help build websites, software and automation for businesses in New Zealand.");
+  const open = jobs.filter((j) => j.open);
 
   return (
     <Layout>
@@ -28,7 +22,7 @@ const Careers = () => {
         crumbs={[{ label: "Careers" }]}
         eyebrow={tr("Careers")}
         title={tr("Do the best work of your career, on work that matters.")}
-        lede={tr("We are a small team building systems that real businesses run on every day. If you care about craft, clarity and the people who use what you build, we would like to hear from you.")}
+        lede={tr("We are a small, growing company building systems that real businesses run on every day. If you care about craft, clarity and the people who use what you build, we would like to hear from you.")}
       />
 
       <section className="py-20 sm:py-28">
@@ -46,19 +40,20 @@ const Careers = () => {
           <div className="lg:col-span-6 lg:col-start-7">
             <span className="eyebrow">{tr("Open roles")}</span>
             <div className="mt-6 space-y-4">
-              {roles.map((r) => (
-                <a
-                  key={r.title}
-                  href={`mailto:${company.careersEmail}?subject=${encodeURIComponent(`Application: ${r.title}`)}`}
+              {open.length === 0 && <p className="text-muted-foreground">No open roles right now.</p>}
+              {open.map((r) => (
+                <Link
+                  key={r.slug}
+                  to={`/careers/${r.slug}`}
                   className="group block rounded-xl border border-border p-7 transition-colors hover:border-[hsl(var(--ink))]"
                 >
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{r.type}</p>
                   <h3 className="mt-2 text-2xl font-semibold">{r.title}</h3>
-                  <p className="mt-3 leading-relaxed text-muted-foreground">{r.body}</p>
+                  <p className="mt-3 leading-relaxed text-muted-foreground">{r.summary}</p>
                   <span className="link-arrow mt-5">
-                    Apply by email <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    {tr("View role and apply")} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
             <p className="mt-8 text-muted-foreground">
