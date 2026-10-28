@@ -1,7 +1,7 @@
 // Website contact form → Oreece HQ.
 // 1. Always records the enquiry first: a lead (clients, status 'lead'), the
 //    message as an activity, and a "reply" follow-up due today (shows on Today).
-// 2. Then emails info@oreece.com, only if RESEND_API_KEY is set. Email problems
+// 2. Then emails info.oreece@gmail.com (or CONTACT_TO), only if RESEND_API_KEY is set. Email problems
 //    never lose the enquiry.
 // Self-contained (one file) so it can be pasted into the Supabase dashboard editor.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
@@ -82,7 +82,7 @@ serve(async (req) => {
         headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           from: Deno.env.get("CONTACT_FROM") || "Oreece Website <onboarding@resend.dev>",
-          to: [Deno.env.get("CONTACT_TO") || "info@oreece.com"],
+          to: [Deno.env.get("CONTACT_TO") || "info.oreece@gmail.com"],
           reply_to: form.email,
           subject: `Website enquiry from ${form.name}${form.company ? ` (${form.company})` : ""}`,
           html: `<h2>New website enquiry</h2>

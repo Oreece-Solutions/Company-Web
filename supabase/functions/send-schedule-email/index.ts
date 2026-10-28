@@ -1,7 +1,7 @@
 // Website "schedule a call" → Oreece HQ.
 // 1. Always records the request first: a lead (clients, status 'lead'), the
 //    requested time as an activity, and a follow-up on the requested day.
-// 2. Then emails info@oreece.com, only if RESEND_API_KEY is set.
+// 2. Then emails info.oreece@gmail.com (or CONTACT_TO), only if RESEND_API_KEY is set.
 // Self-contained (one file) so it can be pasted into the Supabase dashboard editor.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
@@ -82,7 +82,7 @@ serve(async (req) => {
         headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           from: Deno.env.get("CONTACT_FROM") || "Oreece Website <onboarding@resend.dev>",
-          to: [Deno.env.get("CONTACT_TO") || "info@oreece.com"],
+          to: [Deno.env.get("CONTACT_TO") || "info.oreece@gmail.com"],
           reply_to: call.email,
           subject: `Call request from ${call.name}: ${when}`,
           html: `<h2>New discovery call request</h2>

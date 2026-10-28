@@ -5,7 +5,7 @@ export const company = {
   name: "Oreece",
   legalName: "Oreece Business Solutions",
   email: "hello@oreece.com",
-  careersEmail: "careers@oreece.com",
+  careersEmail: "info.oreece@gmail.com",
   phone: "+64 22 354 1659",
   phoneHref: "tel:+64223541659",
   whatsapp: "https://wa.me/64223541659?text=" + encodeURIComponent("Kia ora Oreece, I'd like to talk about a project."),
