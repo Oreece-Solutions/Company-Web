@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { addDays, differenceInCalendarDays, format, isFriday, parseISO } from 'date-fns';
-import { CalendarClock, CheckCircle2, ClipboardCheck, FileSignature, FileText, FolderKanban, Megaphone, Radar, Server, ListTodo } from 'lucide-react';
+import { CalendarClock, CalendarCheck, CheckCircle2, ClipboardCheck, FileSignature, FileText, FolderKanban, Megaphone, Radar, Server, ListTodo } from 'lucide-react';
 import { supabase } from '@company-web/shared/data-access';
 import { useAppStore } from '@/contexts/StoreContext';
 import { useSales } from '@/contexts/SalesContext';
@@ -123,6 +123,10 @@ export default function TodayPage() {
   const dueToday = items.filter((i) => i.date === today);
   const top3 = [...overdue, ...dueToday].slice(0, 3);
   const readyLeads = prospects.filter((p) => p.stage === 'ready').length;
+  // Discovery calls booked by sales (the founder runs them): today and the week ahead.
+  const discovery = prospects
+    .filter((p) => p.stage === 'conversation_booked' && p.discoveryAt && differenceInCalendarDays(parseISO(p.discoveryAt), now) >= 0 && differenceInCalendarDays(parseISO(p.discoveryAt), now) <= 7)
+    .sort((a, b) => a.discoveryAt!.localeCompare(b.discoveryAt!));
 
   return (
     <AppLayout>
@@ -202,6 +206,18 @@ export default function TodayPage() {
         </div>
 
         <aside className="space-y-4">
+          <SideCard icon={CalendarCheck} title="Discovery calls (7 days)" href="/sales">
+            {discovery.length === 0 ? <p className="text-muted-foreground">None booked</p> : (
+              <ul className="space-y-1">
+                {discovery.map((p) => (
+                  <li key={p.id} className="flex justify-between gap-2">
+                    <span className="truncate">{p.businessName}</span>
+                    <span className={differenceInCalendarDays(parseISO(p.discoveryAt!), now) === 0 ? 'font-medium text-warning' : 'text-muted-foreground'}>{format(parseISO(p.discoveryAt!), 'EEE d MMM, h:mm a')}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </SideCard>
           <SideCard icon={Radar} title="Lead Finder" href="/leads">
             <p><span className="text-2xl font-bold">{readyLeads}</span> ready to contact</p>
             <p className="text-muted-foreground">{prospects.filter((p) => p.stage === 'researching').length} still being researched</p>

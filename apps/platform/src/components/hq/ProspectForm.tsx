@@ -5,6 +5,7 @@ import { Button, Input, Label, Textarea } from '@company-web/shared/ui';
 import { SelectField } from '@/components/crm/SelectField';
 import { CURRENCIES } from '@/types/invoice';
 import { OUTREACH_STAGES, Prospect, ProspectInput, PROSPECT_STAGES, PROSPECT_STAGE_LABELS } from '@/types/hq';
+import { Segment, SEGMENT_LABELS, TeamMember } from '@/types/sales';
 
 const schema = z
   .object({
@@ -25,6 +26,8 @@ const schema = z
     currency: z.string(),
     notes: z.string().optional(),
     disqualifiedReason: z.string().optional(),
+    segment: z.string().optional(),
+    assignedTo: z.string().optional(),
   })
   // Same rules as the database, checked before saving.
   .refine((d) => !d.observedProblem?.trim() || !!d.evidence?.trim(), {
@@ -38,17 +41,23 @@ const schema = z
   .refine((d) => d.stage !== 'disqualified' || !!d.disqualifiedReason?.trim(), {
     path: ['disqualifiedReason'],
     message: 'Say why',
+  })
+  // Once research is done, every open prospect has a clear next step.
+  .refine((d) => ['researching', 'converted', 'disqualified'].includes(d.stage) || (!!d.nextAction?.trim() && !!d.nextActionDate), {
+    path: ['nextAction'],
+    message: 'Set the next action and its date',
   });
 
 type FormData = z.infer<typeof schema>;
 
 interface ProspectFormProps {
   initialData?: Prospect;
+  team?: TeamMember[];
   onSubmit: (data: ProspectInput) => void;
   onCancel: () => void;
 }
 
-export function ProspectForm({ initialData, onSubmit, onCancel }: ProspectFormProps) {
+export function ProspectForm({ initialData, team = [], onSubmit, onCancel }: ProspectFormProps) {
   const { register, handleSubmit, control, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -69,6 +78,8 @@ export function ProspectForm({ initialData, onSubmit, onCancel }: ProspectFormPr
       currency: initialData?.currency || 'NZD',
       notes: initialData?.notes || '',
       disqualifiedReason: initialData?.disqualifiedReason || '',
+      segment: initialData?.segment || '',
+      assignedTo: initialData?.assignedTo || '',
     },
   });
   const stage = watch('stage');
@@ -92,6 +103,9 @@ export function ProspectForm({ initialData, onSubmit, onCancel }: ProspectFormPr
       currency: d.currency as Prospect['currency'],
       notes: d.notes,
       disqualifiedReason: d.disqualifiedReason,
+      segment: (d.segment || '') as Segment | '',
+      // New prospects default to whoever adds them (database default).
+      assignedTo: d.assignedTo || (initialData ? '' : undefined),
     });
 
   const err = (name: keyof FormData) =>
@@ -108,6 +122,32 @@ export function ProspectForm({ initialData, onSubmit, onCancel }: ProspectFormPr
         <div>
           <Label htmlFor="website">Website</Label>
           <Input id="website" {...register('website')} className="mt-1.5" placeholder="https://example.co.nz" />
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="segment">Segment</Label>
+          <Controller
+            control={control}
+            name="segment"
+            render={({ field }) => (
+              <SelectField id="segment" className="mt-1.5" value={field.value} onChange={field.onChange} noneLabel="Not set"
+                options={Object.entries(SEGMENT_LABELS).map(([value, label]) => ({ value, label }))} />
+            )}
+          />
+        </div>
+        <div>
+          <Label htmlFor="assignedTo">Owner</Label>
+          <Controller
+            control={control}
+            name="assignedTo"
+            render={({ field }) => (
+              <SelectField id="assignedTo" className="mt-1.5" value={field.value} onChange={field.onChange}
+                noneLabel={initialData ? 'Nobody' : 'Me'}
+                options={team.map((m) => ({ value: m.userId, label: m.fullName || 'Team member' }))} />
+            )}
+          />
         </div>
       </div>
 
@@ -200,6 +240,7 @@ export function ProspectForm({ initialData, onSubmit, onCancel }: ProspectFormPr
         <div>
           <Label htmlFor="nextAction">Next action</Label>
           <Input id="nextAction" {...register('nextAction')} className="mt-1.5" placeholder="Call and mention the broken email link" />
+          {err('nextAction')}
         </div>
         <div>
           <Label htmlFor="nextActionDate">Due</Label>

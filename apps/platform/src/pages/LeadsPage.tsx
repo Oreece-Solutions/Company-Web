@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
-import { Search, Plus, Upload, Download, Radar, MoreHorizontal, ExternalLink, Globe, PhoneOutgoing, ArrowRightCircle, Ban, Trash2, Pencil } from 'lucide-react';
+import { Search, Plus, Upload, Download, Radar, MoreHorizontal, ExternalLink, Globe, PhoneOutgoing, ArrowRightCircle, Ban, Trash2, Pencil, CalendarPlus, StickyNote } from 'lucide-react';
 import {
   Button,
   Input,
@@ -41,12 +41,20 @@ import { Prospect, ProspectInput, ProspectStage } from '@/types/hq';
 import { parseProspectCsvRow } from '@/lib/prospectCsv';
 import { downloadCsv } from '@/lib/csv';
 import { formatMoney } from '@/lib/money';
+import { useAuth } from '@/contexts/AuthContext';
+import { useSalesDept } from '@/contexts/SalesDeptContext';
+import { LogContactDialog } from '@/components/sales/LogContactDialog';
+import { BookDiscoveryDialog } from '@/components/sales/BookDiscoveryDialog';
+import { ProspectTimeline } from '@/components/sales/ProspectTimeline';
+import { SEGMENT_LABELS } from '@/types/sales';
 
-type Filter = 'active' | 'due' | 'tierA' | 'converted' | 'disqualified' | 'all';
+type Filter = 'active' | 'mine' | 'due' | 'noNext' | 'tierA' | 'converted' | 'disqualified' | 'all';
 
 const FILTERS: { value: Filter; label: string }[] = [
   { value: 'active', label: 'Active' },
+  { value: 'mine', label: 'Mine' },
   { value: 'due', label: 'Due now' },
+  { value: 'noNext', label: 'No next action' },
   { value: 'tierA', label: 'Tier A' },
   { value: 'converted', label: 'Converted' },
   { value: 'disqualified', label: 'Disqualified' },
@@ -58,7 +66,11 @@ const CLOSED: ProspectStage[] = ['converted', 'disqualified'];
 export default function LeadsPage() {
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
-  const { prospects, addProspect, updateProspect, setProspectStage, deleteProspect, convertProspect, checkWebsite } = useHq();
+  const { prospects, addProspect, updateProspect, deleteProspect, convertProspect, checkWebsite } = useHq();
+  const { user } = useAuth();
+  const { team, memberName } = useSalesDept();
+  const [logging, setLogging] = useState<{ prospect: Prospect; kind: 'contact' | 'conversation' | 'note' } | null>(null);
+  const [booking, setBooking] = useState<Prospect | null>(null);
   const { refetch: refetchMain } = useAppStore();
   const { refetch: refetchSales } = useSales();
   const [search, setSearch] = useState('');
@@ -72,18 +84,32 @@ export default function LeadsPage() {
   const [deleting, setDeleting] = useState<Prospect | null>(null);
   const [checking, setChecking] = useState<string | null>(null);
   const filter = (params.get('view') as Filter) || 'active';
+
+  // /leads?new=1 (from the Sales desk) opens the add form.
+  useEffect(() => {
+    if (params.get('new')) {
+      setEditing(null);
+      setFormOpen(true);
+      params.delete('new');
+      setParams(params, { replace: true });
+    }
+  }, [params, setParams]);
   const today = format(new Date(), 'yyyy-MM-dd');
 
   const counts = useMemo(() => ({
     active: prospects.filter((p) => !CLOSED.includes(p.stage)).length,
+    mine: prospects.filter((p) => !CLOSED.includes(p.stage) && p.assignedTo === user?.id).length,
     due: prospects.filter((p) => !CLOSED.includes(p.stage) && p.nextActionDate && p.nextActionDate <= today).length,
-  }), [prospects, today]);
+    noNext: prospects.filter((p) => !CLOSED.includes(p.stage) && (!p.nextAction || !p.nextActionDate)).length,
+  }), [prospects, today, user?.id]);
 
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
     return prospects
       .filter((p) => {
         if (filter === 'active' && CLOSED.includes(p.stage)) return false;
+        if (filter === 'mine' && (CLOSED.includes(p.stage) || p.assignedTo !== user?.id)) return false;
+        if (filter === 'noNext' && (CLOSED.includes(p.stage) || (p.nextAction && p.nextActionDate))) return false;
         if (filter === 'due' && (CLOSED.includes(p.stage) || !p.nextActionDate || p.nextActionDate > today)) return false;
         if (filter === 'tierA' && (p.tier !== 'A' || CLOSED.includes(p.stage))) return false;
         if ((filter === 'converted' || filter === 'disqualified') && p.stage !== filter) return false;
@@ -91,7 +117,7 @@ export default function LeadsPage() {
         return [p.businessName, p.industry, p.location, p.observedProblem, p.website].some((v) => v?.toLowerCase().includes(q));
       })
       .sort((a, b) => (a.nextActionDate || '9999').localeCompare(b.nextActionDate || '9999') || (a.tier || 'Z').localeCompare(b.tier || 'Z'));
-  }, [prospects, filter, search, today]);
+  }, [prospects, filter, search, today, user?.id]);
 
   const live = (p: Prospect | null) => (p ? prospects.find((x) => x.id === p.id) || p : null);
   const current = live(viewing);
@@ -104,14 +130,7 @@ export default function LeadsPage() {
     }
   };
 
-  const markContacted = async (p: Prospect) => {
-    if (!p.consentBasis) {
-      setEditing({ ...p, stage: 'contacted' });
-      setFormOpen(true);
-      return;
-    }
-    await setProspectStage(p.id, 'contacted');
-  };
+  const logActivity = (p: Prospect, kind: 'contact' | 'conversation' | 'note' = 'contact') => setLogging({ prospect: p, kind });
 
   const runCheck = async (p: Prospect) => {
     setChecking(p.id);
@@ -154,7 +173,8 @@ export default function LeadsPage() {
         )}
         {!CLOSED.includes(p.stage) && (
           <>
-            <DropdownMenuItem onClick={() => markContacted(p)}><PhoneOutgoing className="mr-2 h-4 w-4" />Mark contacted</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => logActivity(p)}><PhoneOutgoing className="mr-2 h-4 w-4" />Log contact</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setBooking(p)}><CalendarPlus className="mr-2 h-4 w-4" />Book discovery call</DropdownMenuItem>
             <DropdownMenuItem onClick={() => { setConverting(p); setDealTitle(''); setContactName(''); }}>
               <ArrowRightCircle className="mr-2 h-4 w-4" />Convert to deal
             </DropdownMenuItem>
@@ -163,6 +183,7 @@ export default function LeadsPage() {
             </DropdownMenuItem>
           </>
         )}
+        <DropdownMenuItem onClick={() => logActivity(p, 'note')}><StickyNote className="mr-2 h-4 w-4" />Add note</DropdownMenuItem>
         {p.dealId && <DropdownMenuItem onClick={() => navigate(`/deals/${p.dealId}`)}><ArrowRightCircle className="mr-2 h-4 w-4" />Open deal</DropdownMenuItem>}
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-destructive" onClick={() => setDeleting(p)}><Trash2 className="mr-2 h-4 w-4" />Delete</DropdownMenuItem>
@@ -204,7 +225,9 @@ export default function LeadsPage() {
             >
               {f.label}
               {f.value === 'active' && ` (${counts.active})`}
+              {f.value === 'mine' && ` (${counts.mine})`}
               {f.value === 'due' && counts.due > 0 && ` (${counts.due})`}
+              {f.value === 'noNext' && counts.noNext > 0 && ` (${counts.noNext})`}
             </button>
           ))}
         </div>
@@ -240,14 +263,14 @@ export default function LeadsPage() {
                   <tr key={p.id} className="cursor-pointer align-top hover:bg-muted/40" onClick={() => setViewing(p)}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2 font-medium">{p.businessName}<TierBadge tier={p.tier} /></div>
-                      <div className="text-xs text-muted-foreground">{[p.industry, p.location].filter(Boolean).join(' · ')}</div>
+                      <div className="text-xs text-muted-foreground">{[p.segment ? SEGMENT_LABELS[p.segment] : p.industry, p.location, p.assignedTo && memberName(p.assignedTo)].filter(Boolean).join(' · ')}</div>
                     </td>
                     <td className="max-w-[320px] px-4 py-3">
                       <p className="line-clamp-2">{p.observedProblem || <span className="text-muted-foreground">—</span>}</p>
                     </td>
                     <td className="px-4 py-3"><ProspectStageBadge stage={p.stage} /></td>
                     <td className="px-4 py-3">
-                      <p className="line-clamp-1">{p.nextAction || <span className="text-muted-foreground">—</span>}</p>
+                      <p className="line-clamp-1">{p.nextAction || (CLOSED.includes(p.stage) ? <span className="text-muted-foreground">—</span> : <span className="text-destructive">No next action</span>)}</p>
                       {p.nextActionDate && (
                         <p className={`text-xs ${overdue ? 'font-medium text-destructive' : dueToday ? 'font-medium text-warning' : 'text-muted-foreground'}`}>
                           {overdue ? 'Overdue · ' : dueToday ? 'Today · ' : ''}{format(parseISO(p.nextActionDate), 'EEE d MMM')}
@@ -270,7 +293,7 @@ export default function LeadsPage() {
             <DialogTitle>{editing?.id ? `Edit ${editing.businessName}` : 'Add prospect'}</DialogTitle>
             <DialogDescription>Only record problems you have seen yourself, and how you know.</DialogDescription>
           </DialogHeader>
-          <ProspectForm key={editing?.id ?? 'new'} initialData={editing ?? undefined} onSubmit={save} onCancel={() => { setFormOpen(false); setEditing(null); }} />
+          <ProspectForm key={editing?.id ?? 'new'} initialData={editing ?? undefined} team={team} onSubmit={save} onCancel={() => { setFormOpen(false); setEditing(null); }} />
         </DialogContent>
       </Dialog>
 
@@ -291,6 +314,14 @@ export default function LeadsPage() {
                     </a>
                   )}
                 </div>
+                {current.discoveryAt && (
+                  <div className="rounded-lg border border-success/30 bg-success/5 p-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-success">Discovery call</p>
+                    <p className="mt-0.5 font-medium">{format(parseISO(current.discoveryAt), "EEE d MMM yyyy 'at' h:mm a")}</p>
+                  </div>
+                )}
+                <Detail label="Segment" value={current.segment && SEGMENT_LABELS[current.segment]} />
+                <Detail label="Owner" value={memberName(current.assignedTo)} />
                 <Detail label="Problem seen" value={current.observedProblem} />
                 <Detail label="Evidence" value={current.evidence} />
                 <Detail label="How to contact" value={current.contactChannel} />
@@ -337,13 +368,21 @@ export default function LeadsPage() {
                   <Button variant="outline" size="sm" onClick={() => { setEditing(current); setFormOpen(true); }}>Edit</Button>
                   {!CLOSED.includes(current.stage) && (
                     <>
-                      <Button variant="outline" size="sm" onClick={() => markContacted(current)}>Mark contacted</Button>
+                      <Button variant="outline" size="sm" onClick={() => logActivity(current)}>Log contact</Button>
+                      <Button variant="outline" size="sm" onClick={() => logActivity(current, 'conversation')}>Log conversation</Button>
+                      <Button variant="outline" size="sm" onClick={() => setBooking(current)}>{current.discoveryAt ? 'Move call' : 'Book discovery call'}</Button>
                       <Button size="sm" className="bg-accent hover:bg-accent/90" onClick={() => { setConverting(current); setDealTitle(''); setContactName(''); }}>
                         Convert to deal
                       </Button>
                     </>
                   )}
+                  <Button variant="ghost" size="sm" onClick={() => logActivity(current, 'note')}>Add note</Button>
                   {current.clientId && <Button variant="outline" size="sm" asChild><Link to={`/clients/${current.clientId}`}>Open account</Link></Button>}
+                </div>
+
+                <div>
+                  <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">History</p>
+                  <ProspectTimeline prospect={current} />
                 </div>
               </div>
             </>
@@ -395,6 +434,9 @@ export default function LeadsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <LogContactDialog prospect={logging ? live(logging.prospect) : null} initialKind={logging?.kind} onOpenChange={(o) => !o && setLogging(null)} />
+      <BookDiscoveryDialog prospect={booking ? live(booking) : null} onOpenChange={(o) => !o && setBooking(null)} />
 
       <CsvImportDialog
         open={importOpen}

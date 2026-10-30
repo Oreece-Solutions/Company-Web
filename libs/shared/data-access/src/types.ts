@@ -801,6 +801,9 @@ export type Database = {
           disqualified_reason: string | null
           client_id: string | null
           deal_id: string | null
+          segment: string | null
+          assigned_to: string | null
+          discovery_at: string | null
           created_by: string | null
           created_at: string
           updated_at: string
@@ -829,6 +832,9 @@ export type Database = {
           disqualified_reason?: string | null
           client_id?: string | null
           deal_id?: string | null
+          segment?: string | null
+          assigned_to?: string | null
+          discovery_at?: string | null
           created_by?: string | null
           created_at?: string
           updated_at?: string
@@ -857,6 +863,9 @@ export type Database = {
           disqualified_reason?: string | null
           client_id?: string | null
           deal_id?: string | null
+          segment?: string | null
+          assigned_to?: string | null
+          discovery_at?: string | null
           created_by?: string | null
           created_at?: string
           updated_at?: string
@@ -920,6 +929,234 @@ export type Database = {
           notes?: string | null
           created_at?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      sales_activities: {
+        Row: {
+          id: string
+          prospect_id: string
+          user_id: string | null
+          kind: string
+          channel: string | null
+          outcome: string | null
+          objection: string | null
+          offer: string | null
+          notes: string | null
+          occurred_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          prospect_id: string
+          user_id?: string | null
+          kind: string
+          channel?: string | null
+          outcome?: string | null
+          objection?: string | null
+          offer?: string | null
+          notes?: string | null
+          occurred_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          prospect_id?: string
+          user_id?: string | null
+          kind?: string
+          channel?: string | null
+          outcome?: string | null
+          objection?: string | null
+          offer?: string | null
+          notes?: string | null
+          occurred_at?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      sales_targets: {
+        Row: {
+          id: string
+          metric: string
+          user_id: string | null
+          weekly_min: number
+          weekly_max: number | null
+          note: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          metric: string
+          user_id?: string | null
+          weekly_min: number
+          weekly_max?: number | null
+          note?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          metric?: string
+          user_id?: string | null
+          weekly_min?: number
+          weekly_max?: number | null
+          note?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sales_templates: {
+        Row: {
+          id: string
+          name: string
+          kind: string
+          segment: string | null
+          subject: string | null
+          body: string
+          status: string
+          approved_by: string | null
+          approved_at: string | null
+          sort_order: number
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          kind: string
+          segment?: string | null
+          subject?: string | null
+          body: string
+          status?: string
+          approved_by?: string | null
+          approved_at?: string | null
+          sort_order?: number
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          kind?: string
+          segment?: string | null
+          subject?: string | null
+          body?: string
+          status?: string
+          approved_by?: string | null
+          approved_at?: string | null
+          sort_order?: number
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      playbook_sections: {
+        Row: {
+          id: string
+          slug: string
+          title: string
+          body: string
+          sort_order: number
+          updated_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          title: string
+          body?: string
+          sort_order?: number
+          updated_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          title?: string
+          body?: string
+          sort_order?: number
+          updated_by?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      onboarding_plans: {
+        Row: {
+          id: string
+          user_id: string
+          role_title: string
+          start_date: string
+          status: string
+          assessment: Json
+          completed_at: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          role_title?: string
+          start_date: string
+          status?: string
+          assessment?: Json
+          completed_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          role_title?: string
+          start_date?: string
+          status?: string
+          assessment?: Json
+          completed_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      onboarding_items: {
+        Row: {
+          id: string
+          plan_id: string
+          week: number
+          owner: string
+          title: string
+          detail: string | null
+          link: string | null
+          sort_order: number
+          done_at: string | null
+          done_by: string | null
+        }
+        Insert: {
+          id?: string
+          plan_id: string
+          week: number
+          owner: string
+          title: string
+          detail?: string | null
+          link?: string | null
+          sort_order?: number
+          done_at?: string | null
+          done_by?: string | null
+        }
+        Update: {
+          id?: string
+          plan_id?: string
+          week?: number
+          owner?: string
+          title?: string
+          detail?: string | null
+          link?: string | null
+          sort_order?: number
+          done_at?: string | null
+          done_by?: string | null
         }
         Relationships: []
       }
@@ -1142,6 +1379,40 @@ export type Database = {
       convert_prospect: {
         Args: { _prospect_id: string; _deal_title?: string | null; _contact_name?: string | null }
         Returns: string
+      }
+      log_sales_contact: {
+        Args: {
+          _prospect_id: string
+          _kind: string
+          _channel?: string | null
+          _outcome?: string | null
+          _objection?: string | null
+          _offer?: string | null
+          _notes?: string | null
+          _next_action?: string | null
+          _next_action_date?: string | null
+        }
+        Returns: string
+      }
+      book_discovery: {
+        Args: { _prospect_id: string; _at: string; _notes?: string | null }
+        Returns: undefined
+      }
+      sales_scoreboard: {
+        Args: { _from: string; _to: string }
+        Returns: { user_id: string; full_name: string | null; metrics: Json }[]
+      }
+      team_directory: {
+        Args: Record<PropertyKey, never>
+        Returns: { user_id: string; full_name: string | null; role: string }[]
+      }
+      start_sales_onboarding: {
+        Args: { _user_id: string; _start_date: string }
+        Returns: string
+      }
+      is_admin: {
+        Args: { _user_id: string }
+        Returns: boolean
       }
       weekly_metrics: {
         Args: { _week_ending: string }

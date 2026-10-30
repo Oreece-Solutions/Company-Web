@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, FileText, Users, FolderKanban, Settings, Building2, ChevronLeft, ChevronRight, LogOut, KanbanSquare, FileSignature, CalendarClock, Sun, Radar, HardHat, Server, Megaphone, Tags, ClipboardCheck, History } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, FolderKanban, Settings, Building2, ChevronLeft, ChevronRight, LogOut, KanbanSquare, FileSignature, CalendarClock, Sun, Radar, HardHat, Server, Megaphone, Tags, ClipboardCheck, History, Target, BookOpen, GraduationCap } from 'lucide-react';
 import { format } from 'date-fns';
 import { useSales } from '@/contexts/SalesContext';
 import { useHq } from '@/contexts/HqContext';
@@ -15,11 +15,13 @@ const sections: { label?: string; items: { name: string; href: string; icon: typ
   {
     label: 'Sales',
     items: [
+      { name: 'Sales desk', href: '/sales', icon: Target },
       { name: 'Lead Finder', href: '/leads', icon: Radar },
       { name: 'Pipeline', href: '/pipeline', icon: KanbanSquare },
       { name: 'Clients', href: '/clients', icon: Users },
       { name: 'Follow-ups', href: '/follow-ups', icon: CalendarClock },
       { name: 'Quotes', href: '/quotes', icon: FileSignature },
+      { name: 'Playbook', href: '/playbook', icon: BookOpen },
     ],
   },
   {
@@ -43,6 +45,7 @@ const sections: { label?: string; items: { name: string; href: string; icon: typ
     items: [
       { name: 'Weekly review', href: '/review', icon: ClipboardCheck },
       { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+      { name: 'Onboarding', href: '/onboarding', icon: GraduationCap },
       { name: 'Audit trail', href: '/audit', icon: History },
       { name: 'Settings', href: '/settings', icon: Settings },
     ],

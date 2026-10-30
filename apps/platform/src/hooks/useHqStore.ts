@@ -18,6 +18,7 @@ import {
   WeeklyReview,
   WeeklyReviewInput,
 } from '@/types/hq';
+import { LogContactInput } from '@/types/sales';
 import { toast } from 'sonner';
 
 // Oreece HQ data (supabase/migrations/20261025000001_hq_operations.sql):
@@ -55,6 +56,9 @@ function mapProspect(db: Tables<'prospects'>): Prospect {
     disqualifiedReason: opt(db.disqualified_reason),
     clientId: opt(db.client_id),
     dealId: opt(db.deal_id),
+    segment: (db.segment as Prospect['segment']) || undefined,
+    assignedTo: opt(db.assigned_to),
+    discoveryAt: opt(db.discovery_at),
     createdAt: db.created_at,
     updatedAt: db.updated_at,
   };
@@ -80,6 +84,8 @@ function prospectToDb(data: Partial<ProspectInput>) {
   if (data.currency !== undefined) row.currency = data.currency;
   if (data.notes !== undefined) row.notes = nul(data.notes);
   if (data.disqualifiedReason !== undefined) row.disqualified_reason = nul(data.disqualifiedReason);
+  if (data.segment !== undefined) row.segment = data.segment || null;
+  if (data.assignedTo !== undefined) row.assigned_to = data.assignedTo || null;
   return row;
 }
 
@@ -221,6 +227,9 @@ export function hqErrorMessage(error: { message?: string; code?: string } | null
   if (/prospects_website_unique/.test(message)) return 'A prospect with this website already exists';
   if (/services_name_unique/.test(message)) return 'A service with this name already exists';
   if (/services_approved_needs_price/.test(message)) return 'An approved price needs an amount';
+  if (/sales_activities_contact_needs_channel/.test(message)) return 'Say how you contacted them (channel)';
+  if (/onboarding_plans_one_active/.test(message)) return 'This person already has an active onboarding plan';
+  if (/sales_targets_unique/.test(message)) return 'That target already exists';
   if (/row-level security|permission/i.test(message)) return 'You do not have permission to do that';
   if (message && !/violates|syntax|column/i.test(message)) return message;
   return fallback;
@@ -357,6 +366,45 @@ export function useHqStore() {
     toast.success('Website checked');
     return replaceProspect(row);
   }, [user, prospects]);
+
+  // Sales desk: both actions run in the database so the activity log, stage
+  // and next action change together (log_sales_contact / book_discovery).
+  const reloadProspect = async (id: string) => {
+    const { data: row } = await supabase.from('prospects').select('*').eq('id', id).single();
+    return row ? replaceProspect(row) : null;
+  };
+
+  const logContact = useCallback(async (id: string, data: LogContactInput) => {
+    if (!user) return null;
+    const { error } = await supabase.rpc('log_sales_contact', {
+      _prospect_id: id,
+      _kind: data.kind,
+      _channel: data.channel || null,
+      _outcome: data.outcome || null,
+      _objection: data.objection || null,
+      _offer: data.offer || null,
+      _notes: data.notes || null,
+      _next_action: data.nextAction || null,
+      _next_action_date: data.nextActionDate || null,
+    });
+    if (error) {
+      toast.error(hqErrorMessage(error, 'Failed to log the contact'));
+      return null;
+    }
+    toast.success(data.kind === 'note' ? 'Note added' : 'Logged');
+    return reloadProspect(id);
+  }, [user]);
+
+  const bookDiscovery = useCallback(async (id: string, at: string, notes?: string) => {
+    if (!user) return null;
+    const { error } = await supabase.rpc('book_discovery', { _prospect_id: id, _at: at, _notes: notes || null });
+    if (error) {
+      toast.error(hqErrorMessage(error, 'Failed to book the call'));
+      return null;
+    }
+    toast.success('Discovery call booked');
+    return reloadProspect(id);
+  }, [user]);
 
   // Services ---------------------------------------------------------------
 
@@ -514,6 +562,8 @@ export function useHqStore() {
     deleteProspect,
     convertProspect,
     checkWebsite,
+    logContact,
+    bookDiscovery,
     saveService,
     deleteService,
     openWeeklyReview,

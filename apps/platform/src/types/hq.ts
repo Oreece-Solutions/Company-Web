@@ -1,4 +1,5 @@
 import { Currency } from '@/types/invoice';
+import { Segment } from '@/types/sales';
 
 // Oreece HQ (supabase/migrations/20261025000001_hq_operations.sql).
 
@@ -77,12 +78,17 @@ export interface Prospect {
   disqualifiedReason?: string;
   clientId?: string;
   dealId?: string;
+  segment?: Segment;
+  assignedTo?: string;
+  discoveryAt?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export type ProspectInput = Omit<Prospect, 'id' | 'createdAt' | 'updatedAt' | 'clientId' | 'dealId' | 'siteCheck' | 'siteCheckedAt' | 'lastContactedAt'> & {
+export type ProspectInput = Omit<Prospect, 'id' | 'createdAt' | 'updatedAt' | 'clientId' | 'dealId' | 'siteCheck' | 'siteCheckedAt' | 'lastContactedAt' | 'segment' | 'assignedTo' | 'discoveryAt'> & {
   lastContactedAt?: string;
+  segment?: Segment | '';
+  assignedTo?: string;
 };
 
 export type ServiceCategory = 'project' | 'recurring' | 'hourly' | 'add_on';

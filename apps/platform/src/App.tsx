@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { StoreProvider } from "@/contexts/StoreContext";
 import { SalesProvider } from "@/contexts/SalesContext";
 import { HqProvider } from "@/contexts/HqContext";
+import { SalesDeptProvider } from "@/contexts/SalesDeptContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
@@ -36,6 +37,9 @@ const ContractorsPage = lazy(() => import("./pages/ContractorsPage"));
 const SystemsPage = lazy(() => import("./pages/SystemsPage"));
 const SocialPage = lazy(() => import("./pages/SocialPage"));
 const AuditPage = lazy(() => import("./pages/AuditPage"));
+const SalesDeskPage = lazy(() => import("./pages/SalesDeskPage"));
+const PlaybookPage = lazy(() => import("./pages/PlaybookPage"));
+const OnboardingPage = lazy(() => import("./pages/OnboardingPage"));
 
 const queryClient = new QueryClient();
 
@@ -45,6 +49,7 @@ const App = () => (
       <StoreProvider>
         <SalesProvider>
           <HqProvider>
+          <SalesDeptProvider>
           <TooltipProvider>
             <Toaster />
             <ShadcnToaster />
@@ -56,6 +61,9 @@ const App = () => (
                 <Route path="/" element={<ProtectedRoute><TodayPage /></ProtectedRoute>} />
                 <Route path="/dashboard" element={<ProtectedRoute><Index /></ProtectedRoute>} />
                 <Route path="/leads" element={<ProtectedRoute><LeadsPage /></ProtectedRoute>} />
+                <Route path="/sales" element={<ProtectedRoute><SalesDeskPage /></ProtectedRoute>} />
+                <Route path="/playbook" element={<ProtectedRoute><PlaybookPage /></ProtectedRoute>} />
+                <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
                 <Route path="/services" element={<ProtectedRoute><ServicesPage /></ProtectedRoute>} />
                 <Route path="/review" element={<ProtectedRoute><WeeklyReviewPage /></ProtectedRoute>} />
                 <Route path="/contractors" element={<ProtectedRoute><ContractorsPage /></ProtectedRoute>} />
@@ -85,6 +93,7 @@ const App = () => (
               </ErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>
+          </SalesDeptProvider>
           </HqProvider>
         </SalesProvider>
       </StoreProvider>
