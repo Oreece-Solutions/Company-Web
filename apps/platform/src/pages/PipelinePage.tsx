@@ -1,7 +1,9 @@
 import { useMemo, useState, DragEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { format, parseISO, subDays } from 'date-fns';
-import { Plus, Search, Trophy, XCircle, CalendarClock, TrendingUp, Target, Percent, Briefcase } from 'lucide-react';
+import { Plus, Search, Trophy, XCircle, CalendarClock, TrendingUp, Target, Percent, Briefcase, KanbanSquare, List, Download } from 'lucide-react';
+import { downloadCsv } from '@/lib/csv';
+import { DealsList, StageFilter, STAGE_FILTERS, filterDeals } from '@/components/crm/DealsList';
 import { useAppStore } from '@/contexts/StoreContext';
 import { useSales } from '@/contexts/SalesContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -36,7 +38,19 @@ export default function PipelinePage() {
   const [isAddOpen, setIsAddOpenState] = useState(params.get('new') === '1');
   const setIsAddOpen = (open: boolean) => {
     setIsAddOpenState(open);
-    if (!open && params.has('new')) setParams({}, { replace: true });
+    if (!open && params.has('new')) {
+      params.delete('new');
+      setParams(params, { replace: true });
+    }
+  };
+  // Board for working open deals; list for every deal, including closed ones.
+  const view = params.get('view') === 'list' ? 'list' : 'board';
+  const stageFilter = (params.get('stage') as StageFilter) || 'all';
+  const setView = (next: 'board' | 'list', stage?: StageFilter) => {
+    const p = new URLSearchParams();
+    if (next === 'list') p.set('view', 'list');
+    if (next === 'list' && stage && stage !== 'all') p.set('stage', stage);
+    setParams(p, { replace: true });
   };
   const [dragId, setDragId] = useState<string | null>(null);
   const [overStage, setOverStage] = useState<DealStage | null>(null);
@@ -108,12 +122,25 @@ export default function PipelinePage() {
     <AppLayout>
       <PageHeader
         title="Pipeline"
-        description="Drag deals between stages. Drop on Won or Lost to close them."
+        description={view === 'board' ? 'Drag deals between stages. Drop on Won or Lost to close them.' : 'Every deal, open and closed'}
         actions={
-          <Button className="gap-2 bg-accent hover:bg-accent/90" onClick={() => setIsAddOpen(true)}>
-            <Plus className="h-4 w-4" />
-            New Deal
-          </Button>
+          <>
+            {view === 'list' && (
+              <Button variant="outline" className="gap-2" onClick={() => downloadCsv(`oreece-deals-${format(new Date(), 'yyyy-MM-dd')}.csv`, filterDeals(visibleDeals, stageFilter).map((d) => {
+                const client = getClient(d.clientId);
+                return {
+                  title: d.title, client: client?.companyName || client?.name, stage: d.stage, value_estimate: d.value, currency: d.currency,
+                  probability: d.probability, expected_close: d.expectedCloseDate, source: d.source, owner: getMemberName(d.ownerId), lost_reason: d.lostReason, closed_at: d.closedAt,
+                };
+              }))}>
+                <Download className="h-4 w-4" />Export
+              </Button>
+            )}
+            <Button className="gap-2 bg-accent hover:bg-accent/90" onClick={() => setIsAddOpen(true)}>
+              <Plus className="h-4 w-4" />
+              New Deal
+            </Button>
+          </>
         }
       />
 
@@ -144,6 +171,18 @@ export default function PipelinePage() {
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
+        <div className="flex rounded-lg border border-border p-0.5" role="group" aria-label="View">
+          {([['board', 'Board', KanbanSquare], ['list', 'List', List]] as const).map(([v, label, Icon]) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              aria-pressed={view === v}
+              className={cn('flex items-center gap-1.5 rounded-md px-3 py-1 text-sm font-medium', view === v ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground')}
+            >
+              <Icon className="h-4 w-4" />{label}
+            </button>
+          ))}
+        </div>
         <div className="relative w-full max-w-xs">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input placeholder="Search deals or accounts..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
@@ -161,8 +200,25 @@ export default function PipelinePage() {
         </div>
       </div>
 
+      {view === 'list' && (
+        <>
+          <div className="mb-4 flex flex-wrap gap-2">
+            {STAGE_FILTERS.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => setView('list', f.value)}
+                className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${stageFilter === f.value ? 'bg-accent text-accent-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/70'}`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <DealsList deals={filterDeals(visibleDeals, stageFilter)} />
+        </>
+      )}
+
       {/* Board */}
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      {view === 'board' && <div className="flex gap-4 overflow-x-auto pb-4">
         {OPEN_DEAL_STAGES.map((stage) => {
           const columnDeals = visibleDeals.filter((d) => d.stage === stage);
           const totals = sumByCurrency(columnDeals, (d) => d.value, (d) => d.currency);
@@ -248,14 +304,14 @@ export default function PipelinePage() {
               >
                 <Icon className="mb-2 h-6 w-6" />
                 <p className="text-sm font-semibold">{DEAL_STAGE_LABELS[stage]}</p>
-                <Link to={`/deals?stage=${stage}`} className="mt-1 text-xs text-muted-foreground hover:underline">
+                <button onClick={() => setView('list', stage as StageFilter)} className="mt-1 text-xs text-muted-foreground hover:underline">
                   {count} deals
-                </Link>
+                </button>
               </div>
             );
           })}
         </div>
-      </div>
+      </div>}
 
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogContent className="sm:max-w-[640px]">

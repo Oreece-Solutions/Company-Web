@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase, Json } from '@company-web/shared/data-access';
+import { supabase, Json, TablesUpdate } from '@company-web/shared/data-access';
 import { useAuth } from '@/contexts/AuthContext';
 import { Company, Client, ClientActivity, Invoice, LineItem, Currency, Payment, InvoiceStatus } from '@/types/invoice';
 import { Project, Task } from '@/types/project';
@@ -378,7 +378,7 @@ export function useSupabaseStore() {
   const updateCompany = useCallback(async (data: Partial<Company>) => {
     if (!user || !company?.id) return false;
 
-    const updateData: Record<string, unknown> = {};
+    const updateData: TablesUpdate<'company_settings'> = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.address !== undefined) updateData.address = data.address;
     if (data.email !== undefined) updateData.email = data.email;
@@ -453,7 +453,7 @@ export function useSupabaseStore() {
   const updateClient = useCallback(async (id: string, data: Partial<Client>) => {
     if (!user) return;
 
-    const updateData: Record<string, unknown> = {};
+    const updateData: TablesUpdate<'clients'> = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.companyName !== undefined) updateData.company_name = data.companyName || null;
     if (data.email !== undefined) updateData.email = data.email;
@@ -573,7 +573,7 @@ export function useSupabaseStore() {
   const updateProject = useCallback(async (id: string, data: Partial<Project>) => {
     if (!user) return;
 
-    const updateData: Record<string, unknown> = {};
+    const updateData: TablesUpdate<'projects'> = {};
     if (data.clientId !== undefined) updateData.client_id = data.clientId || null;
     if (data.name !== undefined) updateData.name = data.name;
     if (data.description !== undefined) updateData.description = data.description;
@@ -659,7 +659,7 @@ export function useSupabaseStore() {
   const updateTask = useCallback(async (id: string, data: Partial<Task>) => {
     if (!user) return;
 
-    const updateData: Record<string, unknown> = {};
+    const updateData: TablesUpdate<'tasks'> = {};
     if (data.title !== undefined) updateData.title = data.title;
     if (data.description !== undefined) updateData.description = data.description;
     if (data.status !== undefined) updateData.status = data.status;
@@ -772,7 +772,7 @@ export function useSupabaseStore() {
   const updateInvoice = useCallback(async (id: string, data: Partial<Invoice>) => {
     if (!user) return;
 
-    const updateData: Record<string, unknown> = {};
+    const updateData: TablesUpdate<'invoices'> = {};
     if (data.clientId !== undefined) updateData.client_id = data.clientId;
     if (data.projectId !== undefined) updateData.project_id = data.projectId || null;
     if (data.invoiceDate !== undefined) updateData.date = data.invoiceDate;
@@ -785,7 +785,7 @@ export function useSupabaseStore() {
     if (data.paymentReference !== undefined) updateData.payment_reference = data.paymentReference;
 
     if (data.lineItems !== undefined) {
-      updateData.items = data.lineItems as unknown as Record<string, unknown>[];
+      updateData.items = data.lineItems as unknown as Json;
       const subtotal = data.lineItems.reduce((sum, item) => sum + item.amount, 0);
       updateData.subtotal = subtotal;
       updateData.total = subtotal;

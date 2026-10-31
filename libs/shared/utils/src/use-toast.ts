@@ -11,6 +11,7 @@ export interface ToastProps {
   title?: string;
   description?: string;
   action?: ToastActionElement;
+  variant?: "default" | "destructive";
 }
 
 const TOAST_LIMIT = 1;

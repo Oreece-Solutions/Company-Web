@@ -94,6 +94,15 @@ export default function LeadsPage() {
       setParams(params, { replace: true });
     }
   }, [params, setParams]);
+  // /leads?open=<id> (from search or My work) opens that prospect's details.
+  useEffect(() => {
+    const id = params.get('open');
+    const found = id ? prospects.find((p) => p.id === id) : undefined;
+    if (!found) return;
+    setViewing(found);
+    params.delete('open');
+    setParams(params, { replace: true });
+  }, [params, setParams, prospects]);
   const today = format(new Date(), 'yyyy-MM-dd');
 
   const counts = useMemo(() => ({
