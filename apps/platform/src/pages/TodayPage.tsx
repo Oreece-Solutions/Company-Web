@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { addDays, differenceInCalendarDays, format, isFriday, parseISO } from 'date-fns';
-import { AlertCircle, Briefcase, CalendarClock, CalendarCheck, CheckCircle2, ClipboardCheck, Clock, DollarSign, FileSignature, FileText, FolderKanban, Megaphone, Plus, Radar, Server, ListTodo, TrendingUp } from 'lucide-react';
+import { AlertCircle, Briefcase, CalendarClock, CalendarCheck, CheckCircle2, ClipboardCheck, Clock, DollarSign, FileSignature, FileText, FolderKanban, Megaphone, Plus, Radar, Server, LifeBuoy, ListTodo, Repeat, TrendingUp } from 'lucide-react';
+import { useDelivery } from '@/contexts/DeliveryContext';
+import { responseDue, SUPPORT_PRIORITY_LABELS } from '@/types/delivery';
+import { useMoney } from '@/contexts/MoneyContext';
 import { Button, Checkbox } from '@company-web/shared/ui';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { hasAccess } from '@/lib/access';
@@ -16,7 +19,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { HealthBadge, ProspectStageBadge, TierBadge } from '@/components/hq/Badges';
 import { formatMoney, formatTotals, sumByCurrency } from '@/lib/money';
 
-type Kind = 'follow-up' | 'prospect' | 'task' | 'quote' | 'invoice';
+type Kind = 'follow-up' | 'prospect' | 'task' | 'quote' | 'invoice' | 'retainer' | 'support';
 
 interface Item {
   key: string;
@@ -36,6 +39,8 @@ const KIND_META: Record<Kind, { label: string; icon: typeof Radar }> = {
   task: { label: 'Task', icon: ListTodo },
   quote: { label: 'Chase quote', icon: FileSignature },
   invoice: { label: 'Overdue invoice', icon: FileText },
+  retainer: { label: 'Retainer to invoice', icon: Repeat },
+  support: { label: 'Support request', icon: LifeBuoy },
 };
 
 const HEALTH_RANK = { blocked: 0, at_risk: 1, on_track: 2 } as const;
@@ -50,6 +55,8 @@ export default function TodayPage() {
   const { clients, invoices, projects, tasks, getClient, company } = useAppStore();
   const { followUps, quotes, deals, getDeal, setFollowUpDone } = useSales();
   const { prospects, systems, contractors } = useHq();
+  const { retainers } = useMoney();
+  const { supportRequests } = useDelivery();
   const [socialWaiting, setSocialWaiting] = useState<number | null>(null);
   const [mineOnly, setMineOnly] = useState(true);
   const now = new Date();
@@ -120,9 +127,27 @@ export default function TodayPage() {
         href: `/invoices/${inv.id}`,
       });
     }
+    for (const r of retainers) {
+      if (r.status !== 'active' || r.nextInvoiceDate > horizon) continue;
+      out.push({
+        key: `r-${r.id}`, kind: 'retainer', title: `Invoice ${r.name}`, date: r.nextInvoiceDate,
+        context: `${clientName(r.clientId) ?? ''} · ${formatMoney(r.amount, r.currency)}`,
+        href: '/retainers',
+      });
+    }
+    // Open support requests: due today, or overdue since opening once the reply target has passed.
+    for (const r of supportRequests) {
+      if (r.status === 'resolved' || !mine(r.assignedTo)) continue;
+      const due = responseDue(r);
+      out.push({
+        key: `s-${r.id}`, kind: 'support', title: r.title, date: due && due < now ? format(new Date(r.openedAt), 'yyyy-MM-dd') : today,
+        context: `${clientName(r.clientId) ?? ''} · ${SUPPORT_PRIORITY_LABELS[r.priority]}${due ? ` · reply ${due < now ? 'overdue' : `by ${format(due, 'h:mm a')}`}` : ''}`,
+        href: `/support?open=${r.id}`,
+      });
+    }
     return out.sort((a, b) => a.date.localeCompare(b.date));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [followUps, prospects, tasks, quotes, invoices, projects, contractors, clients, today, user?.id, mineOnly]);
+  }, [followUps, prospects, tasks, quotes, invoices, projects, contractors, clients, retainers, supportRequests, today, user?.id, mineOnly]);
 
   // The founder's numbers (formerly the Dashboard). Totals stay per currency.
   const numbers = useMemo(() => {

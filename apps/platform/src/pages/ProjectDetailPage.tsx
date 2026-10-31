@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ArrowLeft, Plus, Edit, Trash2, Calendar, DollarSign } from 'lucide-react';
 import { useAppStore } from '@/contexts/StoreContext';
+import { ProjectTimeProfit } from '@/components/project/ProjectTimeProfit';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
 import {
@@ -247,6 +248,8 @@ export default function ProjectDetailPage() {
           );
         })}
       </div>
+
+      <ProjectTimeProfit projectId={id} />
 
       {editingTask && (
         <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>

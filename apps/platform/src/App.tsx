@@ -8,6 +8,8 @@ import { StoreProvider } from "@/contexts/StoreContext";
 import { SalesProvider } from "@/contexts/SalesContext";
 import { HqProvider } from "@/contexts/HqContext";
 import { SalesDeptProvider } from "@/contexts/SalesDeptContext";
+import { MoneyProvider } from "@/contexts/MoneyContext";
+import { DeliveryProvider } from "@/contexts/DeliveryContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { CommandPalette } from "@/components/layout/CommandPalette";
 import AuthPage from "./pages/AuthPage";
@@ -38,6 +40,12 @@ const AuditPage = lazy(() => import("./pages/AuditPage"));
 const SalesDeskPage = lazy(() => import("./pages/SalesDeskPage"));
 const PlaybookPage = lazy(() => import("./pages/PlaybookPage"));
 const OnboardingPage = lazy(() => import("./pages/OnboardingPage"));
+const MoneyPage = lazy(() => import("./pages/MoneyPage"));
+const RetainersPage = lazy(() => import("./pages/RetainersPage"));
+const ExpensesPage = lazy(() => import("./pages/ExpensesPage"));
+const SupportPage = lazy(() => import("./pages/SupportPage"));
+const TimesheetPage = lazy(() => import("./pages/TimesheetPage"));
+const HiringPage = lazy(() => import("./pages/HiringPage"));
 
 const queryClient = new QueryClient();
 
@@ -55,6 +63,8 @@ const App = () => (
         <SalesProvider>
           <HqProvider>
           <SalesDeptProvider>
+          <MoneyProvider>
+          <DeliveryProvider>
           <TooltipProvider>
             <Toaster />
             <ShadcnToaster />
@@ -76,6 +86,12 @@ const App = () => (
                 <Route path="/systems" element={<ProtectedRoute need="sell"><SystemsPage /></ProtectedRoute>} />
                 <Route path="/social" element={<ProtectedRoute need="admin"><SocialPage /></ProtectedRoute>} />
                 <Route path="/audit" element={<ProtectedRoute need="admin"><AuditPage /></ProtectedRoute>} />
+                <Route path="/support" element={<ProtectedRoute need="sell"><SupportPage /></ProtectedRoute>} />
+                <Route path="/timesheet" element={<ProtectedRoute need="sell"><TimesheetPage /></ProtectedRoute>} />
+                <Route path="/hiring" element={<ProtectedRoute need="admin"><HiringPage /></ProtectedRoute>} />
+                <Route path="/money" element={<ProtectedRoute need="bill"><MoneyPage /></ProtectedRoute>} />
+                <Route path="/retainers" element={<ProtectedRoute need="bill"><RetainersPage /></ProtectedRoute>} />
+                <Route path="/expenses" element={<ProtectedRoute need="bill"><ExpensesPage /></ProtectedRoute>} />
                 <Route path="/invoices" element={<ProtectedRoute need="bill"><InvoicesPage /></ProtectedRoute>} />
                 <Route path="/invoices/new" element={<ProtectedRoute need="bill"><InvoiceFormPage /></ProtectedRoute>} />
                 <Route path="/invoices/:id" element={<ProtectedRoute need="bill"><InvoiceViewPage /></ProtectedRoute>} />
@@ -99,6 +115,8 @@ const App = () => (
               </ErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>
+          </DeliveryProvider>
+          </MoneyProvider>
           </SalesDeptProvider>
           </HqProvider>
         </SalesProvider>

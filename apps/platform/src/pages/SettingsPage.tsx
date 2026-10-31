@@ -12,6 +12,7 @@ import { Button } from '@company-web/shared/ui';
 import { Input } from '@company-web/shared/ui';
 import { Label } from '@company-web/shared/ui';
 import { Textarea } from '@company-web/shared/ui';
+import { Switch } from '@company-web/shared/ui';
 import { SelectField } from '@/components/crm/SelectField';
 import { CURRENCIES, Currency } from '@/types/invoice';
 
@@ -29,6 +30,9 @@ const companySchema = z.object({
   branch: z.string().optional(),
   defaultCurrency: z.enum(['LKR', 'NZD', 'AUD', 'USD', 'EUR', 'GBP']),
   quoteTerms: z.string().optional(),
+  gstRegistered: z.boolean(),
+  gstRate: z.coerce.number().min(0).max(99),
+  gstBasis: z.enum(['payments', 'invoice']),
 });
 
 type CompanyFormData = z.infer<typeof companySchema>;
@@ -55,6 +59,9 @@ export default function SettingsPage() {
     branch: company.bankDetails?.branch || '',
     defaultCurrency: company.defaultCurrency || 'NZD',
     quoteTerms: company.quoteTerms || '',
+    gstRegistered: company.gstRegistered ?? false,
+    gstRate: company.gstRate ?? 15,
+    gstBasis: company.gstBasis ?? 'payments',
   });
 
   const {
@@ -282,6 +289,41 @@ export default function SettingsPage() {
                   rows={4}
                   placeholder={'50% deposit to start, balance on delivery.\nPrices exclude GST unless stated.\nThis quote is valid for 30 days.'}
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* GST */}
+          <div className="rounded-xl border border-border bg-card p-6 shadow-card">
+            <h2 className="text-lg font-semibold text-foreground mb-1">GST</h2>
+            <p className="mb-4 text-sm text-muted-foreground">Used for the GST estimate on the Money screen. Register once turnover passes $60,000 in 12 months.</p>
+            <div className="space-y-4">
+              <Controller
+                control={control}
+                name="gstRegistered"
+                render={({ field }) => (
+                  <label className="flex items-center gap-2 text-sm">
+                    <Switch id="gstRegistered" checked={field.value} onCheckedChange={field.onChange} />
+                    Oreece is GST-registered
+                  </label>
+                )}
+              />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="gstRate">GST rate (%)</Label>
+                  <Input id="gstRate" type="number" step="0.01" className="mt-1.5" {...register('gstRate')} />
+                </div>
+                <div>
+                  <Label htmlFor="gstBasis">Accounting basis</Label>
+                  <Controller
+                    control={control}
+                    name="gstBasis"
+                    render={({ field }) => (
+                      <SelectField id="gstBasis" className="mt-1.5" value={field.value} onChange={field.onChange}
+                        options={[{ value: 'payments', label: 'Payments (when money moves)' }, { value: 'invoice', label: 'Invoice (when invoiced)' }]} />
+                    )}
+                  />
+                </div>
               </div>
             </div>
           </div>

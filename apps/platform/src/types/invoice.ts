@@ -19,6 +19,9 @@ export interface Company {
   bankDetails?: BankDetails;
   defaultCurrency?: Currency;
   quoteTerms?: string;
+  gstRegistered?: boolean;
+  gstRate?: number;
+  gstBasis?: 'payments' | 'invoice';
 }
 
 export type ClientStatus = 'lead' | 'prospect' | 'active' | 'inactive';

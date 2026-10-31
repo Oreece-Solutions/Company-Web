@@ -65,6 +65,9 @@ export type Database = {
       }
       company_settings: {
         Row: {
+          gst_registered: boolean
+          gst_rate: number
+          gst_basis: string
           id: string
           name: string
           address: string | null
@@ -85,6 +88,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          gst_registered?: boolean
+          gst_rate?: number
+          gst_basis?: string
           id?: string
           name?: string
           address?: string | null
@@ -105,6 +111,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          gst_registered?: boolean
+          gst_rate?: number
+          gst_basis?: string
           id?: string
           name?: string
           address?: string | null
@@ -232,6 +241,7 @@ export type Database = {
       }
       invoices: {
         Row: {
+          retainer_id: string | null
           id: string
           user_id: string | null
           client_id: string | null
@@ -252,6 +262,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          retainer_id?: string | null
           id?: string
           user_id?: string | null
           client_id?: string | null
@@ -272,6 +283,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          retainer_id?: string | null
           id?: string
           user_id?: string | null
           client_id?: string | null
@@ -974,6 +986,333 @@ export type Database = {
         }
         Relationships: []
       }
+      expenses: {
+        Row: {
+          id: string
+          spent_on: string
+          supplier: string
+          description: string | null
+          category: string
+          amount: number
+          currency: string
+          gst_claimable: boolean
+          project_id: string | null
+          contractor_id: string | null
+          receipt_url: string | null
+          notes: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          spent_on?: string
+          supplier: string
+          description?: string | null
+          category?: string
+          amount: number
+          currency?: string
+          gst_claimable?: boolean
+          project_id?: string | null
+          contractor_id?: string | null
+          receipt_url?: string | null
+          notes?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          spent_on?: string
+          supplier?: string
+          description?: string | null
+          category?: string
+          amount?: number
+          currency?: string
+          gst_claimable?: boolean
+          project_id?: string | null
+          contractor_id?: string | null
+          receipt_url?: string | null
+          notes?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      retainers: {
+        Row: {
+          id: string
+          client_id: string
+          service_id: string | null
+          name: string
+          description: string | null
+          amount: number
+          currency: string
+          billing_interval: string
+          next_invoice_date: string
+          payment_terms_days: number
+          status: string
+          start_date: string
+          end_date: string | null
+          last_invoice_id: string | null
+          notes: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          client_id: string
+          service_id?: string | null
+          name: string
+          description?: string | null
+          amount: number
+          currency?: string
+          billing_interval?: string
+          next_invoice_date?: string
+          payment_terms_days?: number
+          status?: string
+          start_date?: string
+          end_date?: string | null
+          last_invoice_id?: string | null
+          notes?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          client_id?: string
+          service_id?: string | null
+          name?: string
+          description?: string | null
+          amount?: number
+          currency?: string
+          billing_interval?: string
+          next_invoice_date?: string
+          payment_terms_days?: number
+          status?: string
+          start_date?: string
+          end_date?: string | null
+          last_invoice_id?: string | null
+          notes?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      job_applications: {
+        Row: {
+          id: string
+          opening_id: string | null
+          full_name: string
+          email: string | null
+          phone: string | null
+          location: string | null
+          linkedin_url: string | null
+          portfolio_url: string | null
+          cv_url: string | null
+          source: string
+          stage: string
+          rating: number | null
+          work_rights: string | null
+          notes: string | null
+          next_step: string | null
+          next_step_date: string | null
+          applied_on: string
+          stage_changed_at: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          opening_id?: string | null
+          full_name: string
+          email?: string | null
+          phone?: string | null
+          location?: string | null
+          linkedin_url?: string | null
+          portfolio_url?: string | null
+          cv_url?: string | null
+          source?: string
+          stage?: string
+          rating?: number | null
+          work_rights?: string | null
+          notes?: string | null
+          next_step?: string | null
+          next_step_date?: string | null
+          applied_on?: string
+          stage_changed_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          opening_id?: string | null
+          full_name?: string
+          email?: string | null
+          phone?: string | null
+          location?: string | null
+          linkedin_url?: string | null
+          portfolio_url?: string | null
+          cv_url?: string | null
+          source?: string
+          stage?: string
+          rating?: number | null
+          work_rights?: string | null
+          notes?: string | null
+          next_step?: string | null
+          next_step_date?: string | null
+          applied_on?: string
+          stage_changed_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      job_openings: {
+        Row: {
+          id: string
+          title: string
+          employment_type: string
+          location: string | null
+          status: string
+          description: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          employment_type?: string
+          location?: string | null
+          status?: string
+          description?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          employment_type?: string
+          location?: string | null
+          status?: string
+          description?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      support_requests: {
+        Row: {
+          id: string
+          client_id: string
+          project_id: string | null
+          system_id: string | null
+          retainer_id: string | null
+          title: string
+          details: string | null
+          reported_by: string | null
+          channel: string
+          priority: string
+          status: string
+          billable: boolean
+          assigned_to: string | null
+          opened_at: string
+          first_response_at: string | null
+          resolved_at: string | null
+          resolution: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          client_id: string
+          project_id?: string | null
+          system_id?: string | null
+          retainer_id?: string | null
+          title: string
+          details?: string | null
+          reported_by?: string | null
+          channel?: string
+          priority?: string
+          status?: string
+          billable?: boolean
+          assigned_to?: string | null
+          opened_at?: string
+          first_response_at?: string | null
+          resolved_at?: string | null
+          resolution?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          client_id?: string
+          project_id?: string | null
+          system_id?: string | null
+          retainer_id?: string | null
+          title?: string
+          details?: string | null
+          reported_by?: string | null
+          channel?: string
+          priority?: string
+          status?: string
+          billable?: boolean
+          assigned_to?: string | null
+          opened_at?: string
+          first_response_at?: string | null
+          resolved_at?: string | null
+          resolution?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      time_entries: {
+        Row: {
+          id: string
+          user_id: string
+          project_id: string
+          task_id: string | null
+          worked_on: string
+          minutes: number
+          description: string | null
+          billable: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string
+          project_id: string
+          task_id?: string | null
+          worked_on?: string
+          minutes: number
+          description?: string | null
+          billable?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          project_id?: string
+          task_id?: string | null
+          worked_on?: string
+          minutes?: number
+          description?: string | null
+          billable?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sales_targets: {
         Row: {
           id: string
@@ -1397,6 +1736,14 @@ export type Database = {
       book_discovery: {
         Args: { _prospect_id: string; _at: string; _notes?: string | null }
         Returns: undefined
+      }
+      invoice_due_retainers: {
+        Args: { _as_of?: string }
+        Returns: number
+      }
+      gst_summary: {
+        Args: { _from: string; _to: string }
+        Returns: Json
       }
       sales_scoreboard: {
         Args: { _from: string; _to: string }

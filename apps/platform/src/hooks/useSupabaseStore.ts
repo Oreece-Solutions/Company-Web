@@ -27,6 +27,9 @@ interface DbCompanySettings {
   signature_url: string | null;
   default_currency: string | null;
   quote_terms: string | null;
+  gst_registered: boolean;
+  gst_rate: number;
+  gst_basis: string;
 }
 
 interface DbClient {
@@ -144,6 +147,9 @@ function mapDbCompanyToCompany(db: DbCompanySettings): Company {
     },
     defaultCurrency: (db.default_currency as Currency) || 'NZD',
     quoteTerms: db.quote_terms || '',
+    gstRegistered: !!db.gst_registered,
+    gstRate: db.gst_rate !== undefined && db.gst_rate !== null ? Number(db.gst_rate) : 15,
+    gstBasis: db.gst_basis === 'invoice' ? 'invoice' : 'payments',
   };
 }
 
@@ -388,6 +394,9 @@ export function useSupabaseStore() {
     if (data.logo !== undefined) updateData.logo_url = data.logo;
     if (data.signature !== undefined) updateData.signature_url = data.signature;
     if (data.defaultCurrency !== undefined) updateData.default_currency = data.defaultCurrency;
+    if (data.gstRegistered !== undefined) updateData.gst_registered = data.gstRegistered;
+    if (data.gstRate !== undefined) updateData.gst_rate = data.gstRate;
+    if (data.gstBasis !== undefined) updateData.gst_basis = data.gstBasis;
     if (data.quoteTerms !== undefined) updateData.quote_terms = data.quoteTerms;
     if (data.bankDetails) {
       updateData.bank_name = data.bankDetails.bankName;

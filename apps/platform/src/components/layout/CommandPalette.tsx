@@ -20,6 +20,8 @@ const ACTIONS: { name: string; href: string; need: Access }[] = [
   { name: 'New deal', href: '/pipeline?new=1', need: 'sell' },
   { name: 'New quote', href: '/quotes/new', need: 'sell' },
   { name: 'New invoice', href: '/invoices/new', need: 'bill' },
+  { name: 'Add an expense', href: '/expenses?new=1', need: 'bill' },
+  { name: 'Log a support request', href: '/support?new=1', need: 'sell' },
 ];
 
 // ⌘K / Ctrl+K: jump to any screen, record or common action from anywhere.
