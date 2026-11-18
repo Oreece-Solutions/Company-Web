@@ -24,6 +24,7 @@ import Privacy from './pages/Privacy';
 import Careers from './pages/Careers';
 import CareerDetail from './pages/CareerDetail';
 import Contact from './pages/Contact';
+import Pricing from './pages/Pricing';
 import NotFound from './pages/NotFound';
 import { LangProvider } from './site/i18n';
 
@@ -76,6 +77,7 @@ const App = () => {
               />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/work" element={<Work />} />
               <Route path="/work/:slug" element={<WorkDetail />} />
               <Route path="/industries" element={<Industries />} />

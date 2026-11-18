@@ -4,6 +4,7 @@ import { Mail, Phone, Clock, MapPin, Loader2, CheckCircle2 } from "lucide-react"
 import { supabase } from "@company-web/shared/data-access";
 import { Layout, PageHero, WhatsAppIcon, usePageMeta } from "../site/Layout";
 import { company, services } from "../site/content";
+import { plans, saleLive } from "../site/pricing";
 import { useT } from "../site/i18n";
 
 const empty = { name: "", email: "", phone: "", company: "", project: "", budget: "", timeline: "", message: "" };
@@ -32,7 +33,16 @@ const Contact = () => {
   const initialType = enquiryTypes.find((t) => t.id === params.get("type"))?.id ?? "project";
   const [type, setType] = useState<EnquiryType>(initialType);
   const current = enquiryTypes.find((t) => t.id === type)!;
-  const [form, setForm] = useState(empty);
+  const plan = plans.find((p) => p.id === params.get("plan"));
+  const [form, setForm] = useState(() =>
+    plan
+      ? {
+          ...empty,
+          project: "Website plan",
+          message: `I'm interested in the ${plan.name} website plan${saleLive() && plan.setup !== null ? " (Black Friday — 50% off setup)" : ""}.\n\nAbout my business: `,
+        }
+      : empty,
+  );
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -159,6 +169,7 @@ const Contact = () => {
                     {services.map((s) => (
                       <option key={s.slug}>{tr(s.title)}</option>
                     ))}
+                    <option>Website plan</option>
                     <option>Something else</option>
                   </select>
                 </Field>

@@ -4,9 +4,11 @@ import { ArrowRight, ArrowUp, ChevronRight, Menu, X } from "lucide-react";
 import { company, industries, services, socials } from "./content";
 import { Silk } from "./Silk";
 import { LangToggle, useT } from "./i18n";
+import { SalePromo } from "./Promo";
 
 const nav = [
   { to: "/services", label: "Services" },
+  { to: "/pricing", label: "Pricing" },
   { to: "/work", label: "Work" },
   { to: "/industries", label: "Industries" },
   { to: "/about", label: "About" },
@@ -198,6 +200,7 @@ function Footer() {
           <Link to="/work">{tr("Our work")}</Link>
           <Link to="/about">{tr("About")}</Link>
           <Link to="/trust">{tr("Trust & security")}</Link>
+          <Link to="/pricing">{tr("Website pricing")}</Link>
           <Link to="/careers">{tr("Careers")}</Link>
           <Link to="/contact">{tr("Contact")}</Link>
           <Link to="/contact?type=rfp">{tr("Submit an RFP")}</Link>
@@ -247,6 +250,7 @@ export function Layout({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer />
+      <SalePromo />
       <a
         href={company.whatsapp}
         target="_blank"
